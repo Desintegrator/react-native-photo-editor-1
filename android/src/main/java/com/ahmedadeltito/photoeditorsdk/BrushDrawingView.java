@@ -95,11 +95,9 @@ public class BrushDrawingView extends View {
         // TODO@Nikonets: test brushSize change
         if (brushSize == 30) {
           setBrushSize(10);
-        }
-        if (brushSize == 20) {
+        } else if (brushSize == 20) {
           setBrushSize(30);
-        }
-        if (brushSize == 10) {
+        } else if (brushSize == 10) {
           setBrushSize(20);
         }
         drawPaint.setColor(color);
