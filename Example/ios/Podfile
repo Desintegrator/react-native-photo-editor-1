@@ -14,7 +14,7 @@ target 'Example' do
 
   use_frameworks! :linkage => :static
 
-  pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
+  pod 'iOSPhotoEditor', :git => 'https://github.com/Desintegrator/photo-editor', :branch => 'master'
 
   # Enables Flipper.
   #
