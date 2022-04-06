@@ -48,7 +48,7 @@ This library is a React Native bridge around native photo editor libraries. It a
 
   use_frameworks! :linkage => :static
 
-  pod 'iOSPhotoEditor', :git => 'https://github.com/Desintegrator/photo-editor', :branch => 'master'
+  pod 'iOSPhotoEditor', :git => 'https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/ios-photo-editor', :branch => 'master'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|

@@ -233,7 +233,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - iOSPhotoEditor (from `https://github.com/Desintegrator/photo-editor`, branch `master`)
+  - iOSPhotoEditor (from `https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/ios-photo-editor`, branch `master`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -278,7 +278,7 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   iOSPhotoEditor:
     :branch: master
-    :git: https://github.com/Desintegrator/photo-editor
+    :git: https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/ios-photo-editor
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -329,7 +329,7 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   iOSPhotoEditor:
     :commit: 4924e9ec984d25d03644e58aa148282642171de9
-    :git: https://github.com/Desintegrator/photo-editor
+    :git: https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/ios-photo-editor
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
