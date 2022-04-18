@@ -9,6 +9,8 @@
     "keywords": [
         "react-native"
     ],
+    "author": "HaikuDev",
+    "homepage": "https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/react-native-photo-editor",
     "devDependencies": {
         "@types/react": "^17.0.11",
         "@types/react-native": "^0.64.10",
