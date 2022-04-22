@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 target 'Example' do
   config = use_native_modules!
@@ -14,8 +14,9 @@ target 'Example' do
 
   use_frameworks! :linkage => :static
 
-  pod 'iOSPhotoEditor', :git => 'https://bitbucket.pcbltools.ru/bitbucket/projects/CLASS/repos/ios-photo-editor', :branch => 'master'
-
+  pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor/ios'
+  pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
+  
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and

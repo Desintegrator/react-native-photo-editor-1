@@ -1,91 +1,89 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {Image} from 'react-native';
-import PhotoEditor from 'react-native-photo-editor';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import RNFS from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob';
+import PhotoEditorView from 'react-native-photo-editor';
 
-type Props = {
-  path: string;
-  colors?: string[];
-  stickers?: string[];
-  hiddenControls?: string[];
-  onDone?: (e: any) => void;
-  onCancel?: (e: any) => void;
-};
+const PHOTO_PATH = RNFS.DocumentDirectoryPath + '/photo.jpg';
 
-export default class App extends Component<Props> {
-  _onPress = () => {
-    PhotoEditor.Edit({
-      path: RNFS.DocumentDirectoryPath + '/photo.jpg',
-      stickers: [
-        'sticker0',
-        'sticker1',
-        'sticker2',
-        'sticker3',
-        'sticker4',
-        'sticker5',
-        'sticker6',
-        'sticker7',
-        'sticker8',
-        'sticker9',
-        'sticker10',
-      ],
-      // hiddenControls: [
-      //   'clear',
-      //   'crop',
-      //   'draw',
-      //   'save',
-      //   'share',
-      //   'sticker',
-      //   'text',
-      // ],
-      colors: undefined,
-      onDone: () => {
-        console.log('on done');
-      },
-      onCancel: () => {
-        console.log('on cancel');
-      },
-    });
+export default function App() {
+  const [brushColor, setBrushColor] = useState('black');
+  const [editedImagePath, setEditedImagePath] = useState<string | null>(null);
+
+  const Button: React.FC<{color: string}> = ({color}) => {
+    const onPress = () => setBrushColor(color);
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={{
+          flex: 1,
+          backgroundColor: color,
+        }}
+      />
+    );
   };
 
-  componentDidMount() {
-    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
-    let binaryFile = Image.resolveAssetSource(require('./assets/photo.jpg'));
-
-    RNFetchBlob.config({fileCache: true})
-      .fetch('GET', binaryFile.uri)
-      .then((resp: {path: () => string}) => {
-        RNFS.moveFile(resp.path(), photoPath)
-          .then(() => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+  useEffect(() => {
+    RNFS.downloadFile({
+      fromUrl:
+        'https://i.pinimg.com/originals/e4/9b/c4/e49bc442a5cd920fc72e5105fa7ee52e.png',
+      toFile: PHOTO_PATH,
+      background: true,
+    })
+      .promise.then(response => {
+        if (response.statusCode === 200) {
+          setEditedImagePath(PHOTO_PATH);
+        }
       })
-      .catch((err: {message: any}) => {
-        console.log(err.message);
+      .catch(error => {
+        console.log({error});
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={this._onPress}>
-          <Text>Click</Text>
-        </TouchableOpacity>
+  console.log(editedImagePath);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header} />
+      <View style={styles.editorContainer}>
+        <PhotoEditorView
+          style={{
+            flex: 1,
+            width: '100%',
+          }}
+          brushColor={brushColor}
+          uri={editedImagePath}
+        />
       </View>
-    );
-  }
+      <View style={styles.footer}>
+        <Button color={'black'} />
+        <Button color={'red'} />
+        <Button color={'green'} />
+        <Button color={'blue'} />
+        <Button color={'yellow'} />
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#3F3F46',
+  },
+  header: {
+    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+    height: 100,
+  },
+  footer: {
+    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+    height: 60,
+    flexDirection: 'row',
+  },
+  editorContainer: {
+    flex: 1,
+  },
+  button: {
+    flex: 1,
   },
 });
