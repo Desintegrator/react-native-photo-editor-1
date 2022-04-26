@@ -1,17 +1,17 @@
 import PhotoEditorView from './PhotoEditorView'
 
-export interface PhotoEditorProps {
-    path: string
-    colors?: string[]
-    stickers?: string[]
-    hiddenControls?: ('text' | 'clear' | 'draw' | 'save' | 'share' | 'sticker' | 'crop')[]
+// export interface PhotoEditorProps {
+//     path: string
+//     colors?: string[]
+//     stickers?: string[]
+//     hiddenControls?: ('text' | 'clear' | 'draw' | 'save' | 'share' | 'sticker' | 'crop')[]
 
-    onDone?: (imagePath: string) => void
-    onCancel?: (resultCode: number) => void
-}
+//     onDone?: (imagePath: string) => void
+//     onCancel?: (resultCode: number) => void
+// }
 
 
-export default PhotoEditorView ;
+export default PhotoEditorView;
 
 // export default class PhotoEditor {
 //     private static defaultProps = {

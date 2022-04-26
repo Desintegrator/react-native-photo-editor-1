@@ -17,11 +17,14 @@ import androidx.fragment.app.FragmentContainer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.Request;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -39,14 +42,11 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public static final String REACT_CLASS = "RNPhotoEditorViewManager";
   public final int COMMAND_CREATE = 1;
 
-  @Nullable
-  private RequestManager requestManager = null;
-
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
 
   private int brushColor;
-  private String photoUri;
+  private EditedImageSource editedImage;
 
   public RNPhotoEditorViewManager(ReactApplicationContext reactContext) {
     this.reactContext = reactContext;
@@ -87,14 +87,19 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  @ReactProp(name = "uri")
-  public void setEditedImageUri(FrameLayout view, @Nullable String uri) {
-    if (uri != null) {
-        this.photoUri = uri;
-        updatePhotoEditorImage();
-      }
-  }
 
+  @ReactProp(name = "source")
+  public void setSrc(FrameLayout view, @Nullable ReadableMap source) {
+    if (source == null || !source.hasKey("uri") || isNullOrEmpty(source.getString("uri"))) {
+      return;
+    }
+    final EditedImageSource imageSource = ImageSourceConverter.getImageSource(view.getContext(), source);
+    if (imageSource.getUri().toString().length() == 0) {
+      return;
+    }
+    editedImage = imageSource;
+    updatePhotoEditorImage();
+  }
 
   @ReactProp(name = "brushColor")
   public void setBrushColor(FrameLayout view, @Nullable String color) {
@@ -112,13 +117,15 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
 
   private void updatePhotoEditorImage(){
     if(photoEditorFragment != null){
-      photoEditorFragment.setEditedImageUri(photoUri);
+      photoEditorFragment.setEditedImageSource(editedImage);
     }
   }
 
   public void createFragment(FrameLayout root, int reactNativeViewId) {
     ViewGroup parentView = (ViewGroup) root.findViewById(reactNativeViewId);
     photoEditorFragment = new RNPhotoEditorFragment();
+    updatePhotoEditorImage();
+    updatePhotoEditorBrushColor();
     FragmentActivity activity = (FragmentActivity) reactContext.getCurrentActivity();
     if(activity != null){
       activity.getSupportFragmentManager()

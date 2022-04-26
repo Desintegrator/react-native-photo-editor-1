@@ -1,14 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import RNFS from 'react-native-fs';
+import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import PhotoEditorView from 'react-native-photo-editor';
 
-const PHOTO_PATH = RNFS.DocumentDirectoryPath + '/photo.jpg';
+const PHOTO_PATH =
+  'https://i.pinimg.com/originals/e4/9b/c4/e49bc442a5cd920fc72e5105fa7ee52e.png';
+
+const HEADERS = {};
 
 export default function App() {
   const [brushColor, setBrushColor] = useState('black');
-  const [editedImagePath, setEditedImagePath] = useState<string | null>(null);
 
   const Button: React.FC<{color: string}> = ({color}) => {
     const onPress = () => setBrushColor(color);
@@ -23,25 +24,6 @@ export default function App() {
     );
   };
 
-  useEffect(() => {
-    RNFS.downloadFile({
-      fromUrl:
-        'https://i.pinimg.com/originals/e4/9b/c4/e49bc442a5cd920fc72e5105fa7ee52e.png',
-      toFile: PHOTO_PATH,
-      background: true,
-    })
-      .promise.then(response => {
-        if (response.statusCode === 200) {
-          setEditedImagePath(PHOTO_PATH);
-        }
-      })
-      .catch(error => {
-        console.log({error});
-      });
-  }, []);
-
-  console.log(editedImagePath);
-
   return (
     <View style={styles.container}>
       <View style={styles.header} />
@@ -52,7 +34,10 @@ export default function App() {
             width: '100%',
           }}
           brushColor={brushColor}
-          uri={editedImagePath}
+          source={{
+            uri: PHOTO_PATH,
+            headers: HEADERS,
+          }}
         />
       </View>
       <View style={styles.footer}>

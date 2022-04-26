@@ -12,11 +12,10 @@ target 'Example' do
     :hermes_enabled => false
   )
 
-  use_frameworks! :linkage => :static
+  # use_frameworks! :linkage => :static
 
-  pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor/ios'
   pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
-  
+
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
@@ -29,19 +28,8 @@ target 'Example' do
 
   # Follow [Flipper iOS Setup Guidelines][https://fbflipper.com/docs/getting-started/ios-native/]
   # This is required because iOSPhotoEditor is implementated using Swift
-  $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
-    'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
-    'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
-    'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
-  
-  pre_install do |installer|
-    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
-    installer.pod_targets.each do |pod|
-        if $static_framework.include?(pod.name)
-          def pod.build_type;
-            Pod::BuildType.static_library
-          end
-        end
-      end
-  end
+  # $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
+  #   'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
+  #   'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
+  #   'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
 end

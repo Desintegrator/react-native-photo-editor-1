@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ahmedadeltito.photoeditor.UtilFunctions;
@@ -20,6 +23,10 @@ import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.facebook.react.views.imagehelper.ImageSource;
 
 import java.io.File;
 
@@ -29,7 +36,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public PhotoEditorSDK photoEditorSDK;
   private int brushColor = Color.BLACK;
-  private String editedImageUri;
+  private EditedImageSource editedImageSource;
 
   public void setBrushColor(int brushColor) {
     this.brushColor = brushColor;
@@ -38,19 +45,24 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
-  public void setEditedImageUri(String editedImageUri) {
-    this.editedImageUri = editedImageUri;
+  public void setEditedImageSource(EditedImageSource editedImageSource) {
+    this.editedImageSource = editedImageSource;
     updateEditorImage();
   }
 
+
   public void updateEditorImage(){
-    if(photoEditImageView != null && UtilFunctions.stringIsNotEmpty(editedImageUri)){
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inSampleSize = 1;
-      Bitmap bitmap = BitmapFactory.decodeFile(editedImageUri, options);
-      if(bitmap != null){
-        photoEditImageView.setImageBitmap(bitmap);
-      }
+    if(photoEditImageView != null && editedImageSource != null){
+
+      Glide.with(getContext()).asBitmap().load(editedImageSource.getSourceForLoad()).into(new CustomTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+          photoEditImageView.setImageBitmap(resource);
+        }
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+        }
+      });
     }
   }
 
@@ -82,9 +94,6 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     photoEditorSDK.setBrushDrawingMode(true);
     updateEditorImage();
   }
-
-
-
 
   @Override
   public void onPause() {
