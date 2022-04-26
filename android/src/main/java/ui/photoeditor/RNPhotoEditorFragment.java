@@ -53,14 +53,18 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public void updateEditorImage(){
     if(photoEditImageView != null && editedImageSource != null){
-
       Glide.with(getContext()).asBitmap().load(editedImageSource.getSourceForLoad()).into(new CustomTarget<Bitmap>() {
         @Override
         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-          photoEditImageView.setImageBitmap(resource);
+          if(photoEditImageView != null){
+            photoEditImageView.setImageBitmap(resource);
+          }
         }
         @Override
         public void onLoadCleared(@Nullable Drawable placeholder) {
+          if(photoEditImageView != null) {
+            photoEditImageView.setImageDrawable(placeholder);
+          }
         }
       });
     }

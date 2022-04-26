@@ -124,8 +124,6 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public void createFragment(FrameLayout root, int reactNativeViewId) {
     ViewGroup parentView = (ViewGroup) root.findViewById(reactNativeViewId);
     photoEditorFragment = new RNPhotoEditorFragment();
-    updatePhotoEditorImage();
-    updatePhotoEditorBrushColor();
     FragmentActivity activity = (FragmentActivity) reactContext.getCurrentActivity();
     if(activity != null){
       activity.getSupportFragmentManager()
@@ -133,6 +131,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
           .replace(reactNativeViewId, photoEditorFragment, String.valueOf(reactNativeViewId))
           .commit();
       setupLayout(parentView);
+      updatePhotoEditorImage();
+      updatePhotoEditorBrushColor();
     }
   }
 
