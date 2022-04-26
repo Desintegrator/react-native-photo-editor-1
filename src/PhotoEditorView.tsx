@@ -1,5 +1,5 @@
 import React,{ useEffect, useRef } from "react";
-import { findNodeHandle, UIManager, ViewProps } from "react-native";
+import { findNodeHandle, Platform, UIManager } from "react-native";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
 import { PhotoEditorViewProps } from "./types";
 
@@ -15,11 +15,13 @@ const PhotoEditorView:React.FC<PhotoEditorViewProps> = (props) => {
 const ref = useRef(null);
 
 useEffect(() => {
-  const timeoutId = setTimeout(()=>{
-    const viewId = findNodeHandle(ref.current);
-    createFragment(viewId);    
-  }, 300)
-  return ()=>clearTimeout(timeoutId);
+  if(Platform.OS === 'android'){
+    const timeoutId = setTimeout(()=>{
+      const viewId = findNodeHandle(ref.current);
+      createFragment(viewId);    
+    }, 300)
+    return ()=>clearTimeout(timeoutId);
+  }
 }, []); 
 
 return (
