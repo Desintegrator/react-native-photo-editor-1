@@ -6,7 +6,6 @@
 
 @implementation RNPhotoEditorView
 
-<#methods#>
 - (id) init {
     self = [super init];
     return self;
