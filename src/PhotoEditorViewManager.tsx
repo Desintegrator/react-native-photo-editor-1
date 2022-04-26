@@ -1,5 +1,5 @@
-import {  requireNativeComponent } from 'react-native';
+import {  HostComponent, requireNativeComponent } from 'react-native';
 
 export const PhotoEditorViewManager =
-  requireNativeComponent('RNPhotoEditorViewManager');
+  requireNativeComponent('RNPhotoEditorViewManager') as HostComponent<any>;
 
