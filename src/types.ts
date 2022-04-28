@@ -9,5 +9,6 @@ type Source = {
 
 export interface PhotoEditorViewProps extends ViewProps {
   brushColor: string;
+  rotationDegrees: number;
   source: Source | number;
 }

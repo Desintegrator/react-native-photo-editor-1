@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import PhotoEditorView from 'react-native-photo-editor';
 
 const PHOTO_PATH =
@@ -10,12 +10,16 @@ const HEADERS = {};
 
 export default function App() {
   const [brushColor, setBrushColor] = useState('black');
+  const [rotationDegrees, setRotationDegrees] = useState(0);
 
-  const Button: React.FC<{color: string}> = ({color}) => {
-    const onPress = () => setBrushColor(color);
+  const Button: React.FC<{color: string; onPress?: () => void}> = ({
+    color,
+    onPress,
+  }) => {
+    const _onPress = onPress || (() => setBrushColor(color));
     return (
       <TouchableOpacity
-        onPress={onPress}
+        onPress={_onPress}
         style={{
           flex: 1,
           backgroundColor: color,
@@ -24,21 +28,42 @@ export default function App() {
     );
   };
 
+  const rotateEditorView = (clockwise = true) => {
+    let _rotationDegrees = rotationDegrees + (clockwise ? 90 : -90);
+    if (_rotationDegrees >= 360) {
+      _rotationDegrees = 0;
+    }
+    if (_rotationDegrees < 0) {
+      _rotationDegrees = 270;
+    }
+    setRotationDegrees(_rotationDegrees);
+  };
+
+  const editorViewStyles = {
+    transform: [{rotateZ: '' + rotationDegrees + 'deg'}],
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header} />
       <View style={styles.editorContainer}>
         <PhotoEditorView
-          style={{
-            flex: 1,
-            width: '100%',
-          }}
+          style={[styles.editorView, editorViewStyles]}
           brushColor={brushColor}
+          rotationDegrees={rotationDegrees}
           source={{
             uri: PHOTO_PATH,
             headers: HEADERS,
           }}
         />
+      </View>
+      <View
+        style={{
+          height: 100,
+          width: 100,
+        }}>
+        <Text style={{color: 'white'}}>Rotate</Text>
+        <Button color={'gray'} onPress={rotateEditorView} />
       </View>
       <View style={styles.footer}>
         <Button color={'black'} />
@@ -52,6 +77,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  editorView: {
+    flex: 1,
+    width: '100%',
+  },
   container: {
     flex: 1,
     backgroundColor: '#3F3F46',
