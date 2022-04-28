@@ -11,3 +11,7 @@ export interface PhotoEditorViewProps extends ViewProps {
   brushColor: string;
   source: Source | number;
 }
+
+export interface IPhotoEditorViewRef {
+  clearAll(): void;
+}

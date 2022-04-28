@@ -50,6 +50,12 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     updateEditorImage();
   }
 
+  public void clearAllViews() {
+    if(photoEditorSDK != null){
+      photoEditorSDK.clearAllViews();
+    }
+}
+
 
   public void updateEditorImage(){
     if(photoEditImageView != null && editedImageSource != null){

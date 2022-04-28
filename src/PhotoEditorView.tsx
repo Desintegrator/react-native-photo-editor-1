@@ -1,35 +1,51 @@
-import React,{ useEffect, useRef } from "react";
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import { findNodeHandle, Platform, UIManager } from "react-native";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
-import { PhotoEditorViewProps } from "./types";
+import { PhotoEditorViewProps, IPhotoEditorViewRef } from "./types";
 
 const createFragment = (viewId:number|null) =>
-UIManager.dispatchViewManagerCommand(
-  viewId,
-  //@ts-ignore
-  UIManager.RNPhotoEditorViewManager?.Commands?.create?.toString(),
-  [viewId]
-);
+    UIManager.dispatchViewManagerCommand(
+        viewId,
+        //@ts-ignore
+        UIManager.RNPhotoEditorViewManager?.Commands?.create?.toString(),
+        [viewId]
+    );
 
-const PhotoEditorView:React.FC<PhotoEditorViewProps> = (props) => {
-const ref = useRef(null);
+const clearAll = (viewId:number|null) =>
+    UIManager.dispatchViewManagerCommand(
+        viewId,
+        //@ts-ignore
+        UIManager.RNPhotoEditorViewManager?.Commands?.clearAll?.toString(),
+        [viewId]
+    );
 
-useEffect(() => {
-  if(Platform.OS === 'android'){
-    const timeoutId = setTimeout(()=>{
-      const viewId = findNodeHandle(ref.current);
-      createFragment(viewId);    
-    }, 300)
-    return ()=>clearTimeout(timeoutId);
-  }
-}, []); 
+const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>((props, ref) => {
+  const editorRef = useRef(null);
 
-return (
-  <PhotoEditorViewManager
-    {...props}
-    ref={ref}
-  />
-);
-};
+  useImperativeHandle(ref, () => ({
+    clearAll() {
+      const viewId = findNodeHandle(editorRef.current);
+      clearAll(viewId);
+    }
+  }));
+
+
+  useEffect(() => {
+    if(Platform.OS === 'android'){
+      const timeoutId = setTimeout(()=>{
+        const viewId = findNodeHandle(editorRef.current);
+        createFragment(viewId);
+      }, 300)
+      return ()=>clearTimeout(timeoutId);
+    }
+  }, []);
+
+  return (
+      <PhotoEditorViewManager
+          {...props}
+          ref={editorRef}
+      />
+  );
+});
 
 export default PhotoEditorView;
