@@ -39,7 +39,7 @@ import java.util.Map;
 
 
 public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
-  public static final String REACT_CLASS = "RNPhotoEditorViewManager";
+  public static final String REACT_CLASS = "RNPhotoEditorView";
   public final int COMMAND_CREATE = 1;
 
   ReactApplicationContext reactContext;

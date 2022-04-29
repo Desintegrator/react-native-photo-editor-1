@@ -72,7 +72,6 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - iOSPhotoEditor (0.5)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
   - RCT-Folly (2021.06.28.00-v2):
@@ -343,7 +342,6 @@ PODS:
   - RNFS (2.18.0):
     - React
   - RNPhotoEditor (1.1.1):
-    - iOSPhotoEditor
     - React
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -376,7 +374,6 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.99.0)
   - FlipperKit/SKIOSNetworkPlugin (= 0.99.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - iOSPhotoEditor (from `https://github.com/prscX/photo-editor`, branch `master`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -436,9 +433,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  iOSPhotoEditor:
-    :branch: master
-    :git: https://github.com/prscX/photo-editor
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -496,11 +490,6 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
-CHECKOUT OPTIONS:
-  iOSPhotoEditor:
-    :commit: 4924e9ec984d25d03644e58aa148282642171de9
-    :git: https://github.com/prscX/photo-editor
-
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
@@ -518,7 +507,6 @@ SPEC CHECKSUMS:
   FlipperKit: d8d346844eca5d9120c17d441a2f38596e8ed2b9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  iOSPhotoEditor: 0f36d2c064d2999b7f4cd20c9db679581d24f7bf
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
@@ -547,10 +535,10 @@ SPEC CHECKSUMS:
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
-  RNPhotoEditor: e2a71d3d6bcb15d29f5d885c1f1289c9eabdfb14
+  RNPhotoEditor: cef373c03e53f9898b2da104b0dc8c33d6639b19
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ddda0d95be76c57370baf3565d25ff8843007656
+PODFILE CHECKSUM: ea9e043df726d25dfee473c027a4c7f0d37d22ce
 
 COCOAPODS: 1.11.3

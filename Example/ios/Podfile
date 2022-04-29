@@ -12,10 +12,6 @@ target 'Example' do
     :hermes_enabled => false
   )
 
-  # use_frameworks! :linkage => :static
-
-  pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
-
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
@@ -23,13 +19,13 @@ target 'Example' do
   use_flipper!()
 
   post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      if target.name.include?('RNPhotoEditor')
+        target.build_configurations.each do |config|
+          config.build_settings['SWIFT_VERSION'] = '5'
+        end
+      end
+    end
     react_native_post_install(installer)
   end
-
-  # Follow [Flipper iOS Setup Guidelines][https://fbflipper.com/docs/getting-started/ios-native/]
-  # This is required because iOSPhotoEditor is implementated using Swift
-  # $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
-  #   'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
-  #   'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
-  #   'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
 end

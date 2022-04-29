@@ -10,13 +10,16 @@ Pod::Spec.new do |s|
   s.homepage               = package['homepage']
   s.license                = package['license']
   s.author                 = package['author']
-  s.source                 = { :git => 'ssh://git@bitbucket.pcbltools.ru:7999/class/ios-photo-editor.git', :tag => s.version }
+  s.source                 = { :git => 'ssh://git@bitbucket.pcbltools.ru:7999/class/react-native-photo-editor.git', :tag => s.version }
 
-  s.platform               = :ios, '9.0'
-  s.ios.deployment_target  = '8.0'
+  s.platform               = :ios, '10.0'
+  s.ios.deployment_target  = '10.0'
 
   s.preserve_paths         = 'LICENSE', 'package.json'
-  s.source_files           = 'ios/**/*.{h,m}'
+  s.source_files            = "ios/**/*.{h,m,swift}"
+  s.exclude_files           = "ios/RNPhotoEditor-demo/**"
+  s.resources              = "ios/**/*.{png,jpeg,jpg,storyboard,xib,ttf}"
   s.dependency             'React'
-  s.dependency             'iOSPhotoEditor'
+  # s.dependency             'SDWebImage', '~> 5.11.1'
+  # s.dependency             'SDWebImageWebPCoder', '~> 0.8.4'
 end
