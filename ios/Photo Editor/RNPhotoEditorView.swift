@@ -32,21 +32,37 @@ class RNPhotoEditorView: UIView {
         }
     }
     
+    // TODO@korotkov: add image load errors handlers
     @objc
     func setSource(source:NSDictionary){
         let url:URL = URL(string: source["uri"] as! String)!;
         let headers: NSDictionary = source["headers"] as! NSDictionary;
-      
-        var request = URLRequest(url: url);
-        for (key,value) in headers {
-            request.addValue((key as! String), forHTTPHeaderField:  value as! String);
-        }
+        var headersFileds = [String: String]()
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        for (key, value) in headers {
+            headersFileds[key as! String] = (value as! String)
+        }
+        var request = URLRequest(url: url);
+        request.allHTTPHeaderFields = headersFileds;
+        let sessionConfiguration = URLSessionConfiguration.default;
+        for (key,value) in headers {
+            request.addValue((value as! String), forHTTPHeaderField:  key as! String);
+            if(key as! String == "Authorization"){
+                sessionConfiguration.httpAdditionalHeaders = [
+                    "Authorization": value
+                ]
+            }
+        }
+
+        request.httpMethod = "GET"
+        let session = URLSession(configuration: sessionConfiguration)
+        let task = session.dataTask(with: request) { data, response, error in
             if let data = data {
                 let image = UIImage(data: data)
                 DispatchQueue.main.async {
-                    self.photoEditor.setImageView(image: image!)
+                    if(image != nil){
+                        self.photoEditor.setImageView(image: image!)
+                    }
                 }
             } else if let error = error {
                 print("HTTP Request Failed \(error)")
