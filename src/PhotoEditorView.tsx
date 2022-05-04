@@ -7,7 +7,7 @@ const createFragment = (viewId:number|null) =>
 UIManager.dispatchViewManagerCommand(
   viewId,
   //@ts-ignore
-  UIManager.RNPhotoEditorViewManager?.Commands?.create?.toString(),
+  UIManager.RNPhotoEditorView?.Commands?.create?.toString(),
   [viewId]
 );
 
@@ -15,7 +15,7 @@ const PhotoEditorView:React.FC<PhotoEditorViewProps> = (props) => {
 const ref = useRef(null);
 
 useEffect(() => {
-  if(Platform.OS === 'android'){
+  if(Platform.OS === 'android'){    
     const timeoutId = setTimeout(()=>{
       const viewId = findNodeHandle(ref.current);
       createFragment(viewId);    
