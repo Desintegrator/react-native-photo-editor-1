@@ -151,7 +151,7 @@ public class BrushDrawingView extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        if (brushDrawMode) {
+        if (brushDrawMode && event.getPointerCount() == 1) {
             float touchX = event.getX();
             float touchY = event.getY();
             switch (event.getAction()) {

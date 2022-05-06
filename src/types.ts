@@ -7,7 +7,7 @@ type Source = {
   };
 };
 
-export interface PhotoEditorViewProps extends ViewProps {
+export interface NativePhotoEditorViewProps extends ViewProps {
   brushColor: string;
   rotationDegrees: number;
   source: Source | number;

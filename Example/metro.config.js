@@ -1,14 +1,20 @@
 const path = require('path');
-// const blacklist = require('metro-config/src/defaults/blacklist');
+const fs = require('fs');
+
 const blacklist = require('metro-config/src/defaults/exclusionList');
 const escape = require('escape-string-regexp');
-const pak = require('../package.json');
 
 const root = path.resolve(__dirname, '..');
-
-const modules = Object.keys({
-  ...pak.peerDependencies,
-});
+const pak = JSON.parse(
+  fs.readFileSync(path.join(root, 'package.json'), 'utf8'),
+);
+const modules = [
+  '@babel/runtime',
+  ...Object.keys({
+    ...pak.dependencies,
+    ...pak.peerDependencies,
+  }),
+];
 
 module.exports = {
   projectRoot: __dirname,

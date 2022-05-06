@@ -19,8 +19,6 @@ This library is a React Native bridge around native photo editor libraries. It a
 * _**Saving to Photos and Sharing**_
 * _**Cool Animations**_
 
-<img src="assets/hero.gif" />
-
 ## 📖 Getting started
 
 `$ yarn add react-native-photo-editor`
