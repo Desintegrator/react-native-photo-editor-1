@@ -9,7 +9,6 @@ class RNPhotoEditorView: UIView {
         photoEditor = PhotoEditorViewController(nibName:"PhotoEditorViewController",bundle: Bundle(for: PhotoEditorViewController.self));
         let photoEditorView = photoEditor.view;
         photoEditorView?.frame = self.bounds;
-//        photoEditorView?.isMultipleTouchEnabled = true;
         photoEditorView?.autoresizingMask = [.flexibleHeight,.flexibleWidth]
         let emptyImage = UIColor.white.image(CGSize(width: 512, height: 256))
         photoEditor.setImageView(image: emptyImage);
