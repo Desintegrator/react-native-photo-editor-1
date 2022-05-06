@@ -7,8 +7,8 @@ import { useDerivedValue } from "react-native-reanimated";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
 import { NativePhotoEditorViewProps } from "./types";
 
-const MIN_SCALE = 0.1
-const MAX_SCALE = 2.5
+const DEFAULT_MIN_SCALE = 0.1
+const DEFAULT_MAX_SCALE = 2.5
 
 const {
   width: WINDOW_WIDTH, 
@@ -25,10 +25,14 @@ UIManager.dispatchViewManagerCommand(
 
 interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
   gesturesEnabled?: boolean
+  minScale?: number
+  maxScale?: number
 }
 
 const PhotoEditorView:React.FC<PhotoEditorViewProps> = ({
   gesturesEnabled = true,
+  minScale = DEFAULT_MIN_SCALE,
+  maxScale = DEFAULT_MAX_SCALE,
   ...rest}) => {
   const ref = useRef(null);
   
@@ -82,7 +86,7 @@ const zoomGesture = Gesture.Pinch()
   .cancelsTouchesInView(true)
   .onUpdate((event) => {
     const newScale = savedScale.value*event.scale;    
-    if(newScale>MIN_SCALE && newScale<MAX_SCALE){
+    if(newScale > minScale && newScale < maxScale){
       scale.value = savedScale.value * event.scale;
     }
     if(scale.value < 1) {
