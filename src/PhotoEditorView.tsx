@@ -53,7 +53,7 @@ const PhotoEditorView:React.FC<PhotoEditorViewProps> = ({
   const maxOffsetY = useDerivedValue(()=>(scale.value * imageHeight - imageHeight) / 2);
 
   const dragGesture = Gesture.Pan()
-    .enabled(gesturesEnabled && rest.mode === null)
+    .enabled(gesturesEnabled && rest.mode === 'none')
     .averageTouches(true)
     .onUpdate((e) => {
       if(scale.value > 1){
