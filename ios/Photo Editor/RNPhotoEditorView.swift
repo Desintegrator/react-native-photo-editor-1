@@ -82,14 +82,13 @@ class RNPhotoEditorView: UIView {
                         self.photoEditor.setImageView(image: image!)
                     }else{
                         if(self.onImageLoadError != nil){
-                            self.onImageLoadError!(["error": 0]);
+                            self.onImageLoadError!(["error": "Failed to load image"]);
                         }
                     }
                 }
             } else if let error = error {
-                print("HTTP Request Failed \(error)")
                 if(self.onImageLoadError != nil){
-                    self.onImageLoadError!(["error": error]);
+                    self.onImageLoadError!(["error": "HTTP Request Failed \(error)"]);
                 }
             }
         }

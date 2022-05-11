@@ -3,4 +3,5 @@
 #import <React/RCTComponent.h>
 #import <React/RCTBridgeModule.h>
 #import <React/RCTViewManager.h>
+#import <React/RCTEventEmitter.h>
 #import <React/RCTDevLoadingView.h>
