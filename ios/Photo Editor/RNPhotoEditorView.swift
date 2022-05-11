@@ -48,6 +48,8 @@ class RNPhotoEditorView: UIView {
         }
     }
     
+    @objc var onImageLoadError: RCTDirectEventBlock?
+
     // TODO@korotkov: add image load errors handlers
     @objc
     func setSource(source:NSDictionary){
@@ -78,10 +80,17 @@ class RNPhotoEditorView: UIView {
                 DispatchQueue.main.async {
                     if(image != nil){
                         self.photoEditor.setImageView(image: image!)
+                    }else{
+                        if(self.onImageLoadError != nil){
+                            self.onImageLoadError!(["error": 0]);
+                        }
                     }
                 }
             } else if let error = error {
                 print("HTTP Request Failed \(error)")
+                if(self.onImageLoadError != nil){
+                    self.onImageLoadError!(["error": error]);
+                }
             }
         }
         task.resume()

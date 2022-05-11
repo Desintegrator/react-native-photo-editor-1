@@ -4,6 +4,7 @@
 
 RCT_EXPORT_VIEW_PROPERTY(brushColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(mode, NSString)
+RCT_EXPORT_VIEW_PROPERTY(onImageLoadError, RCTDirectEventBlock)
 
 RCT_CUSTOM_VIEW_PROPERTY(source, NSObject, RNPhotoEditorViewManager)
 {
