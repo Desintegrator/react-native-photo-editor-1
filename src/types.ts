@@ -7,18 +7,20 @@ type Source = {
   };
 };
 
-interface NativePhotoEditorViewProps extends ViewProps {
-  brushColor: string;
-  rotationDegrees: number;
-  source: Source | number;
-  mode: 
+export type PhotoEditorActionType =  
   | 'pencil'
   | 'marker'
   | 'text'
   | 'crop'
   | 'eraser'
   | 'square' 
-  | "none";
+  | 'none';
+  
+interface NativePhotoEditorViewProps extends ViewProps {
+  brushColor: string;
+  rotationDegrees: number;
+  source: Source | number;
+  mode: PhotoEditorActionType;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
