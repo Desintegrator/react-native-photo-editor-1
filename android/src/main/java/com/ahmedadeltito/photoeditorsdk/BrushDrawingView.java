@@ -145,13 +145,15 @@ public class BrushDrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-        canvas.drawPath(drawPath, drawPaint);
+        if(canvasBitmap != null){
+            canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+            canvas.drawPath(drawPath, drawPaint);
+        }
     }
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        if (brushDrawMode && event.getPointerCount() == 1) {
+        if (brushDrawMode) {
             float touchX = event.getX();
             float touchY = event.getY();
             switch (event.getAction()) {

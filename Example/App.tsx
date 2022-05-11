@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import PhotoEditorView from 'react-native-photo-editor';
+import PhotoEditorView, {PhotoEditorViewProps} from 'react-native-photo-editor';
 
 const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
@@ -12,6 +12,7 @@ const HEADERS = {};
 
 export default function App() {
   const [brushColor, setBrushColor] = useState('black');
+  const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
   const [rotationDegrees, setRotationDegrees] = useState(0);
 
   const Button: React.FC<{color: string; onPress?: () => void}> = ({
@@ -45,6 +46,9 @@ export default function App() {
     transform: [{rotateZ: '' + rotationDegrees + 'deg'}],
   };
 
+  const toggleMode = () => {
+    setMode(prevState => (prevState === 'pencil' ? 'none' : 'pencil'));
+  };
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.container}>
@@ -54,19 +58,29 @@ export default function App() {
             style={[styles.editorView, editorViewStyles]}
             brushColor={brushColor}
             rotationDegrees={rotationDegrees}
+            mode={mode}
             source={{
               uri: PHOTO_PATH,
               headers: HEADERS,
             }}
           />
         </View>
-        <View
-          style={{
-            height: 100,
-            width: 100,
-          }}>
-          <Text style={{color: 'white'}}>Rotate</Text>
-          <Button color={'gray'} onPress={rotateEditorView} />
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            onPress={() => rotateEditorView()}
+            style={styles.action}>
+            <Text style={{color: 'white'}}>Rotate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={toggleMode}
+            style={[
+              styles.action,
+              {
+                backgroundColor: mode === 'pencil' ? 'grey' : 'black',
+              },
+            ]}>
+            <Text style={{color: 'white'}}>Pencil</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.footer}>
           <Button color={'black'} />
@@ -103,5 +117,12 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+  },
+  action: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'grey',
   },
 });

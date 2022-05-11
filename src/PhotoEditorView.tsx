@@ -1,11 +1,10 @@
 import React,{ useEffect, useRef, useState } from "react";
-import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager, View, Dimensions, PanResponder } from "react-native";
-import { Gesture, GestureDetector, gestureHandlerRootHOC, NativeViewGestureHandler, PanGestureHandler, TapGestureHandler } from "react-native-gesture-handler";
+import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager, View, Dimensions } from "react-native";
+import { Gesture, GestureDetector, gestureHandlerRootHOC } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { runOnJS } from "react-native-reanimated";
 import { useDerivedValue } from "react-native-reanimated";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
-import { NativePhotoEditorViewProps } from "./types";
+import {  PhotoEditorViewProps } from "./types";
 
 const DEFAULT_MIN_SCALE = 0.1
 const DEFAULT_MAX_SCALE = 2.5
@@ -23,11 +22,6 @@ UIManager.dispatchViewManagerCommand(
   [viewId]
 );
 
-interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
-  gesturesEnabled?: boolean
-  minScale?: number
-  maxScale?: number
-}
 
 const PhotoEditorView:React.FC<PhotoEditorViewProps> = ({
   gesturesEnabled = true,
@@ -59,8 +53,7 @@ const PhotoEditorView:React.FC<PhotoEditorViewProps> = ({
   const maxOffsetY = useDerivedValue(()=>(scale.value * imageHeight - imageHeight) / 2);
 
   const dragGesture = Gesture.Pan()
-    .minPointers(2)
-    .enabled(gesturesEnabled)
+    .enabled(gesturesEnabled && rest.mode === null)
     .averageTouches(true)
     .onUpdate((e) => {
       if(scale.value > 1){

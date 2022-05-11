@@ -7,8 +7,22 @@ type Source = {
   };
 };
 
-export interface NativePhotoEditorViewProps extends ViewProps {
+interface NativePhotoEditorViewProps extends ViewProps {
   brushColor: string;
   rotationDegrees: number;
   source: Source | number;
+  mode: 
+  | 'pencil'
+  | 'marker'
+  | 'text'
+  | 'crop'
+  | 'eraser'
+  | 'square' 
+  | "none";
+}
+
+export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
+  gesturesEnabled?: boolean
+  minScale?: number
+  maxScale?: number
 }

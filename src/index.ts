@@ -1,3 +1,5 @@
-import PhotoEditorView from './PhotoEditorView'
+import PhotoEditorView from "./PhotoEditorView";
+
+export * from "./types"
 
 export default PhotoEditorView;
