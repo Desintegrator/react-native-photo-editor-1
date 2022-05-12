@@ -1,11 +1,19 @@
 {
     "name": "react-native-photo-editor",
-    "version": "1.1.1",
+    "version": "1.2.1",
     "description": "React Native: Native Photo Editor",
     "main": "src/index.ts",
     "source": "src/index",
+    "publishConfig": {
+        "registry": "https://nexus-dev.pcbltools.ru/repository/npm-public"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@bitbucket.pcbltools.ru:7999/class/react-native-photo-editor.git",
+        "baseUrl": "ssh://git@bitbucket.pcbltools.ru:7999/class/react-native-photo-editor.git"
     },
     "keywords": [
         "react-native"
