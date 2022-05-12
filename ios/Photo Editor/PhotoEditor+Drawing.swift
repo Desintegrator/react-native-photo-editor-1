@@ -22,7 +22,9 @@ extension PhotoEditorViewController {
     
     override public func touchesMoved(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
-        if isDrawing {
+        let touchCount = event?.allTouches?.count;
+
+        if isDrawing && touchCount == 1 {
             // 6
             swiped = true
             if let touch = touches.first {
@@ -37,7 +39,9 @@ extension PhotoEditorViewController {
     
     override public func touchesEnded(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
-        if isDrawing {
+        let touchCount = event?.allTouches?.count;
+
+        if isDrawing && touchCount == 1 {
             if !swiped {
                 // draw a single point
                 drawLineFrom(lastPoint, toPoint: lastPoint)

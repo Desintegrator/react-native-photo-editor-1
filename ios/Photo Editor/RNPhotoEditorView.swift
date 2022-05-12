@@ -25,6 +25,22 @@ class RNPhotoEditorView: UIView {
         photoEditor.loadViewIfNeeded()
     }
     
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+   
+    @objc var mode: NSString = "none" {
+        didSet {
+            switch mode {
+            case "pencil":
+                photoEditor.isDrawing = true;
+            default:
+                photoEditor.isDrawing = false;
+            }
+        }
+    }
+    
     @objc var brushColor = UIColor.black {
         didSet {
             photoEditor.drawColor = self.brushColor;

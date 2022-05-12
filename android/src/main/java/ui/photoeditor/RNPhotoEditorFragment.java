@@ -36,6 +36,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public PhotoEditorSDK photoEditorSDK;
   private int brushColor = Color.BLACK;
+  private String mode = "none";
   private EditedImageSource editedImageSource;
 
   public void setBrushColor(int brushColor) {
@@ -45,11 +46,29 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
+  public void setMode(String mode) {
+    this.mode = mode;
+    updateEditorMode();
+  }
+
   public void setEditedImageSource(EditedImageSource editedImageSource) {
     this.editedImageSource = editedImageSource;
     updateEditorImage();
   }
 
+  public void updateEditorMode(){
+    if(photoEditorSDK != null){
+      switch (mode){
+        case "pencil":
+        case "marker":
+          photoEditorSDK.setBrushDrawingMode(true);
+          break;
+        default:
+          photoEditorSDK.setBrushDrawingMode(false);
+          break;
+      }
+    }
+  }
 
   public void updateEditorImage(){
     if(photoEditImageView != null && editedImageSource != null){
@@ -95,7 +114,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         .buildPhotoEditorSDK(); // build photo editor sdk
     photoEditorSDK.setOnPhotoEditorSDKListener(this);
     photoEditorSDK.setBrushColor(brushColor);
-    photoEditorSDK.setBrushDrawingMode(true);
+    updateEditorMode();
     updateEditorImage();
   }
 
