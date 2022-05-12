@@ -16,11 +16,19 @@ export type PhotoEditorModeType =
   | 'square' 
   | 'none';
   
+
+export interface onImageLoadErrorEvent {
+  nativeEvent: {
+      error: any;
+  };
+}
+
 interface NativePhotoEditorViewProps extends ViewProps {
   brushColor: string;
   rotationDegrees: number;
   source: Source | number;
   mode: PhotoEditorModeType;
+  onImageLoadError?(e:onImageLoadErrorEvent): void;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {

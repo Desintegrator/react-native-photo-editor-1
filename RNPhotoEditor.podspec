@@ -20,4 +20,6 @@ Pod::Spec.new do |s|
   s.exclude_files           = "ios/RNPhotoEditor-demo/**"
   s.resources              = "ios/**/*.{png,jpeg,jpg,storyboard,xib,ttf}"
   s.dependency             'React'
+  s.dependency             'SDWebImage', '~> 5.8'
+  s.dependency             'SDWebImageWebPCoder', '~> 0.6.1'
 end

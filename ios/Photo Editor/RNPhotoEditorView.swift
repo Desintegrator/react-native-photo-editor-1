@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import SDWebImage
 
 @objc
 class RNPhotoEditorView: UIView {
@@ -48,43 +49,33 @@ class RNPhotoEditorView: UIView {
         }
     }
     
-    // TODO@korotkov: add image load errors handlers
+    @objc var onImageLoadError: RCTDirectEventBlock?
+
     @objc
     func setSource(source:NSDictionary){
         let url:URL = URL(string: source["uri"] as! String)!;
         let headers: NSDictionary = source["headers"] as! NSDictionary;
-        var headersFileds = [String: String]()
         
-        for (key, value) in headers {
-            headersFileds[key as! String] = (value as! String)
-        }
-        var request = URLRequest(url: url);
-        request.allHTTPHeaderFields = headersFileds;
-        let sessionConfiguration = URLSessionConfiguration.default;
-        for (key,value) in headers {
-            request.addValue((value as! String), forHTTPHeaderField:  key as! String);
-            if(key as! String == "Authorization"){
-                sessionConfiguration.httpAdditionalHeaders = [
-                    "Authorization": value
-                ]
-            }
-        }
-
-        request.httpMethod = "GET"
-        let session = URLSession(configuration: sessionConfiguration)
-        let task = session.dataTask(with: request) { data, response, error in
-            if let data = data {
-                let image = UIImage(data: data)
-                DispatchQueue.main.async {
-                    if(image != nil){
-                        self.photoEditor.setImageView(image: image!)
-                    }
+        let requestModifier = SDWebImageDownloaderRequestModifier { (request) -> URLRequest? in
+            if(request.url != nil){
+                var mutableRequest = request;
+                for (key, value) in headers {
+                    mutableRequest.addValue(value as! String, forHTTPHeaderField: key as! String);
                 }
-            } else if let error = error {
-                print("HTTP Request Failed \(error)")
+                return mutableRequest;
+            }
+            return request
+        };
+        SDWebImageDownloader.shared.requestModifier = requestModifier;
+        SDWebImageDownloader.shared.downloadImage(with: url) { image, data, error, finished in
+            if(image != nil && finished){
+                self.photoEditor.setImageView(image: image!);
+            } else {
+                if(self.onImageLoadError != nil){
+                    let errorMsg = "Failed to load image: \(String(describing: error))";
+                  self.onImageLoadError!(["error": errorMsg]);
+                  }
             }
         }
-        task.resume()
-
     }
 }

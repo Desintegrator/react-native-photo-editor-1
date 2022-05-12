@@ -63,6 +63,9 @@ export default function App() {
               uri: PHOTO_PATH,
               headers: HEADERS,
             }}
+            onImageLoadError={e => {
+              console.log('ERROR', e.nativeEvent.error);
+            }}
           />
         </View>
         <View style={{flexDirection: 'row'}}>

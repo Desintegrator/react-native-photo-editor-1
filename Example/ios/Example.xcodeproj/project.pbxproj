@@ -10,6 +10,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1CE1C6857F966819B5B4BDC8 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72A057D570A8952A6875A500 /* Pods_Example.framework */; };
 		6A2E232D281A79D5007FB6FA /* ios in Resources */ = {isa = PBXBuildFile; fileRef = 6A2E232C281A79D4007FB6FA /* ios */; };
 		819449A9268342F70034C798 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 819449A8268342F70034C798 /* libswiftWebKit.tbd */; };
 		81944A5F268343AD0034C798 /* sticker9.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A54268343AD0034C798 /* sticker9.png */; };
@@ -23,7 +24,6 @@
 		81944A67268343AD0034C798 /* sticker7.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5C268343AD0034C798 /* sticker7.png */; };
 		81944A68268343AD0034C798 /* sticker5.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5D268343AD0034C798 /* sticker5.png */; };
 		81944A69268343AD0034C798 /* sticker4.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5E268343AD0034C798 /* sticker4.png */; };
-		B96071D77F683DB06699374F /* libPods-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 553730390B69DDCBFA7EEFC3 /* libPods-Example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,9 +33,9 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Example/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Example/main.m; sourceTree = "<group>"; };
-		553730390B69DDCBFA7EEFC3 /* libPods-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A2E232C281A79D4007FB6FA /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = ../../ios; sourceTree = "<group>"; };
 		6F096FE9328EE1AEA1CF57FA /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
+		72A057D570A8952A6875A500 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		819449A8268342F70034C798 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		81944A54268343AD0034C798 /* sticker9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker9.png; sourceTree = "<group>"; };
 		81944A55268343AD0034C798 /* sticker8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker8.png; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				819449A9268342F70034C798 /* libswiftWebKit.tbd in Frameworks */,
-				B96071D77F683DB06699374F /* libPods-Example.a in Frameworks */,
+				1CE1C6857F966819B5B4BDC8 /* Pods_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +82,7 @@
 			children = (
 				819449A8268342F70034C798 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				553730390B69DDCBFA7EEFC3 /* libPods-Example.a */,
+				72A057D570A8952A6875A500 /* Pods_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -422,7 +422,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -487,7 +487,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
