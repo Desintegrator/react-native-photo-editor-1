@@ -51,7 +51,6 @@ class RNPhotoEditorView: UIView {
     
     @objc var onImageLoadError: RCTDirectEventBlock?
 
-    // TODO@korotkov: add image load errors handlers
     @objc
     func setSource(source:NSDictionary){
         let url:URL = URL(string: source["uri"] as! String)!;
