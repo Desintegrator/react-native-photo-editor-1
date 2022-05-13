@@ -18,7 +18,7 @@ const createFragment = (viewId:number|null) =>
     UIManager.dispatchViewManagerCommand(
         viewId,
         //@ts-ignore
-        UIManager.RNPhotoEditorViewManager?.Commands?.create?.toString(),
+        UIManager.RNPhotoEditorView?.Commands?.create?.toString(),
         [viewId]
     );
 
@@ -26,7 +26,7 @@ const clearAll = (viewId:number|null) =>
     UIManager.dispatchViewManagerCommand(
         viewId,
         //@ts-ignore
-        UIManager.RNPhotoEditorViewManager?.Commands?.clearAll?.toString(),
+        UIManager.RNPhotoEditorView?.Commands?.clearAll?.toString(),
         [viewId]
     );
 
