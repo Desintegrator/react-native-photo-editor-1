@@ -1,91 +1,131 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {Image} from 'react-native';
-import PhotoEditor from 'react-native-photo-editor';
-import RNFS from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import PhotoEditorView, {PhotoEditorViewProps} from 'react-native-photo-editor';
 
-type Props = {
-  path: string;
-  colors?: string[];
-  stickers?: string[];
-  hiddenControls?: string[];
-  onDone?: (e: any) => void;
-  onCancel?: (e: any) => void;
-};
+const PHOTO_PATH =
+  // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
+  'https://i.pinimg.com/originals/e4/9b/c4/e49bc442a5cd920fc72e5105fa7ee52e.png';
 
-export default class App extends Component<Props> {
-  _onPress = () => {
-    PhotoEditor.Edit({
-      path: RNFS.DocumentDirectoryPath + '/photo.jpg',
-      stickers: [
-        'sticker0',
-        'sticker1',
-        'sticker2',
-        'sticker3',
-        'sticker4',
-        'sticker5',
-        'sticker6',
-        'sticker7',
-        'sticker8',
-        'sticker9',
-        'sticker10',
-      ],
-      // hiddenControls: [
-      //   'clear',
-      //   'crop',
-      //   'draw',
-      //   'save',
-      //   'share',
-      //   'sticker',
-      //   'text',
-      // ],
-      colors: undefined,
-      onDone: () => {
-        console.log('on done');
-      },
-      onCancel: () => {
-        console.log('on cancel');
-      },
-    });
+const HEADERS = {};
+
+export default function App() {
+  const [brushColor, setBrushColor] = useState('black');
+  const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
+  const [rotationDegrees, setRotationDegrees] = useState(0);
+
+  const Button: React.FC<{color: string; onPress?: () => void}> = ({
+    color,
+    onPress,
+  }) => {
+    const _onPress = onPress || (() => setBrushColor(color));
+    return (
+      <TouchableOpacity
+        onPress={_onPress}
+        style={{
+          flex: 1,
+          backgroundColor: color,
+        }}
+      />
+    );
   };
 
-  componentDidMount() {
-    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
-    let binaryFile = Image.resolveAssetSource(require('./assets/photo.jpg'));
+  const rotateEditorView = (clockwise = true) => {
+    let _rotationDegrees = rotationDegrees + (clockwise ? 90 : -90);
+    if (_rotationDegrees >= 360) {
+      _rotationDegrees = 0;
+    }
+    if (_rotationDegrees < 0) {
+      _rotationDegrees = 270;
+    }
+    setRotationDegrees(_rotationDegrees);
+  };
 
-    RNFetchBlob.config({fileCache: true})
-      .fetch('GET', binaryFile.uri)
-      .then((resp: {path: () => string}) => {
-        RNFS.moveFile(resp.path(), photoPath)
-          .then(() => {
-            console.log('FILE WRITTEN!');
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      })
-      .catch((err: {message: any}) => {
-        console.log(err.message);
-      });
-  }
+  const editorViewStyles = {
+    transform: [{rotateZ: '' + rotationDegrees + 'deg'}],
+  };
 
-  render() {
-    return (
+  const toggleMode = () => {
+    setMode(prevState => (prevState === 'pencil' ? 'none' : 'pencil'));
+  };
+  return (
+    <GestureHandlerRootView style={styles.container}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={this._onPress}>
-          <Text>Click</Text>
-        </TouchableOpacity>
+        <View style={styles.header} />
+        <View style={styles.editorContainer}>
+          <PhotoEditorView
+            style={[styles.editorView, editorViewStyles]}
+            brushColor={brushColor}
+            rotationDegrees={rotationDegrees}
+            mode={mode}
+            source={{
+              uri: PHOTO_PATH,
+              headers: HEADERS,
+            }}
+            onImageLoadError={e => {
+              console.log('ERROR', e.nativeEvent.error);
+            }}
+          />
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            onPress={() => rotateEditorView()}
+            style={styles.action}>
+            <Text style={{color: 'white'}}>Rotate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={toggleMode}
+            style={[
+              styles.action,
+              {
+                backgroundColor: mode === 'pencil' ? 'grey' : 'black',
+              },
+            ]}>
+            <Text style={{color: 'white'}}>Pencil</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.footer}>
+          <Button color={'black'} />
+          <Button color={'red'} />
+          <Button color={'green'} />
+          <Button color={'blue'} />
+          <Button color={'yellow'} />
+        </View>
       </View>
-    );
-  }
+    </GestureHandlerRootView>
+  );
 }
 
 const styles = StyleSheet.create({
+  editorView: {
+    flex: 1,
+    width: '100%',
+  },
   container: {
     flex: 1,
+    backgroundColor: '#3F3F46',
+  },
+  header: {
+    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+    height: 100,
+  },
+  footer: {
+    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+    height: 60,
+    flexDirection: 'row',
+  },
+  editorContainer: {
+    flex: 1,
+  },
+  button: {
+    flex: 1,
+  },
+  action: {
+    width: 100,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'grey',
   },
 });
