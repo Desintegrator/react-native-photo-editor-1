@@ -8,9 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		40137CF49C59930DA23C79A9 /* Pods_RNPhotoEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96DD4AC0F5A94CE9A56A7D23 /* Pods_RNPhotoEditor.framework */; };
-		6A75868F2817F738008CA28C /* RNPhotoEditorViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A75868E2817F738008CA28C /* RNPhotoEditorViewManager.m */; };
-		6A7586932817F816008CA28C /* RNPhotoEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7586922817F816008CA28C /* RNPhotoEditorView.m */; };
-		B3E7B58A1CC2AC0600A0062D /* RNPhotoEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPhotoEditor.m */; };
+		6A2E234E281AC05A007FB6FA /* PhotoEditor+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2331281AC05A007FB6FA /* PhotoEditor+Keyboard.swift */; };
+		6A2E234F281AC05A007FB6FA /* PhotoEditor+Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2332281AC05A007FB6FA /* PhotoEditor+Controls.swift */; };
+		6A2E2350281AC05A007FB6FA /* PhotoEditor+StickersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2334281AC05A007FB6FA /* PhotoEditor+StickersViewController.swift */; };
+		6A2E2351281AC05A007FB6FA /* PhotoEditor+UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2335281AC05A007FB6FA /* PhotoEditor+UITextView.swift */; };
+		6A2E2352281AC05A007FB6FA /* UIImageView+Alpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2336281AC05A007FB6FA /* UIImageView+Alpha.swift */; };
+		6A2E2353281AC05A007FB6FA /* PhotoEditor+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2337281AC05A007FB6FA /* PhotoEditor+Font.swift */; };
+		6A2E2354281AC05A007FB6FA /* RNPhotoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2339281AC05A007FB6FA /* RNPhotoEditorView.swift */; };
+		6A2E2355281AC05A007FB6FA /* UIView+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E233A281AC05A007FB6FA /* UIView+Image.swift */; };
+		6A2E2356281AC05A007FB6FA /* UIImage+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E233B281AC05A007FB6FA /* UIImage+Size.swift */; };
+		6A2E2357281AC05A007FB6FA /* UIImage+Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E233C281AC05A007FB6FA /* UIImage+Crop.swift */; };
+		6A2E2358281AC05A007FB6FA /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E233D281AC05A007FB6FA /* Protocols.swift */; };
+		6A2E2359281AC05A007FB6FA /* PhotoEditor+Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E233E281AC05A007FB6FA /* PhotoEditor+Drawing.swift */; };
+		6A2E235A281AC05A007FB6FA /* CropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2341281AC05A007FB6FA /* CropView.swift */; };
+		6A2E235B281AC05A007FB6FA /* ResizeControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2342281AC05A007FB6FA /* ResizeControl.swift */; };
+		6A2E235C281AC05A007FB6FA /* PhotoEditor+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2343281AC05A007FB6FA /* PhotoEditor+Gestures.swift */; };
+		6A2E235D281AC05A007FB6FA /* RNPhotoEditorViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2344281AC05A007FB6FA /* RNPhotoEditorViewManager.m */; };
+		6A2E235E281AC05A007FB6FA /* PhotoEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2345281AC05A007FB6FA /* PhotoEditorViewController.swift */; };
+		6A2E235F281AC05A007FB6FA /* StickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2347281AC05A007FB6FA /* StickerCollectionViewCell.swift */; };
+		6A2E2360281AC05A007FB6FA /* CropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2348281AC05A007FB6FA /* CropViewController.swift */; };
+		6A2E2361281AC05A007FB6FA /* PhotoEditor+Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E2349281AC05A007FB6FA /* PhotoEditor+Crop.swift */; };
+		6A2E2362281AC05A007FB6FA /* CropRectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E234B281AC05A007FB6FA /* CropRectView.swift */; };
+		6A2E2363281AC05A007FB6FA /* RNPhotoEditorViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E234D281AC05A007FB6FA /* RNPhotoEditorViewManager.swift */; };
 		CEA2B04A2144EDA200D21235 /* iOSPhotoEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA2B0472144EDA000D21235 /* iOSPhotoEditor.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,13 +66,37 @@
 		05DA841703B4CCFEE54B14CD /* Pods-RNPhotoEditor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoEditor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoEditor/Pods-RNPhotoEditor.debug.xcconfig"; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRNPhotoEditor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPhotoEditor.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4715A5625794BA3A83A872C5 /* Pods-RNPhotoEditor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoEditor.release.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoEditor/Pods-RNPhotoEditor.release.xcconfig"; sourceTree = "<group>"; };
-		6A75868E2817F738008CA28C /* RNPhotoEditorViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNPhotoEditorViewManager.m; sourceTree = "<group>"; };
-		6A7586902817F74B008CA28C /* RNPhotoEditorViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNPhotoEditorViewManager.h; sourceTree = "<group>"; };
-		6A7586912817F809008CA28C /* RNPhotoEditorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNPhotoEditorView.h; sourceTree = "<group>"; };
-		6A7586922817F816008CA28C /* RNPhotoEditorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNPhotoEditorView.m; sourceTree = "<group>"; };
+		6A2E232F281AC05A007FB6FA /* RNPhotoEditor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNPhotoEditor-Bridging-Header.h"; sourceTree = "<group>"; };
+		6A2E2331281AC05A007FB6FA /* PhotoEditor+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Keyboard.swift"; sourceTree = "<group>"; };
+		6A2E2332281AC05A007FB6FA /* PhotoEditor+Controls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Controls.swift"; sourceTree = "<group>"; };
+		6A2E2333281AC05A007FB6FA /* PhotoEditorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoEditorViewController.xib; sourceTree = "<group>"; };
+		6A2E2334281AC05A007FB6FA /* PhotoEditor+StickersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+StickersViewController.swift"; sourceTree = "<group>"; };
+		6A2E2335281AC05A007FB6FA /* PhotoEditor+UITextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+UITextView.swift"; sourceTree = "<group>"; };
+		6A2E2336281AC05A007FB6FA /* UIImageView+Alpha.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Alpha.swift"; sourceTree = "<group>"; };
+		6A2E2337281AC05A007FB6FA /* PhotoEditor+Font.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Font.swift"; sourceTree = "<group>"; };
+		6A2E2338281AC05A007FB6FA /* PhotoCropEditorBorder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PhotoCropEditorBorder@2x.png"; sourceTree = "<group>"; };
+		6A2E2339281AC05A007FB6FA /* RNPhotoEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNPhotoEditorView.swift; sourceTree = "<group>"; };
+		6A2E233A281AC05A007FB6FA /* UIView+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Image.swift"; sourceTree = "<group>"; };
+		6A2E233B281AC05A007FB6FA /* UIImage+Size.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Size.swift"; sourceTree = "<group>"; };
+		6A2E233C281AC05A007FB6FA /* UIImage+Crop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Crop.swift"; sourceTree = "<group>"; };
+		6A2E233D281AC05A007FB6FA /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		6A2E233E281AC05A007FB6FA /* PhotoEditor+Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Drawing.swift"; sourceTree = "<group>"; };
+		6A2E233F281AC05A007FB6FA /* PhotoCropEditorBorder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PhotoCropEditorBorder@3x.png"; sourceTree = "<group>"; };
+		6A2E2340281AC05A007FB6FA /* PhotoCropEditorBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PhotoCropEditorBorder.png; sourceTree = "<group>"; };
+		6A2E2341281AC05A007FB6FA /* CropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
+		6A2E2342281AC05A007FB6FA /* ResizeControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResizeControl.swift; sourceTree = "<group>"; };
+		6A2E2343281AC05A007FB6FA /* PhotoEditor+Gestures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Gestures.swift"; sourceTree = "<group>"; };
+		6A2E2344281AC05A007FB6FA /* RNPhotoEditorViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPhotoEditorViewManager.m; sourceTree = "<group>"; };
+		6A2E2345281AC05A007FB6FA /* PhotoEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoEditorViewController.swift; sourceTree = "<group>"; };
+		6A2E2346281AC05A007FB6FA /* StickerCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StickerCollectionViewCell.xib; sourceTree = "<group>"; };
+		6A2E2347281AC05A007FB6FA /* StickerCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StickerCollectionViewCell.swift; sourceTree = "<group>"; };
+		6A2E2348281AC05A007FB6FA /* CropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropViewController.swift; sourceTree = "<group>"; };
+		6A2E2349281AC05A007FB6FA /* PhotoEditor+Crop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhotoEditor+Crop.swift"; sourceTree = "<group>"; };
+		6A2E234A281AC05A007FB6FA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6A2E234B281AC05A007FB6FA /* CropRectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropRectView.swift; sourceTree = "<group>"; };
+		6A2E234C281AC05A007FB6FA /* RNPhotoEditor-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNPhotoEditor-Bridging-Header.h"; sourceTree = "<group>"; };
+		6A2E234D281AC05A007FB6FA /* RNPhotoEditorViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNPhotoEditorViewManager.swift; sourceTree = "<group>"; };
 		96DD4AC0F5A94CE9A56A7D23 /* Pods_RNPhotoEditor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNPhotoEditor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3E7B5881CC2AC0600A0062D /* RNPhotoEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPhotoEditor.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* RNPhotoEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPhotoEditor.m; sourceTree = "<group>"; };
 		CEA2B0412144ED9F00D21235 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,21 +124,54 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				6A7586912817F809008CA28C /* RNPhotoEditorView.h */,
-				6A7586922817F816008CA28C /* RNPhotoEditorView.m */,
-				6A75868E2817F738008CA28C /* RNPhotoEditorViewManager.m */,
-				6A7586902817F74B008CA28C /* RNPhotoEditorViewManager.h */,
-				B3E7B5881CC2AC0600A0062D /* RNPhotoEditor.h */,
-				B3E7B5891CC2AC0600A0062D /* RNPhotoEditor.m */,
+				6A2E2330281AC05A007FB6FA /* Photo Editor */,
+				6A2E234C281AC05A007FB6FA /* RNPhotoEditor-Bridging-Header.h */,
+				6A2E234D281AC05A007FB6FA /* RNPhotoEditorViewManager.swift */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				E6FAD135F551FA36DB423079 /* Pods */,
 				956042663EE01F6152091375 /* Frameworks */,
+				6A2E232F281AC05A007FB6FA /* RNPhotoEditor-Bridging-Header.h */,
 			);
+			sourceTree = "<group>";
+		};
+		6A2E2330281AC05A007FB6FA /* Photo Editor */ = {
+			isa = PBXGroup;
+			children = (
+				6A2E2331281AC05A007FB6FA /* PhotoEditor+Keyboard.swift */,
+				6A2E2332281AC05A007FB6FA /* PhotoEditor+Controls.swift */,
+				6A2E2333281AC05A007FB6FA /* PhotoEditorViewController.xib */,
+				6A2E2334281AC05A007FB6FA /* PhotoEditor+StickersViewController.swift */,
+				6A2E2335281AC05A007FB6FA /* PhotoEditor+UITextView.swift */,
+				6A2E2336281AC05A007FB6FA /* UIImageView+Alpha.swift */,
+				6A2E2337281AC05A007FB6FA /* PhotoEditor+Font.swift */,
+				6A2E2338281AC05A007FB6FA /* PhotoCropEditorBorder@2x.png */,
+				6A2E2339281AC05A007FB6FA /* RNPhotoEditorView.swift */,
+				6A2E233A281AC05A007FB6FA /* UIView+Image.swift */,
+				6A2E233B281AC05A007FB6FA /* UIImage+Size.swift */,
+				6A2E233C281AC05A007FB6FA /* UIImage+Crop.swift */,
+				6A2E233D281AC05A007FB6FA /* Protocols.swift */,
+				6A2E233E281AC05A007FB6FA /* PhotoEditor+Drawing.swift */,
+				6A2E233F281AC05A007FB6FA /* PhotoCropEditorBorder@3x.png */,
+				6A2E2340281AC05A007FB6FA /* PhotoCropEditorBorder.png */,
+				6A2E2341281AC05A007FB6FA /* CropView.swift */,
+				6A2E2342281AC05A007FB6FA /* ResizeControl.swift */,
+				6A2E2343281AC05A007FB6FA /* PhotoEditor+Gestures.swift */,
+				6A2E2344281AC05A007FB6FA /* RNPhotoEditorViewManager.m */,
+				6A2E2345281AC05A007FB6FA /* PhotoEditorViewController.swift */,
+				6A2E2346281AC05A007FB6FA /* StickerCollectionViewCell.xib */,
+				6A2E2347281AC05A007FB6FA /* StickerCollectionViewCell.swift */,
+				6A2E2348281AC05A007FB6FA /* CropViewController.swift */,
+				6A2E2349281AC05A007FB6FA /* PhotoEditor+Crop.swift */,
+				6A2E234A281AC05A007FB6FA /* Info.plist */,
+				6A2E234B281AC05A007FB6FA /* CropRectView.swift */,
+			);
+			path = "Photo Editor";
 			sourceTree = "<group>";
 		};
 		956042663EE01F6152091375 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4715A5625794BA3A83A872C5 /* Pods-RNPhotoEditor.release.xcconfig */,
 				CEA2B0412144ED9F00D21235 /* Pods.xcodeproj */,
 				96DD4AC0F5A94CE9A56A7D23 /* Pods_RNPhotoEditor.framework */,
 			);
@@ -115,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				05DA841703B4CCFEE54B14CD /* Pods-RNPhotoEditor.debug.xcconfig */,
-				4715A5625794BA3A83A872C5 /* Pods-RNPhotoEditor.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -152,6 +227,7 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1320;
 					};
 				};
 			};
@@ -222,9 +298,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A7586932817F816008CA28C /* RNPhotoEditorView.m in Sources */,
-				6A75868F2817F738008CA28C /* RNPhotoEditorViewManager.m in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* RNPhotoEditor.m in Sources */,
+				6A2E2363281AC05A007FB6FA /* RNPhotoEditorViewManager.swift in Sources */,
+				6A2E2360281AC05A007FB6FA /* CropViewController.swift in Sources */,
+				6A2E235F281AC05A007FB6FA /* StickerCollectionViewCell.swift in Sources */,
+				6A2E235C281AC05A007FB6FA /* PhotoEditor+Gestures.swift in Sources */,
+				6A2E2359281AC05A007FB6FA /* PhotoEditor+Drawing.swift in Sources */,
+				6A2E2356281AC05A007FB6FA /* UIImage+Size.swift in Sources */,
+				6A2E2353281AC05A007FB6FA /* PhotoEditor+Font.swift in Sources */,
+				6A2E2362281AC05A007FB6FA /* CropRectView.swift in Sources */,
+				6A2E235B281AC05A007FB6FA /* ResizeControl.swift in Sources */,
+				6A2E234E281AC05A007FB6FA /* PhotoEditor+Keyboard.swift in Sources */,
+				6A2E2358281AC05A007FB6FA /* Protocols.swift in Sources */,
+				6A2E2357281AC05A007FB6FA /* UIImage+Crop.swift in Sources */,
+				6A2E2354281AC05A007FB6FA /* RNPhotoEditorView.swift in Sources */,
+				6A2E235E281AC05A007FB6FA /* PhotoEditorViewController.swift in Sources */,
+				6A2E2351281AC05A007FB6FA /* PhotoEditor+UITextView.swift in Sources */,
+				6A2E2361281AC05A007FB6FA /* PhotoEditor+Crop.swift in Sources */,
+				6A2E2355281AC05A007FB6FA /* UIView+Image.swift in Sources */,
+				6A2E234F281AC05A007FB6FA /* PhotoEditor+Controls.swift in Sources */,
+				6A2E235D281AC05A007FB6FA /* RNPhotoEditorViewManager.m in Sources */,
+				6A2E2350281AC05A007FB6FA /* PhotoEditor+StickersViewController.swift in Sources */,
+				6A2E235A281AC05A007FB6FA /* CropView.swift in Sources */,
+				6A2E2352281AC05A007FB6FA /* UIImageView+Alpha.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,16 +411,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 05DA841703B4CCFEE54B14CD /* Pods-RNPhotoEditor.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNPhotoEditor;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNPhotoEditor-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -334,16 +433,19 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4715A5625794BA3A83A872C5 /* Pods-RNPhotoEditor.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNPhotoEditor;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNPhotoEditor-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;

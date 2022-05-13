@@ -1,16 +1,12 @@
 package ui.photoeditor;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -18,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ahmedadeltito.photoeditor.UtilFunctions;
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
@@ -26,9 +21,7 @@ import com.ahmedadeltito.photoeditorsdk.ViewType;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.facebook.react.views.imagehelper.ImageSource;
 
-import java.io.File;
 
 public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKListener {
   private RelativeLayout parentImageRelativeLayout;
@@ -36,13 +29,28 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public PhotoEditorSDK photoEditorSDK;
   private int brushColor = Color.BLACK;
+  private String mode = "none";
   private EditedImageSource editedImageSource;
+
+  public interface OnImageLoadErrorListener {
+    void onError(String error);
+  }
+  private OnImageLoadErrorListener onImageLoadErrorListener;
+
+  public void setOnImageLoadErrorListener(OnImageLoadErrorListener onImageLoadErrorListener) {
+    this.onImageLoadErrorListener = onImageLoadErrorListener;
+  }
 
   public void setBrushColor(int brushColor) {
     this.brushColor = brushColor;
     if(photoEditorSDK != null){
       photoEditorSDK.setBrushColor(brushColor);
     }
+  }
+
+  public void setMode(String mode) {
+    this.mode = mode;
+    updateEditorMode();
   }
 
   public void setEditedImageSource(EditedImageSource editedImageSource) {
@@ -54,12 +62,29 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     if(photoEditorSDK != null){
       photoEditorSDK.clearAllViews();
     }
-}
+    }
 
+  public void updateEditorMode(){
+    if(photoEditorSDK != null){
+      switch (mode){
+        case "pencil":
+        case "marker":
+          photoEditorSDK.setBrushDrawingMode(true);
+          break;
+        default:
+          photoEditorSDK.setBrushDrawingMode(false);
+          break;
+      }
+    }
+  }
 
   public void updateEditorImage(){
     if(photoEditImageView != null && editedImageSource != null){
-      Glide.with(getContext()).asBitmap().load(editedImageSource.getSourceForLoad()).into(new CustomTarget<Bitmap>() {
+      Glide
+      .with(getContext())
+      .asBitmap()
+      .load(editedImageSource.getSourceForLoad())
+      .into(new CustomTarget<Bitmap>() {
         @Override
         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
           if(photoEditImageView != null){
@@ -71,6 +96,15 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
           if(photoEditImageView != null) {
             photoEditImageView.setImageDrawable(placeholder);
           }
+        }
+
+        @Override
+        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+          super.onLoadFailed(errorDrawable);
+          if(onImageLoadErrorListener != null){
+            onImageLoadErrorListener.onError("Failed to load image");
+          }
+
         }
       });
     }
@@ -101,7 +135,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         .buildPhotoEditorSDK(); // build photo editor sdk
     photoEditorSDK.setOnPhotoEditorSDKListener(this);
     photoEditorSDK.setBrushColor(brushColor);
-    photoEditorSDK.setBrushDrawingMode(true);
+    updateEditorMode();
     updateEditorImage();
   }
 

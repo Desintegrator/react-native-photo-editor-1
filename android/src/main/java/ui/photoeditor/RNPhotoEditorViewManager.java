@@ -1,10 +1,8 @@
 package ui.photoeditor;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import static ui.photoeditor.EditedImageSource.ON_IMAGE_LOAD_ERROR_EVENT;
+
 import android.graphics.Color;
-import android.net.Uri;
-import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentContainer;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.Request;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -28,18 +20,15 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.facebook.react.views.image.ReactImageView;
-import com.facebook.react.views.imagehelper.ImageSource;
 
 import java.util.Map;
 
 
 public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
-  public static final String REACT_CLASS = "RNPhotoEditorViewManager";
+  public static final String REACT_CLASS = "RNPhotoEditorView";
+
   public final int COMMAND_CREATE = 1;
   public final int COMMAND_CLEAR_ALL = 2;
 
@@ -47,6 +36,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   RNPhotoEditorFragment photoEditorFragment;
 
   private int brushColor;
+  private int rootId;
+  private String mode;
   private EditedImageSource editedImage;
 
   public RNPhotoEditorViewManager(ReactApplicationContext reactContext) {
@@ -78,12 +69,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       @Nullable ReadableArray args
   ) {
     super.receiveCommand(root, commandId, args);
-    int reactNativeViewId = args.getInt(0);
+    rootId = args.getInt(0);
     int commandIdInt = Integer.parseInt(commandId);
 
     switch (commandIdInt) {
       case COMMAND_CREATE:
-        createFragment(root, reactNativeViewId);
+        createFragment(root, rootId);
         break;
       case COMMAND_CLEAR_ALL:
         clearAll();
@@ -92,6 +83,20 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
+  public void onImageLoadError(String error) {
+    RCTEventEmitter eventEmitter = reactContext.getJSModule(RCTEventEmitter.class);
+    WritableMap event = new WritableNativeMap();
+    event.putString("error", error);
+    eventEmitter.receiveEvent(rootId, ON_IMAGE_LOAD_ERROR_EVENT, event);
+  }
+
+  @Override
+  public @Nullable
+  Map getExportedCustomDirectEventTypeConstants() {
+    return MapBuilder.of(
+        ON_IMAGE_LOAD_ERROR_EVENT, MapBuilder.of("registrationName", ON_IMAGE_LOAD_ERROR_EVENT)
+    );
+  }
 
   @ReactProp(name = "source")
   public void setSrc(FrameLayout view, @Nullable ReadableMap source) {
@@ -100,6 +105,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
     final EditedImageSource imageSource = ImageSourceConverter.getImageSource(view.getContext(), source);
     if (imageSource.getUri().toString().length() == 0) {
+      onImageLoadError("Invalid source prop:" + source);
       return;
     }
     editedImage = imageSource;
@@ -114,14 +120,29 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  private void updatePhotoEditorBrushColor(){
-    if(photoEditorFragment != null){
+  @ReactProp(name = "mode")
+  public void setMode(FrameLayout view, @Nullable String mode) {
+    if (mode != null) {
+      this.mode = mode;
+      updatePhotoEditorMode();
+    }
+  }
+
+  private void updatePhotoEditorBrushColor() {
+    if (photoEditorFragment != null) {
       photoEditorFragment.setBrushColor(brushColor);
     }
   }
 
-  private void updatePhotoEditorImage(){
-    if(photoEditorFragment != null){
+
+  private void updatePhotoEditorMode() {
+    if (photoEditorFragment != null) {
+      photoEditorFragment.setMode(mode);
+    }
+  }
+
+  private void updatePhotoEditorImage() {
+    if (photoEditorFragment != null) {
       photoEditorFragment.setEditedImageSource(editedImage);
     }
   }
@@ -135,8 +156,14 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public void createFragment(FrameLayout root, int reactNativeViewId) {
     ViewGroup parentView = (ViewGroup) root.findViewById(reactNativeViewId);
     photoEditorFragment = new RNPhotoEditorFragment();
+    photoEditorFragment.setOnImageLoadErrorListener(new RNPhotoEditorFragment.OnImageLoadErrorListener() {
+      @Override
+      public void onError(String error) {
+        onImageLoadError(error);
+      }
+    });
     FragmentActivity activity = (FragmentActivity) reactContext.getCurrentActivity();
-    if(activity != null){
+    if (activity != null) {
       activity.getSupportFragmentManager()
           .beginTransaction()
           .replace(reactNativeViewId, photoEditorFragment, String.valueOf(reactNativeViewId))
@@ -144,6 +171,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       setupLayout(parentView);
       updatePhotoEditorImage();
       updatePhotoEditorBrushColor();
+      updatePhotoEditorMode();
     }
   }
 
@@ -159,12 +187,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   }
 
   public void manuallyLayoutChildren(ViewGroup view) {
-    for(int i=0;i<view.getChildCount();i++){
+    for (int i = 0; i < view.getChildCount(); i++) {
       View child = view.getChildAt(i);
       child.measure(
-        View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
-        View.MeasureSpec.makeMeasureSpec(view.getHeight(), View.MeasureSpec.EXACTLY));
-      child.layout(0,0,child.getMeasuredWidth(),child.getMeasuredHeight());
+          View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
+          View.MeasureSpec.makeMeasureSpec(view.getHeight(), View.MeasureSpec.EXACTLY));
+      child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
     }
   }
 

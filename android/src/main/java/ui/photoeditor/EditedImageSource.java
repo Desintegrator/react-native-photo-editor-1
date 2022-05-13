@@ -18,6 +18,9 @@ public class EditedImageSource extends ImageSource {
     private static final String ANDROID_RESOURCE_SCHEME = "android.resource";
     private static final String ANDROID_CONTENT_SCHEME = "content";
     private static final String LOCAL_FILE_SCHEME = "file";
+
+    public static final String ON_IMAGE_LOAD_ERROR_EVENT = "onImageLoadError";
+
     private Headers mHeaders;
     private Uri mUri;
 
