@@ -44,10 +44,13 @@ public final class PhotoEditorViewController: UIViewController {
     // list of controls to be hidden
     @objc public var hiddenControls : [NSString] = []
     
+    var toolSize: CGFloat = 50.0
     var drawColor: UIColor = UIColor.black
     var textColor: UIColor = UIColor.white
     var isDrawing: Bool = true
+    var drawMode: NSString = "pencil"
     var lastPoint: CGPoint!
+    var firstPoint: CGPoint!
     var swiped = false
     var lastPanPoint: CGPoint?
     var lastTextViewTransform: CGAffineTransform?

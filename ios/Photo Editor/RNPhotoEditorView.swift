@@ -34,11 +34,29 @@ class RNPhotoEditorView: UIView {
     @objc var mode: NSString = "none" {
         didSet {
             switch mode {
-            case "pencil":
-                photoEditor.isDrawing = true;
-            default:
-                photoEditor.isDrawing = false;
+              case "pencil":
+                  photoEditor.isDrawing = true;
+                  photoEditor.drawMode = "pencil";
+              case "marker":
+                  photoEditor.isDrawing = true;
+                  photoEditor.drawMode = "marker";
+              case "square":
+                  photoEditor.isDrawing = true;
+                  photoEditor.drawMode = "square";
+              case "text":
+                  photoEditor.isDrawing = false;
+                  photoEditor.drawMode = "text";
+              default:
+                  photoEditor.isDrawing = false;
+                  photoEditor.drawMode = "";
             }
+        }
+    }
+
+    @objc var toolSize: CGFloat = 50.0 {
+        didSet {
+            photoEditor.toolSize = self.toolSize;
+            self.setupView()
         }
     }
     
