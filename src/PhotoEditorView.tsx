@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager, View, Dimensions } from "react-native";
-import { Gesture, GestureDetector, gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useDerivedValue } from "react-native-reanimated";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
@@ -135,24 +135,29 @@ const zoomGesture = Gesture.Pinch()
   }
 
   return (
-    <View style={styles.container}>
-      <GestureDetector gesture={composedGesture}>
-        <Animated.View style={[styles.container,animatedStyle]}>
-          <PhotoEditorViewManager
-            onLayout={onImageLayout}
-            {...rest}
-            ref={ref}
-          />
-        </Animated.View>
-      </GestureDetector>
-    </View>
+      <GestureHandlerRootView  style={styles.flex1}>
+        <View style={styles.container}>
+          <GestureDetector gesture={composedGesture}>
+            <Animated.View style={[styles.container,animatedStyle]}>
+              <PhotoEditorViewManager
+                onLayout={onImageLayout}
+                {...rest}
+                ref={ref}
+              />
+            </Animated.View>
+          </GestureDetector>
+        </View>
+      </GestureHandlerRootView>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
     flex:1
+  },
+  flex1: {
+    flex: 1
   }
 })
 
-export default gestureHandlerRootHOC(PhotoEditorView);
+export default PhotoEditorView;
