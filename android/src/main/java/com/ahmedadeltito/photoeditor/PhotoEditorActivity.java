@@ -90,7 +90,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     private PhotoEditorSDK photoEditorSDK;
     private String selectedImagePath;
     private int imageOrientation;
-    private int matrixTemp = 0;
 
     // CROP OPTION
     private boolean cropperCircleOverlay = false;
@@ -759,47 +758,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
         uCrop.start(this);
     }
-
-    private void rotateToLeft() {
-        System.out.println(selectedImagePath);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 1;
-        Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
-        Matrix matrix = new Matrix();
-        matrixTemp = matrixTemp + 90;
-        matrix.setRotate(matrixTemp);
-        matrix.postScale(-1, 1);
-
-        try {
-            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            bitmap.recycle();
-
-            photoEditImageView.setImageBitmap(bmRotated);
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void rotateToRight() {
-        System.out.println(selectedImagePath);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 1;
-        Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
-        Matrix matrix = new Matrix();
-        matrixTemp = matrixTemp - 90;
-        matrix.setRotate(matrixTemp);
-        matrix.postScale(-1, 1);
-
-        try {
-            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            bitmap.recycle();
-
-            photoEditImageView.setImageBitmap(bmRotated);
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private String getTmpDir(Activity activity) {
         String tmpDir = activity.getCacheDir() + "/react-native-photo-editor";

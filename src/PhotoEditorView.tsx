@@ -1,4 +1,4 @@
-import React,{ useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager, View, Dimensions } from "react-native";
 import { Gesture, GestureDetector, gestureHandlerRootHOC } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -18,17 +18,19 @@ const createFragment = (viewId:number|null) =>
     UIManager.dispatchViewManagerCommand(
         viewId,
         //@ts-ignore
-        UIManager.RNPhotoEditorView?.Commands?.create?.toString(),
+        UIManager?.RNPhotoEditorView?.Commands?.create?.toString(),
         [viewId]
     );
 
-const clearAll = (viewId:number|null) =>
-    UIManager.dispatchViewManagerCommand(
-        viewId,
-        //@ts-ignore
-        UIManager.RNPhotoEditorView?.Commands?.clearAll?.toString(),
-        [viewId]
-    );
+const clearAll = (viewId:number|null) => {
+  //@ts-ignore
+  const command = UIManager?.RNPhotoEditorView?.Commands?.clearAll;
+  UIManager.dispatchViewManagerCommand(
+      viewId,
+      Platform.OS === 'ios' ? command : command?.toString(),
+      Platform.OS === 'ios' ? [] : [viewId]
+  );
+}
 
 const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
    gesturesEnabled = true,

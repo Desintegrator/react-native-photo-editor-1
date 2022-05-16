@@ -16,21 +16,21 @@ class RNPhotoEditorView: UIView {
         addSubview(photoEditorView!);
         setupView()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupView()
     }
-    
+
     private func setupView() {
         photoEditor.loadViewIfNeeded()
     }
-    
+
     @objc
     static func requiresMainQueueSetup() -> Bool {
         return true
     }
-   
+
     @objc var mode: NSString = "none" {
         didSet {
             switch mode {
@@ -41,21 +41,21 @@ class RNPhotoEditorView: UIView {
             }
         }
     }
-    
+
     @objc var brushColor = UIColor.black {
         didSet {
             photoEditor.drawColor = self.brushColor;
             self.setupView()
         }
     }
-    
+
     @objc var onImageLoadError: RCTDirectEventBlock?
 
     @objc
     func setSource(source:NSDictionary){
         let url:URL = URL(string: source["uri"] as! String)!;
         let headers: NSDictionary = source["headers"] as! NSDictionary;
-        
+
         let requestModifier = SDWebImageDownloaderRequestModifier { (request) -> URLRequest? in
             if(request.url != nil){
                 var mutableRequest = request;
@@ -77,5 +77,10 @@ class RNPhotoEditorView: UIView {
                   }
             }
         }
+    }
+
+    @objc
+    func clearAll() {
+        photoEditor.clearAll()
     }
 }
