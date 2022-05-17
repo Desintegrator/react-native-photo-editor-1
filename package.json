@@ -1,14 +1,31 @@
 {
     "name": "@scm/react-native-photo-editor",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "React Native: Native Photo Editor",
-    "main": "src/index.ts",
+    "main": "lib/commonjs/index",
+    "module": "lib/module/index",
+    "types": "lib/typescript/index.d.ts",
+    "react-native": "src/index",
     "source": "src/index",
+    "files": [
+        "README.md",
+        "android",
+        "ios",
+        "src",
+        "RNPhotoEditor.podspec",
+        "!android/build",
+        "!ios/build",
+        "!**/__tests__",
+        "!**/__fixtures__",
+        "!**/__mocks__"
+    ],
     "publishConfig": {
         "registry": "https://nexus-dev.pcbltools.ru/repository/npm-public"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "typescript": "tsc --noEmit",
+        "prepare": "bob build"
     },
     "keywords": [
         "react-native"
@@ -19,7 +36,7 @@
         "react": "*",
         "react-native": "*",
         "react-native-gesture-handler": ">=2.4.1",
-        "react-native-reanimated": "^2.8.0"
+        "react-native-reanimated": ">=2.8.0"
     },
     "devDependencies": {
         "@types/react": "^17.0.2",
@@ -30,6 +47,19 @@
         "react-native-reanimated": "^2.8.0",
         "typescript": "^4.3.4"
     },
-    "license": "Apache-2.0",
-    "dependencies": {}
+    "react-native-builder-bob": {
+        "source": "src",
+        "output": "lib",
+        "targets": [
+            "commonjs",
+            "module",
+            [
+                "typescript",
+                {
+                    "project": "tsconfig.build.json"
+                }
+            ]
+        ]
+    },
+    "license": "Apache-2.0"
 }
