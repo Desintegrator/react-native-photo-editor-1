@@ -2,7 +2,9 @@
 import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import PhotoEditorView, {PhotoEditorViewProps} from 'react-native-photo-editor';
+import PhotoEditorView, {
+  PhotoEditorViewProps,
+} from '@scm/react-native-photo-editor';
 
 const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
