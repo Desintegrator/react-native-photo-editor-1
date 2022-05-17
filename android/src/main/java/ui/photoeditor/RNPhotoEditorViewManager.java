@@ -30,6 +30,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public static final String REACT_CLASS = "RNPhotoEditorView";
 
   public final int COMMAND_CREATE = 1;
+  public final int COMMAND_CLEAR_ALL = 2;
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
@@ -57,7 +58,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   @Nullable
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of("create", COMMAND_CREATE);
+    return MapBuilder
+      .of("create", COMMAND_CREATE, "clearAll", COMMAND_CLEAR_ALL);
   }
 
   @Override
@@ -74,8 +76,10 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       case COMMAND_CREATE:
         createFragment(root, rootId);
         break;
-      default: {
-      }
+      case COMMAND_CLEAR_ALL:
+        clearAll();
+        break;
+      default: {}
     }
   }
 
@@ -140,6 +144,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   private void updatePhotoEditorImage() {
     if (photoEditorFragment != null) {
       photoEditorFragment.setEditedImageSource(editedImage);
+    }
+  }
+
+  private void clearAll(){
+    if(photoEditorFragment != null){
+      photoEditorFragment.clearAllViews();
     }
   }
 

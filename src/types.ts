@@ -7,15 +7,15 @@ type Source = {
   };
 };
 
-export type PhotoEditorModeType =  
+export type PhotoEditorModeType =
   | 'pencil'
   | 'marker'
   | 'text'
   | 'crop'
   | 'eraser'
-  | 'square' 
+  | 'square'
   | 'none';
-  
+
 
 export interface onImageLoadErrorEvent {
   nativeEvent: {
@@ -30,6 +30,10 @@ interface NativePhotoEditorViewProps extends ViewProps {
   source: Source | number;
   mode: PhotoEditorModeType;
   onImageLoadError?(e:onImageLoadErrorEvent): void;
+}
+
+export interface IPhotoEditorViewRef {
+  clearAll(): void;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {

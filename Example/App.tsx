@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import PhotoEditorView, {
-  PhotoEditorViewProps,
-} from '@scm/react-native-photo-editor';
+import PhotoEditorView, {IPhotoEditorViewRef, PhotoEditorViewProps} from '@scm/react-native-photo-editor';
 
 const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
@@ -16,6 +14,7 @@ export default function App() {
   const [brushColor, setBrushColor] = useState('black');
   const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
   const [rotationDegrees, setRotationDegrees] = useState(0);
+  const ref = useRef<IPhotoEditorViewRef>(null);
 
   const Button: React.FC<{color: string; onPress?: () => void}> = ({
     color,
@@ -48,6 +47,10 @@ export default function App() {
     transform: [{rotateZ: '' + rotationDegrees + 'deg'}],
   };
 
+  const clearAll = () => {
+    ref.current?.clearAll();
+  };
+
   const toggleMode = () => {
     setMode(prevState => (prevState === 'pencil' ? 'none' : 'pencil'));
   };
@@ -57,6 +60,7 @@ export default function App() {
         <View style={styles.header} />
         <View style={styles.editorContainer}>
           <PhotoEditorView
+            ref={ref}
             style={[styles.editorView, editorViewStyles]}
             brushColor={brushColor}
             rotationDegrees={rotationDegrees}
@@ -75,6 +79,11 @@ export default function App() {
             onPress={() => rotateEditorView()}
             style={styles.action}>
             <Text style={{color: 'white'}}>Rotate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={clearAll}
+              style={styles.action}>
+            <Text style={{color: 'white'}}>Clear All</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleMode}
