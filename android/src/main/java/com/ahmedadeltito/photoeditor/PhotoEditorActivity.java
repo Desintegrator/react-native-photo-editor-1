@@ -130,11 +130,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         }
 
 
-        Typeface newFont = getFontFromRes(R.raw.eventtusicons);
-        Typeface fontAwesome = getFontFromRes(R.raw.font_awesome_solid);
-
-        emojiFont = getFontFromRes(R.raw.emojioneandroid);
-
         BrushDrawingView brushDrawingView = (BrushDrawingView) findViewById(R.id.drawing_view);
         drawingViewColorPickerRecyclerView = (RecyclerView) findViewById(R.id.drawing_view_color_picker_recycler_view);
         parentImageRelativeLayout = (RelativeLayout) findViewById(R.id.parent_image_rl);
@@ -166,16 +161,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
         photoEditImageView.setImageBitmap(rotatedBitmap);
 
-        closeTextView.setTypeface(newFont);
-        addTextView.setTypeface(newFont);
-        addPencil.setTypeface(newFont);
-        addImageEmojiTextView.setTypeface(newFont);
-        addCropTextView.setTypeface(fontAwesome);
-        saveTextView.setTypeface(newFont);
-        undoTextView.setTypeface(newFont);
-        clearAllTextView.setTypeface(newFont);
-        goToNextTextView.setTypeface(newFont);
-        deleteTextView.setTypeface(newFont);
 
         final List<Fragment> fragmentsList = new ArrayList<>();
 
