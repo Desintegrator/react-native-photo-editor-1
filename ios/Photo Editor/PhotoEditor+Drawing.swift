@@ -12,11 +12,62 @@ extension PhotoEditorViewController {
     
     override public func touchesBegan(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
+        let subViews = self.view.subviews
+        if (isDrawing && drawMode != "undo" && drawMode != "redo") {
+            // when drawing - remove all unvisible layers
+            for subview in subViews {
+                if (subview.alpha == 0) {
+                    self.layers.remove(at: self.layers.count - 1)
+                    subview.removeFromSuperview()
+                }
+            }
+        }
+        if (drawMode == "undo") {
+          // make latest layer unvisible
+          if (self.layers.count > 0 && self.activeLayerNumber > -1) {
+            for subview in subViews {
+                if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 1 {
+                    subview.alpha = 0
+                    self.activeLayerNumber = self.layers.count - 1
+                    break
+                }
+            }
+          }
+          return
+        }
+        if (drawMode == "redo") {
+          // make first unvisible layer visible
+            if (self.layers.count > 0) {
+                for subview in subViews {
+                    if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 0 {
+                        subview.alpha = 1
+                        self.activeLayerNumber = self.activeLayerNumber + 1
+                        break
+                    }
+                }
+            }
+          return
+        }
+        // ----------------
+        // ----------------
+
         if isDrawing {
+            if (self.layers.count < 10) {
+              let newImageView = UIImageView()
+              newImageView.frame = self.canvasImageView.frame
+              newImageView.bounds = self.canvasImageView.bounds
+              newImageView.tag = 90005 + self.layers.count + 1
+              self.layers.append(newImageView)
+              self.view.addSubview(newImageView)
+              self.activeLayerNumber = self.layers.count - 1
+            } else {
+              // merge two oldest layers
+            }
+
             swiped = false
             if let touch = touches.first {
-                lastPoint = touch.location(in: self.canvasImageView)
-                firstPoint = touch.location(in: self.canvasImageView) // for rectangle
+                lastPoint = touch.location(in: self.layers[self.activeLayerNumber])
+                firstPoint = touch.location(in: self.layers[self.activeLayerNumber]) // for rectangle
             }
         }       
     }
@@ -29,7 +80,7 @@ extension PhotoEditorViewController {
             // 6
             swiped = true
             if let touch = touches.first {
-                let currentPoint = touch.location(in: canvasImageView)
+                let currentPoint = touch.location(in: self.layers[self.activeLayerNumber])
                 if drawMode == "square" { // TODO: square -> rectangle
                   drawRectangle(lastPoint, toPoint: currentPoint, firstPoint: firstPoint)
                 } else {
@@ -46,9 +97,9 @@ extension PhotoEditorViewController {
                                       with event: UIEvent?){
         let touchCount = event?.allTouches?.count;
 
-        if drawMode == "text" && touchCount == 1 {
+        if (drawMode == "text" && touchCount == 1) {
           isTyping = true
-          let textView = UITextView(frame: CGRect(x: 0, y: canvasImageView.center.y,
+          let textView = UITextView(frame: CGRect(x: 0, y: self.layers[self.activeLayerNumber].center.y,
                                                   width: UIScreen.main.bounds.width, height: toolSize))
           
           textView.textAlignment = .center
@@ -62,14 +113,14 @@ extension PhotoEditorViewController {
           textView.autocorrectionType = .no
           textView.isScrollEnabled = false
           textView.delegate = self
-          self.canvasImageView.addSubview(textView)
+          self.layers[self.activeLayerNumber].addSubview(textView)
           addGestures(view: textView)
           textView.becomeFirstResponder()
 
           return
         }
 
-        if isDrawing && touchCount == 1 {
+        if (isDrawing && touchCount == 1) {
             if !swiped {
                 // draw a single point
                 if drawMode == "square" { // TODO: square -> rectangle
@@ -83,13 +134,13 @@ extension PhotoEditorViewController {
     }
     
     func drawLineFrom(_ fromPoint: CGPoint, toPoint: CGPoint) {
-        let canvasSize = canvasImageView.frame.integral.size
+        let canvasSize = self.layers[self.activeLayerNumber].frame.integral.size
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, 0)
         
         let color = drawColor.withAlphaComponent(drawMode == "marker" ? 0.5 : 1.0)
         
         if let context = UIGraphicsGetCurrentContext() {
-            canvasImageView.image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
+            self.layers[self.activeLayerNumber].image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
             // 2
             context.move(to: CGPoint(x: fromPoint.x, y: fromPoint.y))
             context.addLine(to: CGPoint(x: toPoint.x, y: toPoint.y))
@@ -101,21 +152,20 @@ extension PhotoEditorViewController {
             // 4
             context.strokePath()
             // 5
-            canvasImageView.image = UIGraphicsGetImageFromCurrentImageContext()
+            self.layers[self.activeLayerNumber].image = UIGraphicsGetImageFromCurrentImageContext()
         }
         UIGraphicsEndImageContext()
     }
 
     func drawRectangle(_ fromPoint: CGPoint, toPoint: CGPoint, firstPoint: CGPoint) {
-        let canvasSize = canvasImageView.frame.integral.size
+        let canvasSize = self.layers[self.activeLayerNumber].frame.integral.size
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, 0)
         
         let color = drawColor
         
         if let context = UIGraphicsGetCurrentContext() {
-            canvasImageView.image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
+            self.layers[self.activeLayerNumber].image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
             
-            // TODO: clears ALL!!! should clear only its layer
             context.clear(CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
             
             context.setLineCap(CGLineCap.round)
@@ -144,7 +194,7 @@ extension PhotoEditorViewController {
             // 4
             context.strokePath()
             // 5
-            canvasImageView.image = UIGraphicsGetImageFromCurrentImageContext()
+            self.layers[self.activeLayerNumber].image = UIGraphicsGetImageFromCurrentImageContext()
         }
 
         UIGraphicsEndImageContext()

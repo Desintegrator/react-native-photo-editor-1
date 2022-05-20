@@ -60,6 +60,11 @@ public final class PhotoEditorViewController: UIViewController {
     var imageViewToPan: UIImageView?
     var isTyping: Bool = false
 
+
+    var layers: [UIImageView] = []
+    var activeLayerNumber: Int = 0
+
+
     //Register Custom font before we load XIB
     public override func loadView() {
         registerFont()
@@ -68,6 +73,9 @@ public final class PhotoEditorViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+
+        print("layers=> ", layers, layers.count)
+
 //        if(image != nil){
 //            self.setImageView(image: image!)
 //        }
@@ -77,11 +85,11 @@ public final class PhotoEditorViewController: UIViewController {
         self.view.addGestureRecognizer(edgePan)
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow),
-                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+                                              name: UIResponder.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification, object: nil)
+                                              name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillChangeFrame(_:)),
-                                               name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+                                              name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
 
 
     }
