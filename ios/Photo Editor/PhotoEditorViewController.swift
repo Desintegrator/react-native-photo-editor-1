@@ -48,6 +48,7 @@ public final class PhotoEditorViewController: UIViewController {
     var drawColor: UIColor = UIColor.black
     var textColor: UIColor = UIColor.white
     var isDrawing: Bool = true
+    var mode: NSString = "pencil"
     var drawMode: NSString = "pencil"
     var lastPoint: CGPoint!
     var firstPoint: CGPoint!
@@ -111,6 +112,33 @@ public final class PhotoEditorViewController: UIViewController {
         for subview in canvasImageView.subviews {
             subview.removeFromSuperview()
         }
+    }
+    
+    func hideLayers(){
+        layers.forEach {
+            layer in
+            layer.isHidden = true
+        }
+    }
+    
+    func showLayers(){
+        layers.forEach {
+            layer in
+            layer.isHidden = false
+        }
+    }
+    func generateImage()-> UIImage {
+        let size = self.imageView.frame.integral.size
+        let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 0);
+        self.imageView.image!.draw(in: areaSize);
+        layers.forEach {
+            layer in
+                layer.image?.draw(in: areaSize);
+        }
+        
+        return UIGraphicsGetImageFromCurrentImageContext()!;
     }
 }
 

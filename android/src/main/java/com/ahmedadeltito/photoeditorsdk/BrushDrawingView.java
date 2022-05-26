@@ -11,6 +11,7 @@ import android.graphics.PorterDuffXfermode;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -47,6 +48,9 @@ public class BrushDrawingView extends View {
         setupBrushDrawing();
     }
 
+    public Bitmap getImageBitmap(){
+        return this.canvasBitmap.copy(canvasBitmap.getConfig(),canvasBitmap.isMutable());
+    }
     void setupBrushDrawing() {
         drawPath = new Path();
         drawPaint = new Paint();
@@ -125,7 +129,7 @@ public class BrushDrawingView extends View {
         return drawPaint.getColor();
     }
 
-    void clearAll() {
+    public void clearAll() {
         if (drawCanvas != null) {
             drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
             invalidate();

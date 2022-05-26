@@ -17,19 +17,32 @@
       <ImageView
           android:id="@+id/photo_edit_iv"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="match_parent"
           android:layout_centerInParent="true"
           android:adjustViewBounds="true"
-          android:contentDescription="@string/app_name"
-          android:scaleType="centerCrop" />
+          android:scaleType="centerInside"
+          tools:ignore="contentDescription"
+          />
       <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
           android:id="@+id/drawing_view"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignTop="@+id/photo_edit_iv"
           android:layout_alignBottom="@+id/photo_edit_iv"
           android:layout_centerInParent="true"
           android:visibility="gone" />
+      <com.canhub.cropper.CropImageView
+          android:id="@+id/crop_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_centerInParent="true"
+      />
+      <com.canhub.cropper.CropOverlayView
+          android:id="@+id/crop_overlay"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:visibility="invisible"
+        />
     </RelativeLayout>
   </RelativeLayout>
 </FrameLayout>

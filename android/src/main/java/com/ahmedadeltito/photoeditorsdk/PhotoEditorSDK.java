@@ -52,14 +52,14 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         imageView.setImageBitmap(desiredImage);
         imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT));
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener);
-        multiTouchListener.setOnMultiTouchListener(this);
-        imageRootView.setOnTouchListener(multiTouchListener);
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(imageRootView, params);
+        if(addedViews.size()>5){
+            removeAddedViewByIndex(0);
+        }
         addedViews.add(imageRootView);
         if (onPhotoEditorSDKListener != null)
             onPhotoEditorSDKListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
@@ -73,7 +73,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         addTextView.setText(text);
         if (colorCodeTextView != -1)
             addTextView.setTextColor(colorCodeTextView);
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
+        MultiTouchListener multiTouchListener = new MultiTouchListener(
                 parentView, this.imageView, onPhotoEditorSDKListener);
         multiTouchListener.setOnMultiTouchListener(this);
         addTextRootView.setOnTouchListener(multiTouchListener);
@@ -86,25 +86,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             onPhotoEditorSDKListener.onAddViewListener(ViewType.TEXT, addedViews.size());
     }
 
-    public void addEmoji(String emojiName, Typeface emojiFont) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View emojiRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
-        TextView emojiTextView = (TextView) emojiRootView.findViewById(R.id.photo_editor_sdk_text_tv);
-        emojiTextView.setTypeface(emojiFont);
-        emojiTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        emojiTextView.setText(convertEmoji(emojiName));
-        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener);
-        multiTouchListener.setOnMultiTouchListener(this);
-        emojiRootView.setOnTouchListener(multiTouchListener);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        parentView.addView(emojiRootView, params);
-        addedViews.add(emojiRootView);
-        if (onPhotoEditorSDKListener != null)
-            onPhotoEditorSDKListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
-    }
 
     public void setBrushDrawingMode(boolean brushDrawingMode) {
         if (brushDrawingView != null)
@@ -152,6 +133,15 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     public void brushEraser() {
         if (brushDrawingView != null)
             brushDrawingView.brushEraser();
+    }
+
+
+    public void removeAddedViewByIndex(int index) {
+        if (addedViews.size() > index) {
+            parentView.removeView(addedViews.remove(index));
+            if (onPhotoEditorSDKListener != null)
+                onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+        }
     }
 
     public void viewUndo() {
@@ -219,21 +209,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     private boolean isSDCARDMounted() {
         String status = Environment.getExternalStorageState();
         return status.equals(Environment.MEDIA_MOUNTED);
-    }
-
-    private String convertEmoji(String emoji) {
-        String returnedEmoji = "";
-        try {
-            int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
-        } catch (NumberFormatException e) {
-            returnedEmoji = "";
-        }
-        return returnedEmoji;
-    }
-
-    private String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 
     public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {

@@ -10,6 +10,8 @@ RCT_EXPORT_VIEW_PROPERTY(onLayersUpdate, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onImageLoadError, RCTDirectEventBlock)
 
 RCT_EXTERN_METHOD(clearAll:(nonnull NSNumber *)node)
+RCT_EXTERN_METHOD(rotate: (nonnull NSNumber *)node clockwise:(BOOL)clockwise)
+RCT_EXTERN_METHOD(crop:(nonnull NSNumber *)node)
 
 RCT_CUSTOM_VIEW_PROPERTY(source, NSObject, RNPhotoEditorViewManager)
 {

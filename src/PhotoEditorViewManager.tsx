@@ -1,5 +1,6 @@
 import {  HostComponent, requireNativeComponent } from 'react-native';
+import { NativePhotoEditorViewProps } from './types';
 
-export const PhotoEditorViewManager =
-  requireNativeComponent("RNPhotoEditorView") as HostComponent<any>;
+export const PhotoEditorViewManager: HostComponent<NativePhotoEditorViewProps> =
+requireNativeComponent("RNPhotoEditorView")
 

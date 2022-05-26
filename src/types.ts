@@ -1,4 +1,4 @@
-import { ViewProps } from "react-native";
+import {  UIManagerStatic, ViewProps } from "react-native";
 
 type Source = {
   uri?: string;
@@ -6,6 +6,14 @@ type Source = {
       [key: string]: string;
   };
 };
+
+export type RNPhotoEditorCommands = 'create'|'clearAll'|'crop'|'rotate'
+
+export interface RNPhotoEditorUIManager extends UIManagerStatic {
+  RNPhotoEditorView: {
+    Commands: { [key in RNPhotoEditorCommands]: number };
+  };
+}
 
 export type PhotoEditorModeType =
   | 'pencil'
@@ -23,7 +31,7 @@ export interface onImageLoadErrorEvent {
   };
 }
 
-interface NativePhotoEditorViewProps extends ViewProps {
+export interface NativePhotoEditorViewProps extends ViewProps {
   brushColor: string;
   toolSize: number;
   rotationDegrees: number;
@@ -34,6 +42,8 @@ interface NativePhotoEditorViewProps extends ViewProps {
 
 export interface IPhotoEditorViewRef {
   clearAll(): void;
+  rotate(clockwise?:boolean): void;
+  crop(): void;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {

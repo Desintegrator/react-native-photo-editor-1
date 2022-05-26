@@ -5,11 +5,14 @@ import SDWebImage
 @objc
 class RNPhotoEditorView: UIView {
     var photoEditor: PhotoEditorViewController!;
+    var cropController: CropViewController?;
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         photoEditor = PhotoEditorViewController(nibName:"PhotoEditorViewController",bundle: Bundle(for: PhotoEditorViewController.self));
         let photoEditorView = photoEditor.view;
-        photoEditorView?.frame = self.bounds;
+        photoEditorView?.frame = self.frame;
+        photoEditorView?.bounds = self.bounds;
         photoEditorView?.autoresizingMask = [.flexibleHeight,.flexibleWidth]
         let emptyImage = UIColor.white.image(CGSize(width: 512, height: 256))
         photoEditor.setImageView(image: emptyImage);
@@ -33,25 +36,57 @@ class RNPhotoEditorView: UIView {
 
     @objc var mode: NSString = "none" {
         didSet {
-            switch mode {
-              case "pencil":
-                  photoEditor.isDrawing = true;
-                  photoEditor.drawMode = "pencil";
-              case "marker":
-                  photoEditor.isDrawing = true;
-                  photoEditor.drawMode = "marker";
-              case "square":
-                  photoEditor.isDrawing = true;
-                  photoEditor.drawMode = "square";
-              case "text":
-                  photoEditor.isDrawing = false;
-                  photoEditor.drawMode = "text";
-              default:
-                  photoEditor.isDrawing = false;
-                  photoEditor.drawMode = "";
-            }
+            photoEditor.mode = mode;
+            updatePhotoEditor();
         }
     }
+    
+    func updatePhotoEditor(){
+        let mode = photoEditor.mode;
+        photoEditor.isDrawing = ["pencil","marker","square"].contains(mode);
+        photoEditor.drawMode = mode;
+        if(mode == "crop"){
+            addСropController()
+        }else{
+            removeСropController()
+        }
+    }
+    func addСropController() {
+        if(photoEditor.image != nil){
+            let controller = CropViewController()
+            controller.delegate = photoEditor;
+            let croppedImage = photoEditor.generateImage();
+            controller.image = croppedImage;
+//            photoEditor.canvasImageView.addSubview(controller.view);
+            addSubview(controller.view)
+//            photoEditor.addChild(controller);
+//            controller.view?.frame = photoEditor.imageView.bounds;
+            controller.view.frame = frame;
+            controller.view.bounds = bounds;
+            photoEditor.hideLayers();
+            photoEditor.imageView.isHidden = true;
+            controller.resetCropRect();
+            cropController = controller;
+            controller.didMove(toParent: photoEditor);
+        }
+    }
+
+
+    func submitСropController() {
+        cropController?.done();
+        removeСropController();
+    }
+
+    func removeСropController() {
+        if cropController != nil {
+        if subviews.contains(cropController!.view) {
+                cropController!.view.removeFromSuperview();
+            }
+        }
+        photoEditor.imageView.isHidden = false;
+        photoEditor.showLayers();
+    }
+
 
     @objc var toolSize: CGFloat = 50.0 {
         didSet {
@@ -87,7 +122,9 @@ class RNPhotoEditorView: UIView {
         SDWebImageDownloader.shared.requestModifier = requestModifier;
         SDWebImageDownloader.shared.downloadImage(with: url) { image, data, error, finished in
             if(image != nil && finished){
+                self.photoEditor.image = image;
                 self.photoEditor.setImageView(image: image!);
+                self.updatePhotoEditor();
             } else {
                 if(self.onImageLoadError != nil){
                     let errorMsg = "Failed to load image: \(String(describing: error))";
@@ -100,5 +137,15 @@ class RNPhotoEditorView: UIView {
     @objc
     func clearAll() {
         photoEditor.clearAll()
+    }
+
+    @objc
+    func crop() {
+        submitСropController();
+    }
+
+    @objc
+    func rotate(clockwise: Bool) {
+        cropController?.cropView?.rotateImage(rotationAngle: (clockwise == true ? .pi/2:-.pi/2));
     }
 }
