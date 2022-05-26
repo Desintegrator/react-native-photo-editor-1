@@ -10,6 +10,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,13 +27,16 @@ import ui.photoeditor.R;
  * Created by Ahmed Adel on 02/06/2017.
  */
 
-public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
+public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener { //, OnTouchListener {
 
     private Context context;
     private RelativeLayout parentView;
     private ImageView imageView;
     private View deleteView;
+
     private BrushDrawingView brushDrawingView;
+    private View brushDrawingRootView;
+
     private List<View> addedViews;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
     private View addTextRootView;
@@ -42,8 +47,112 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         this.imageView = photoEditorSDKBuilder.imageView;
         this.deleteView = photoEditorSDKBuilder.deleteView;
         this.brushDrawingView = photoEditorSDKBuilder.brushDrawingView;
+
         addedViews = new ArrayList<>();
+
+        this.addDrawingLayer();
+        this.addDrawingLayer();
+        this.addDrawingLayer();
     }
+
+    // @Override
+    // public boolean OnMultiTouchListener(View view, MotionEvent event) {
+    //   Log.d("TEST", "PhotoEditorSDK onTouchEvent");
+    //   return true;
+    // }
+
+    // @Override
+    // public boolean onTouch(View view, MotionEvent event) {
+    //   super.onTouch(view, event);
+    //   Log.d("TEST", "PhotoEditorSDK onTouchEvent");
+    //   return true;
+    // }
+
+    // @Override
+    // public boolean onTouchEvent(@NonNull MotionEvent event) {
+    //     Log.d("TEST", "PhotoEditorSDK onTouchEvent");
+    //     // if (brushDrawMode) {
+    //     //     float touchX = event.getX();
+    //     //     float touchY = event.getY();
+    //     //     switch (event.getAction()) {
+    //     //         case MotionEvent.ACTION_DOWN:
+    //     //             drawPath.moveTo(touchX, touchY);
+    //     //             if (onPhotoEditorSDKListener != null)
+    //     //                 onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
+    //     //             break;
+    //     //         case MotionEvent.ACTION_MOVE:
+    //     //             drawPath.lineTo(touchX, touchY);
+    //     //             break;
+    //     //         case MotionEvent.ACTION_UP:
+    //     //             drawCanvas.drawPath(drawPath, drawPaint);
+    //     //             drawPath.reset();
+    //     //             if (onPhotoEditorSDKListener != null)
+    //     //                 onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
+    //     //             break;
+    //     //         default:
+    //     //             return false;
+    //     //     }
+    //     //     invalidate();
+    //     //     return true;
+    //     // } else {
+    //     //     return false;
+    //     // }
+    // }
+
+    // VIEWS ADDING -- start
+    public void addDrawingLayer() {
+      Log.d("TEST", "addDrawingLayer");
+
+      // BrushDrawingView brushDrawingView = (BrushDrawingView) view.findViewById(R.id.drawing_view);
+      // BrushDrawingView nextDrawingView = this.brushDrawingView;
+
+
+      // LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      // BrushDrawingView nextDrawingView = (BrushDrawingView) this.brushDrawingView.findViewById(R.id.drawing_view);
+      
+      // BrushDrawingView nextDrawingView = (BrushDrawingView) inflater.inflate(R.id.drawing_view, null);
+
+      // LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      // View drawingView = inflater.inflate(R.layout.photo_editor_sdk_image_item_list, null);
+
+      // MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
+      //           parentView, this.imageView, onPhotoEditorSDKListener);
+      // multiTouchListener.setOnMultiTouchListener(this);
+
+      // BrushDrawingView nextDrawingView = photoEditorSDKBuilder.brushDrawingView;
+
+      // RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+      //           ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      //   params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+
+      // ----------------------
+
+      // BrushDrawingView nextDrawingView = (BrushDrawingView) this.brushDrawingView.findViewById(R.id.drawing_view);
+
+      // RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+      //           ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      // parentView.addView(nextDrawingView, params);
+      // addedViews.add(nextDrawingView);
+
+      // ----------------------
+
+      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      brushDrawingRootView = inflater.inflate(R.layout.photo_editor_drawing_item_list, null);
+      BrushDrawingView nextDrawingView = (BrushDrawingView) brushDrawingRootView.findViewById(R.id.drawing_view);
+
+      // MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
+      //           parentView, this.imageView, onPhotoEditorSDKListener);
+      //   multiTouchListener.setOnMultiTouchListener(this);
+      //   brushDrawingRootView.setOnTouchListener(multiTouchListener);
+
+      // RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+      //           ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      // params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+      parentView.addView(brushDrawingRootView); //, params);
+      addedViews.add(brushDrawingRootView);
+      if (onPhotoEditorSDKListener != null)
+        onPhotoEditorSDKListener.onAddViewListener(ViewType.BRUSH_DRAWING, addedViews.size());
+  }
 
     public void addImage(Bitmap desiredImage) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -71,6 +180,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         TextView addTextView = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
         addTextView.setGravity(Gravity.CENTER);
         addTextView.setText(text);
+        // addTextView.setEnabled = false;
         if (colorCodeTextView != -1)
             addTextView.setTextColor(colorCodeTextView);
         MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
@@ -105,53 +215,96 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         if (onPhotoEditorSDKListener != null)
             onPhotoEditorSDKListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
     }
+    // VIEWS ADDING -- end
 
+    // SETTERS -- start
     public void setBrushDrawingMode(boolean brushDrawingMode) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+        // if (brushDrawingView != null)
+        //     brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+
+        for (View view : addedViews) {
+          if (view instanceof BrushDrawingView) {
+            ((BrushDrawingView) view).setBrushDrawingMode(brushDrawingMode);
+          }
+        }
     }
 
     public void setBrushSize(float size) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushSize(size);
+        // if (brushDrawingView != null)
+        //      .setBrushSize(size);
+
+        for (View view : addedViews) {
+          if (view instanceof BrushDrawingView) {
+            ((BrushDrawingView) view).setBrushSize(size);
+          }
+        }
     }
 
     public void setBrushColor(@ColorInt int color) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushColor(color);
+        // if (brushDrawingView != null)
+        //     brushDrawingView.setBrushColor(color);
+
+        for (View view : addedViews) {
+          if (view instanceof BrushDrawingView) {
+            ((BrushDrawingView) view).setBrushColor(color);
+          }
+        }
     }
 
     public void setBrushEraserSize(float brushEraserSize) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushEraserSize(brushEraserSize);
+        // if (brushDrawingView != null)
+        //     brushDrawingView.setBrushEraserSize(brushEraserSize);
+
+        for (View view : addedViews) {
+          if (view instanceof BrushDrawingView) {
+            ((BrushDrawingView) view).setBrushEraserSize(brushEraserSize);
+          }
+        }
     }
 
     public void setBrushEraserColor(@ColorInt int color) {
-        if (brushDrawingView != null)
-            brushDrawingView.setBrushEraserColor(color);
-    }
+        // if (brushDrawingView != null)
+        //     brushDrawingView.setBrushEraserColor(color);
 
+        for (View view : addedViews) {
+          if (view instanceof BrushDrawingView) {
+            ((BrushDrawingView) view).setBrushEraserColor(color);
+          }
+        }
+    }
+    // SETTERS -- end
+
+    // GETTER -- start
+    //  TODO: replace view settings getters with common setting from js props
+    // should we use brush getters instead of using 
     public float getEraserSize() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getEraserSize();
-        return 0;
+        // if (brushDrawingView != null)
+        //     return brushDrawingView.getEraserSize();
+        // return 0;
+
+        return 15;
     }
 
     public float getBrushSize() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushSize();
-        return 0;
+        // if (brushDrawingView != null)
+        //     return brushDrawingView.getBrushSize();
+        // return 0;
+
+        return 15;
     }
 
     public int getBrushColor() {
-        if (brushDrawingView != null)
-            return brushDrawingView.getBrushColor();
-        return 0;
+        // if (brushDrawingView != null)
+        //     return brushDrawingView.getBrushColor();
+        // return 0;
+
+        return 15;
     }
+    // GETTER -- end
 
     public void brushEraser() {
-        if (brushDrawingView != null)
-            brushDrawingView.brushEraser();
+        // if (brushDrawingView != null)
+        //     brushDrawingView.brushEraser();
     }
 
     public void viewUndo() {
@@ -174,16 +327,16 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
 
     public void clearBrushAllViews() {
-        if (brushDrawingView != null)
-            brushDrawingView.clearAll();
+        // if (brushDrawingView != null)
+        //     brushDrawingView.clearAll();
     }
 
     public void clearAllViews() {
         for (int i = 0; i < addedViews.size(); i++) {
             parentView.removeView(addedViews.get(i));
         }
-        if (brushDrawingView != null)
-            brushDrawingView.clearAll();
+        // if (brushDrawingView != null)
+        //     brushDrawingView.clearAll();
     }
 
     public String saveImage(String folderName, String imageName) {
@@ -238,7 +391,9 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
     public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
-        brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
+
+        // brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
+        brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener); // test
     }
 
     @Override

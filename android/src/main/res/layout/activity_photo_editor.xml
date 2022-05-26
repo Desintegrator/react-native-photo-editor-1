@@ -37,14 +37,14 @@
                     android:contentDescription="@string/app_name"
                     android:scaleType="centerCrop" />
 
-                <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
+                <!-- <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
                     android:id="@+id/drawing_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/photo_edit_iv"
                     android:layout_alignTop="@+id/photo_edit_iv"
                     android:layout_centerInParent="true"
-                    android:visibility="gone" />
+                    android:visibility="gone" /> -->
 
             </RelativeLayout>
 

@@ -111,7 +111,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         if (selectedImagePath.contains("content://")) {
             selectedImagePath = getPath(Uri.parse(selectedImagePath));
         }
-        Log.d("PhotoEditorSDK", "Selected image path: " + selectedImagePath);
+        Log.d("TEST PhotoEditorSDK", "Selected image path: " + selectedImagePath);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;
@@ -421,12 +421,12 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
                         String folderName = "PhotoEditorSDK";
                         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), folderName);
                         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-                            Log.d("PhotoEditorSDK", "Failed to create directory");
+                            Log.d("TEST PhotoEditorSDK", "Failed to create directory");
                         }
 
                         String selectedOutputPath = mediaStorageDir.getPath() + File.separator + imageName;
                         returnIntent.putExtra("imagePath", selectedOutputPath);
-                        Log.d("PhotoEditorSDK", "selected camera path " + selectedOutputPath);
+                        Log.d("TEST PhotoEditorSDK", "selected camera path " + selectedOutputPath);
                         File file = new File(selectedOutputPath);
 
                         try {
@@ -568,7 +568,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             System.out.println("CROP IMAGE DUD");
             startCropping();
         } else if (v.getId() == R.id.add_text_tv) {
-            openAddTextPopupWindow("", -1);
+            openAddTextPopupWindow("Текст", -1);
         } else if (v.getId() == R.id.add_pencil_tv) {
             updateBrushDrawingView(true);
         } else if (v.getId() == R.id.done_drawing_tv) {
@@ -599,23 +599,23 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         }
         switch (viewType) {
             case BRUSH_DRAWING:
-                Log.i("BRUSH_DRAWING", "onAddViewListener");
+                Log.d("TEST ", "BRUSH_DRAWING onAddViewListener");
                 break;
             case EMOJI:
-                Log.i("EMOJI", "onAddViewListener");
+                Log.d("TEST ", "EMOJI onAddViewListener");
                 break;
             case IMAGE:
-                Log.i("IMAGE", "onAddViewListener");
+                Log.d("TEST ", "IMAGE onAddViewListener");
                 break;
             case TEXT:
-                Log.i("TEXT", "onAddViewListener");
+                Log.d("TEST ", "TEXT onAddViewListener");
                 break;
         }
     }
 
     @Override
     public void onRemoveViewListener(int numberOfAddedViews) {
-        Log.i(TAG, "onRemoveViewListener");
+        Log.d(TAG, "onRemoveViewListener");
         if (numberOfAddedViews == 0) {
             undoTextView.setVisibility(View.GONE);
             undoTextTextView.setVisibility(View.GONE);
@@ -626,16 +626,16 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     public void onStartViewChangeListener(ViewType viewType) {
         switch (viewType) {
             case BRUSH_DRAWING:
-                Log.i("BRUSH_DRAWING", "onStartViewChangeListener");
+                Log.d("TEST BRUSH_DRAWING", "onStartViewChangeListener");
                 break;
             case EMOJI:
-                Log.i("EMOJI", "onStartViewChangeListener");
+                Log.d("TEST EMOJI", "onStartViewChangeListener");
                 break;
             case IMAGE:
-                Log.i("IMAGE", "onStartViewChangeListener");
+                Log.d("TEST IMAGE", "onStartViewChangeListener");
                 break;
             case TEXT:
-                Log.i("TEXT", "onStartViewChangeListener");
+                Log.d("TEST TEXT", "onStartViewChangeListener");
                 break;
         }
     }
@@ -644,16 +644,17 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     public void onStopViewChangeListener(ViewType viewType) {
         switch (viewType) {
             case BRUSH_DRAWING:
-                Log.i("BRUSH_DRAWING", "onStopViewChangeListener");
+                // add next BRUSH_DRAWING view?
+                Log.d("TEST BRUSH_DRAWING", "onStopViewChangeListener");
                 break;
             case EMOJI:
-                Log.i("EMOJI", "onStopViewChangeListener");
+                Log.d("TEST EMOJI", "onStopViewChangeListener");
                 break;
             case IMAGE:
-                Log.i("IMAGE", "onStopViewChangeListener");
+                Log.d("TEST IMAGE", "onStopViewChangeListener");
                 break;
             case TEXT:
-                Log.i("TEXT", "onStopViewChangeListener");
+                Log.d("TEST TEXT", "onStopViewChangeListener");
                 break;
         }
     }

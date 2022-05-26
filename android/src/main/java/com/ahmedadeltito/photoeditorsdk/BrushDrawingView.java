@@ -14,6 +14,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import android.util.Log;
+
 /**
  * Created by Ahmed Adel on 5/8/17.
  */
@@ -48,6 +50,7 @@ public class BrushDrawingView extends View {
     }
 
     void setupBrushDrawing() {
+        Log.d("TEST", "setupBrushDrawing");
         drawPath = new Path();
         drawPaint = new Paint();
         drawPaint.setAntiAlias(true);
@@ -63,6 +66,7 @@ public class BrushDrawingView extends View {
     }
 
     private void refreshBrushDrawing() {
+        Log.d("TEST", "refreshBrushDrawing");
         brushDrawMode = true;
         drawPaint.setAntiAlias(true);
         drawPaint.setDither(true);
@@ -87,11 +91,13 @@ public class BrushDrawingView extends View {
     }
 
     void setBrushSize(float size) {
+        Log.d("TEST", "setBrushSize");
         brushSize = size;
         refreshBrushDrawing();
     }
 
     void setBrushColor(@ColorInt int color) {
+        Log.d("TEST", "setBrushColor");
         // TODO@Nikonets: test brushSize change
         if (brushSize == 30) {
           setBrushSize(10);
@@ -145,7 +151,8 @@ public class BrushDrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(canvasBitmap != null){
+        Log.d("TEST", "onDraw");
+        if (canvasBitmap != null) {
             canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
             canvas.drawPath(drawPath, drawPaint);
         }
@@ -153,6 +160,7 @@ public class BrushDrawingView extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
+        Log.d("TEST", "onTouchEvent");
         if (brushDrawMode) {
             float touchX = event.getX();
             float touchY = event.getY();
