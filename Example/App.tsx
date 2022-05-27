@@ -42,14 +42,14 @@ const Button = ({
 );
 
 export default function App() {
-  const [brushColor, setBrushColor] = useState('black');
+  const [toolColor, setToolColor] = useState('black');
   const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
   const [photoEditorVisible, setPhotoEditorVisible] = useState(true);
   const ref = useRef<IPhotoEditorViewRef>(null);
 
   const ColorButton: React.FC<{color: string; onPress?: () => void}> =
     useCallback(({color, onPress}) => {
-      const _onPress = onPress || (() => setBrushColor(color));
+      const _onPress = onPress || (() => setToolColor(color));
       return (
         <TouchableOpacity
           onPress={_onPress}
@@ -109,7 +109,7 @@ export default function App() {
               ref={ref}
               style={styles.editorView}
               toolSize={10}
-              brushColor={brushColor}
+              toolColor={toolColor}
               mode={mode}
               source={{
                 uri: PHOTO_PATH,

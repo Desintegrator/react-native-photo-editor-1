@@ -3,7 +3,7 @@
 @interface RCT_EXTERN_MODULE(RNPhotoEditorViewManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(toolSize, CGFloat)
-RCT_EXPORT_VIEW_PROPERTY(brushColor, UIColor)
+RCT_EXPORT_VIEW_PROPERTY(toolColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(mode, NSString)
 RCT_EXPORT_VIEW_PROPERTY(needChangeConfirm, Bool)
 RCT_EXPORT_VIEW_PROPERTY(onLayersUpdate, RCTDirectEventBlock)

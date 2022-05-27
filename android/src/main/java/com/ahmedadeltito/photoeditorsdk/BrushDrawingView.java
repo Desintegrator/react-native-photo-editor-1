@@ -31,6 +31,7 @@ public class BrushDrawingView extends View {
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
     private boolean brushDrawMode;
+    private int brushAlpha = 255;
 
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
@@ -61,6 +62,7 @@ public class BrushDrawingView extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawPaint.setStrokeWidth(brushSize);
+        drawPaint.setAlpha(brushAlpha);
         drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         this.setVisibility(View.GONE);
@@ -74,6 +76,7 @@ public class BrushDrawingView extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawPaint.setStrokeWidth(brushSize);
+        drawPaint.setAlpha(brushAlpha);
         drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
     }
 
@@ -108,6 +111,10 @@ public class BrushDrawingView extends View {
         refreshBrushDrawing();
     }
 
+    void setBrushAlpha(int alpha){
+        this.brushAlpha = alpha;
+        refreshBrushDrawing();
+    }
     void setBrushEraserSize(float brushEraserSize) {
         this.brushEraserSize = brushEraserSize;
     }

@@ -4,45 +4,32 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="#000000"
-      android:gravity="center">
     <RelativeLayout
         android:id="@+id/parent_image_rl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true">
+        android:background="#000000"
+        android:gravity="center">
       <ImageView
           android:id="@+id/photo_edit_iv"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_centerInParent="true"
-          android:adjustViewBounds="true"
-          android:scaleType="centerInside"
-          tools:ignore="contentDescription"
-          />
-      <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
-          android:id="@+id/drawing_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignTop="@+id/photo_edit_iv"
-          android:layout_alignBottom="@+id/photo_edit_iv"
           android:layout_centerInParent="true"
-          android:visibility="gone" />
+          android:adjustViewBounds="true"
+          android:scaleType="fitCenter"
+          tools:ignore="contentDescription"
+          />
       <com.canhub.cropper.CropImageView
           android:id="@+id/crop_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_centerInParent="true"
+         android:layout_centerInParent="true"
       />
-      <com.canhub.cropper.CropOverlayView
-          android:id="@+id/crop_overlay"
+      <com.ahmedadeltito.photoeditorsdk.BrushDrawingView
+          android:id="@+id/drawing_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:visibility="invisible"
-        />
+          android:layout_centerInParent="true"
+          android:visibility="gone" />
     </RelativeLayout>
-  </RelativeLayout>
 </FrameLayout>

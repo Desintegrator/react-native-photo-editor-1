@@ -32,7 +32,7 @@ export interface onImageLoadErrorEvent {
 }
 
 export interface NativePhotoEditorViewProps extends ViewProps {
-  brushColor: string;
+  toolColor: string;
   toolSize: number;
   rotationDegrees: number;
   source: Source | number;

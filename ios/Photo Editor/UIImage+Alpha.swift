@@ -1,11 +1,3 @@
-//
-//  UIImage+Crop.swift
-//  CropViewController
-//
-//  Created by Guilherme Moura on 2/26/16.
-//  Copyright © 2016 Reefactor, Inc. All rights reserved.
-// Credit https://github.com/sprint84/PhotoCropEditor
-
 import UIKit
 
 extension UIImage {
@@ -30,14 +22,6 @@ extension UIImage {
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return newImage
-    }
-    
-    func withAlpha(alpha: CGFloat) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        draw(at: .zero, blendMode: .normal, alpha: alpha)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
         return newImage
     }
 }

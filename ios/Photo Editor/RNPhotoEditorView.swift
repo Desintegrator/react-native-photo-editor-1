@@ -95,9 +95,9 @@ class RNPhotoEditorView: UIView {
         }
     }
 
-    @objc var brushColor = UIColor.black {
+    @objc var toolColor = UIColor.black {
         didSet {
-            photoEditor.drawColor = self.brushColor;
+            photoEditor.toolColor = self.toolColor;
             self.setupView()
         }
     }

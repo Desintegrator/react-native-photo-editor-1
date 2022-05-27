@@ -39,7 +39,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
 
-  private int brushColor;
+  private int toolColor;
   private int rootId;
   private String mode;
   private EditedImageSource editedImage;
@@ -92,7 +92,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       case COMMAND_SUBMIT_CROP:
         photoEditorFragment.submitCrop();
         break;
-      default: {}
+      default: {
+      }
     }
   }
 
@@ -125,11 +126,11 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     updatePhotoEditorImage();
   }
 
-  @ReactProp(name = "brushColor")
-  public void setBrushColor(FrameLayout view, @Nullable String color) {
+  @ReactProp(name = "toolColor")
+  public void setToolColor(FrameLayout view, @Nullable String color) {
     if (color != null) {
-      this.brushColor = Color.parseColor(color);
-      updatePhotoEditorBrushColor();
+      this.toolColor = Color.parseColor(color);
+      updatePhotoEditorToolColor();
     }
   }
 
@@ -141,9 +142,9 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  private void updatePhotoEditorBrushColor() {
+  private void updatePhotoEditorToolColor() {
     if (photoEditorFragment != null) {
-      photoEditorFragment.setBrushColor(brushColor);
+      photoEditorFragment.setToolColor(toolColor);
     }
   }
 
@@ -160,8 +161,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  private void clearAll(){
-    if(photoEditorFragment != null){
+  private void clearAll() {
+    if (photoEditorFragment != null) {
       photoEditorFragment.clearAllViews();
     }
   }
@@ -183,7 +184,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
           .commit();
       setupLayout(parentView);
       updatePhotoEditorImage();
-      updatePhotoEditorBrushColor();
+      updatePhotoEditorToolColor();
       updatePhotoEditorMode();
     }
   }

@@ -48,18 +48,19 @@ extension PhotoEditorViewController {
             }
           return
         }
-        // ----------------
-        // ----------------
 
         if isDrawing {
             if (self.layers.count < 10) {
-              let newImageView = UIImageView()
-              newImageView.frame = self.canvasImageView.frame
-              newImageView.bounds = self.canvasImageView.bounds
-              newImageView.tag = 90005 + self.layers.count + 1
-              self.layers.append(newImageView)
-              self.view.addSubview(newImageView)
-              self.activeLayerNumber = self.layers.count - 1
+                let newImageView = UIImageView()
+                newImageView.frame = self.canvasImageView.frame
+                newImageView.bounds = self.canvasImageView.bounds
+                newImageView.tag = 90005 + self.layers.count + 1
+                if (drawMode == "marker") {
+                  newImageView.alpha = 0.5
+                }
+                self.layers.append(newImageView)
+                self.view.addSubview(newImageView)
+                self.activeLayerNumber = self.layers.count - 1
             } else {
               // merge two oldest layers
             }
@@ -104,7 +105,7 @@ extension PhotoEditorViewController {
           
           textView.textAlignment = .center
           textView.font = UIFont(name: "Helvetica", size: toolSize)
-          textView.textColor = drawColor
+          textView.textColor = toolColor
           textView.layer.shadowColor = UIColor.black.cgColor
           textView.layer.shadowOffset = CGSize(width: 1.0, height: 0.0)
           textView.layer.shadowOpacity = 0.2
@@ -137,7 +138,7 @@ extension PhotoEditorViewController {
         let canvasSize = self.layers[self.activeLayerNumber].frame.integral.size
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, 0)
         
-        let color = drawColor.withAlphaComponent(drawMode == "marker" ? 0.5 : 1.0)
+        let color = toolColor
         
         if let context = UIGraphicsGetCurrentContext() {
             self.layers[self.activeLayerNumber].image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
@@ -161,7 +162,7 @@ extension PhotoEditorViewController {
         let canvasSize = self.layers[self.activeLayerNumber].frame.integral.size
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, 0)
         
-        let color = drawColor
+        let color = toolColor
         
         if let context = UIGraphicsGetCurrentContext() {
             self.layers[self.activeLayerNumber].image?.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))

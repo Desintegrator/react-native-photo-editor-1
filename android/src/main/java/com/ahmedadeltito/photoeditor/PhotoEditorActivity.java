@@ -161,16 +161,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
     final List<Fragment> fragmentsList = new ArrayList<>();
 
-    ImageFragment imageFragment = new ImageFragment();
-    ArrayList stickers = (ArrayList<Integer>) getIntent().getExtras().getSerializable("stickers");
-    if (stickers != null && stickers.size() > 0) {
-      Bundle bundle = new Bundle();
-      bundle.putSerializable("stickers", stickers);
-
-      imageFragment.setArguments(bundle);
-    }
-
-    fragmentsList.add(imageFragment);
 
     PreviewSlidePagerAdapter adapter = new PreviewSlidePagerAdapter(getSupportFragmentManager(), fragmentsList);
     pager.setAdapter(adapter);
@@ -180,7 +170,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
         .parentView(parentImageRelativeLayout) // add parent image view
         .childView(photoEditImageView) // add the desired image view
-        .deleteView(deleteRelativeLayout) // add the deleted view that will appear during the movement of the views
         .brushDrawingView(brushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
         .buildPhotoEditorSDK(); // build photo editor sdk
     photoEditorSDK.setOnPhotoEditorSDKListener(this);
@@ -194,8 +183,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
       @Override
       public void onPageSelected(int position) {
-        if (position == 0)
-          mLayout.setScrollableView(((ImageFragment) fragmentsList.get(position)).imageRecyclerView);
 
       }
 
@@ -246,7 +233,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
       }
 
       public void onFinish() {
-        mLayout.setScrollableView(((ImageFragment) fragmentsList.get(0)).imageRecyclerView);
       }
 
     }.start();

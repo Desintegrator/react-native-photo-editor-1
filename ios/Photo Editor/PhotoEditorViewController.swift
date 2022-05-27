@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 extension UIColor {
     func image(_ size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
         return UIGraphicsImageRenderer(size: size).image { rendererContext in
@@ -45,7 +44,7 @@ public final class PhotoEditorViewController: UIViewController {
     @objc public var hiddenControls : [NSString] = []
 
     var toolSize: CGFloat = 50.0
-    var drawColor: UIColor = UIColor.black
+    var toolColor: UIColor = UIColor.black
     var textColor: UIColor = UIColor.white
     var isDrawing: Bool = true
     var mode: NSString = "pencil"
@@ -75,11 +74,6 @@ public final class PhotoEditorViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        print("layers=> ", layers, layers.count)
-
-//        if(image != nil){
-//            self.setImageView(image: image!)
-//        }
         let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
         //        edgePan.edges = .bottom
         edgePan.delegate = self
@@ -108,10 +102,10 @@ public final class PhotoEditorViewController: UIViewController {
     }
 
     func clearAll() {
-        canvasImageView.image = nil
-        for subview in canvasImageView.subviews {
-            subview.removeFromSuperview()
+        self.layers.forEach {
+            layer in layer.removeFromSuperview();
         }
+        layers.removeAll()
     }
     
     func hideLayers(){
@@ -135,7 +129,7 @@ public final class PhotoEditorViewController: UIViewController {
         self.imageView.image!.draw(in: areaSize);
         layers.forEach {
             layer in
-                layer.image?.draw(in: areaSize);
+            layer.image?.withAlpha(alpha: layer.alpha)?.draw(in: areaSize);
         }
         
         return UIGraphicsGetImageFromCurrentImageContext()!;
@@ -145,7 +139,7 @@ public final class PhotoEditorViewController: UIViewController {
 extension PhotoEditorViewController: ColorDelegate {
     func didSelectColor(color: UIColor) {
 
-        self.drawColor = color
+        self.toolColor = color
         if activeTextView != nil {
             activeTextView?.textColor = color
             textColor = color
