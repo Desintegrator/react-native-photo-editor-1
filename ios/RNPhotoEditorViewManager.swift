@@ -1,4 +1,5 @@
 import Foundation
+import React
 
 @objc(RNPhotoEditorViewManager)
 class RNPhotoEditorViewManager: RCTViewManager {
