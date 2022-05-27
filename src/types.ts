@@ -34,7 +34,6 @@ export interface onImageLoadErrorEvent {
 export interface NativePhotoEditorViewProps extends ViewProps {
   toolColor: string;
   toolSize: number;
-  rotationDegrees: number;
   source: Source | number;
   mode: PhotoEditorModeType;
   onImageLoadError?(e:onImageLoadErrorEvent): void;
