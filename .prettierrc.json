@@ -4,6 +4,5 @@
   "semi": false,
   "trailingComma": "none",
   "bracketSpacing": true,
-  "jsxBracketSameLine": true,
   "printWidth": 100
 }

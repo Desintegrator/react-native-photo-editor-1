@@ -36,7 +36,8 @@ const Button = ({
       {
         backgroundColor: isActive ? 'grey' : 'black',
       },
-    ]}>
+    ]}
+  >
     <Text style={{color: 'white'}}>{title}</Text>
   </TouchableOpacity>
 );
