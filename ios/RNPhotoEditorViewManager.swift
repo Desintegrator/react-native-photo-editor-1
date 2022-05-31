@@ -1,4 +1,5 @@
 import Foundation
+import React
 
 @objc(RNPhotoEditorViewManager)
 class RNPhotoEditorViewManager: RCTViewManager {
@@ -29,4 +30,21 @@ class RNPhotoEditorViewManager: RCTViewManager {
         }
     }
 
+    @objc func rotate(_ node: NSNumber, clockwise: Bool) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(
+                forReactTag: node
+            ) as! RNPhotoEditorView
+            component.rotate(clockwise:clockwise)
+        }
+    }
+    
+    @objc func crop(_ node: NSNumber) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(
+                forReactTag: node
+            ) as! RNPhotoEditorView
+            component.crop()
+        }
+    }
 }

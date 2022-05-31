@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 extension UIColor {
     func image(_ size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
         return UIGraphicsImageRenderer(size: size).image { rendererContext in
@@ -45,9 +44,10 @@ public final class PhotoEditorViewController: UIViewController {
     @objc public var hiddenControls : [NSString] = []
 
     var toolSize: CGFloat = 50.0
-    var drawColor: UIColor = UIColor.black
+    var toolColor: UIColor = UIColor.black
     var textColor: UIColor = UIColor.white
     var isDrawing: Bool = true
+    var mode: NSString = "pencil"
     var drawMode: NSString = "pencil"
     var lastPoint: CGPoint!
     var firstPoint: CGPoint!
@@ -60,6 +60,11 @@ public final class PhotoEditorViewController: UIViewController {
     var imageViewToPan: UIImageView?
     var isTyping: Bool = false
 
+
+    var layers: [UIImageView] = []
+    var activeLayerNumber: Int = 0
+
+
     //Register Custom font before we load XIB
     public override func loadView() {
         registerFont()
@@ -68,20 +73,18 @@ public final class PhotoEditorViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-//        if(image != nil){
-//            self.setImageView(image: image!)
-//        }
+
         let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
         //        edgePan.edges = .bottom
         edgePan.delegate = self
         self.view.addGestureRecognizer(edgePan)
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow),
-                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+                                              name: UIResponder.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification, object: nil)
+                                              name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillChangeFrame(_:)),
-                                               name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+                                              name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
 
 
     }
@@ -99,17 +102,44 @@ public final class PhotoEditorViewController: UIViewController {
     }
 
     func clearAll() {
-        canvasImageView.image = nil
-        for subview in canvasImageView.subviews {
-            subview.removeFromSuperview()
+        self.layers.forEach {
+            layer in layer.removeFromSuperview();
         }
+        layers.removeAll()
+    }
+    
+    func hideLayers(){
+        layers.forEach {
+            layer in
+            layer.isHidden = true
+        }
+    }
+    
+    func showLayers(){
+        layers.forEach {
+            layer in
+            layer.isHidden = false
+        }
+    }
+    func generateImage()-> UIImage {
+        let size = self.imageView.frame.integral.size
+        let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 0);
+        self.imageView.image!.draw(in: areaSize);
+        layers.forEach {
+            layer in
+            layer.image?.withAlpha(alpha: layer.alpha)?.draw(in: areaSize);
+        }
+        
+        return UIGraphicsGetImageFromCurrentImageContext()!;
     }
 }
 
 extension PhotoEditorViewController: ColorDelegate {
     func didSelectColor(color: UIColor) {
 
-        self.drawColor = color
+        self.toolColor = color
         if activeTextView != nil {
             activeTextView?.textColor = color
             textColor = color

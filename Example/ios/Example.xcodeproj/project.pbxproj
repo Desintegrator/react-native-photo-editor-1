@@ -13,17 +13,6 @@
 		1CE1C6857F966819B5B4BDC8 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72A057D570A8952A6875A500 /* Pods_Example.framework */; };
 		6A2E232D281A79D5007FB6FA /* ios in Resources */ = {isa = PBXBuildFile; fileRef = 6A2E232C281A79D4007FB6FA /* ios */; };
 		819449A9268342F70034C798 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 819449A8268342F70034C798 /* libswiftWebKit.tbd */; };
-		81944A5F268343AD0034C798 /* sticker9.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A54268343AD0034C798 /* sticker9.png */; };
-		81944A60268343AD0034C798 /* sticker8.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A55268343AD0034C798 /* sticker8.png */; };
-		81944A61268343AD0034C798 /* sticker10.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A56268343AD0034C798 /* sticker10.png */; };
-		81944A62268343AD0034C798 /* sticker0.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A57268343AD0034C798 /* sticker0.png */; };
-		81944A63268343AD0034C798 /* sticker1.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A58268343AD0034C798 /* sticker1.png */; };
-		81944A64268343AD0034C798 /* sticker3.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A59268343AD0034C798 /* sticker3.png */; };
-		81944A65268343AD0034C798 /* sticker2.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5A268343AD0034C798 /* sticker2.png */; };
-		81944A66268343AD0034C798 /* sticker6.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5B268343AD0034C798 /* sticker6.png */; };
-		81944A67268343AD0034C798 /* sticker7.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5C268343AD0034C798 /* sticker7.png */; };
-		81944A68268343AD0034C798 /* sticker5.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5D268343AD0034C798 /* sticker5.png */; };
-		81944A69268343AD0034C798 /* sticker4.png in Resources */ = {isa = PBXBuildFile; fileRef = 81944A5E268343AD0034C798 /* sticker4.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,17 +26,6 @@
 		6F096FE9328EE1AEA1CF57FA /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		72A057D570A8952A6875A500 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		819449A8268342F70034C798 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
-		81944A54268343AD0034C798 /* sticker9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker9.png; sourceTree = "<group>"; };
-		81944A55268343AD0034C798 /* sticker8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker8.png; sourceTree = "<group>"; };
-		81944A56268343AD0034C798 /* sticker10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker10.png; sourceTree = "<group>"; };
-		81944A57268343AD0034C798 /* sticker0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker0.png; sourceTree = "<group>"; };
-		81944A58268343AD0034C798 /* sticker1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker1.png; sourceTree = "<group>"; };
-		81944A59268343AD0034C798 /* sticker3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker3.png; sourceTree = "<group>"; };
-		81944A5A268343AD0034C798 /* sticker2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker2.png; sourceTree = "<group>"; };
-		81944A5B268343AD0034C798 /* sticker6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker6.png; sourceTree = "<group>"; };
-		81944A5C268343AD0034C798 /* sticker7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker7.png; sourceTree = "<group>"; };
-		81944A5D268343AD0034C798 /* sticker5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker5.png; sourceTree = "<group>"; };
-		81944A5E268343AD0034C798 /* sticker4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sticker4.png; sourceTree = "<group>"; };
 		B23697F555EDBF553B22E789 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -96,24 +74,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		81944A53268343AD0034C798 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				81944A54268343AD0034C798 /* sticker9.png */,
-				81944A55268343AD0034C798 /* sticker8.png */,
-				81944A56268343AD0034C798 /* sticker10.png */,
-				81944A57268343AD0034C798 /* sticker0.png */,
-				81944A58268343AD0034C798 /* sticker1.png */,
-				81944A59268343AD0034C798 /* sticker3.png */,
-				81944A5A268343AD0034C798 /* sticker2.png */,
-				81944A5B268343AD0034C798 /* sticker6.png */,
-				81944A5C268343AD0034C798 /* sticker7.png */,
-				81944A5D268343AD0034C798 /* sticker5.png */,
-				81944A5E268343AD0034C798 /* sticker4.png */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,7 +85,6 @@
 			isa = PBXGroup;
 			children = (
 				6A2E232C281A79D4007FB6FA /* ios */,
-				81944A53268343AD0034C798 /* Resources */,
 				13B07FAE1A68108700A75B9A /* Example */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -206,19 +165,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81944A69268343AD0034C798 /* sticker4.png in Resources */,
-				81944A68268343AD0034C798 /* sticker5.png in Resources */,
-				81944A60268343AD0034C798 /* sticker8.png in Resources */,
 				6A2E232D281A79D5007FB6FA /* ios in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				81944A61268343AD0034C798 /* sticker10.png in Resources */,
-				81944A66268343AD0034C798 /* sticker6.png in Resources */,
-				81944A63268343AD0034C798 /* sticker1.png in Resources */,
-				81944A5F268343AD0034C798 /* sticker9.png in Resources */,
-				81944A64268343AD0034C798 /* sticker3.png in Resources */,
-				81944A65268343AD0034C798 /* sticker2.png in Resources */,
-				81944A62268343AD0034C798 /* sticker0.png in Resources */,
-				81944A67268343AD0034C798 /* sticker7.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +304,7 @@
 				PRODUCT_NAME = Example;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -385,6 +334,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Example;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

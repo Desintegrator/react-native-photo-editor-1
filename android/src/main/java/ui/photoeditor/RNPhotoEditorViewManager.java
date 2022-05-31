@@ -3,6 +3,7 @@ package ui.photoeditor;
 import static ui.photoeditor.EditedImageSource.ON_IMAGE_LOAD_ERROR_EVENT;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +32,14 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
 
   public final int COMMAND_CREATE = 1;
   public final int COMMAND_CLEAR_ALL = 2;
+  public final int COMMAND_SUBMIT_CROP = 3;
+  public final int COMMAND_ROTATE = 4;
+
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
 
-  private int brushColor;
+  private int toolColor;
   private int rootId;
   private String mode;
   private EditedImageSource editedImage;
@@ -59,27 +63,37 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   @Override
   public Map<String, Integer> getCommandsMap() {
     return MapBuilder
-      .of("create", COMMAND_CREATE, "clearAll", COMMAND_CLEAR_ALL);
+        .of("create", COMMAND_CREATE,
+            "clearAll", COMMAND_CLEAR_ALL,
+            "rotate", COMMAND_ROTATE,
+            "crop", COMMAND_SUBMIT_CROP
+        );
   }
 
   @Override
   public void receiveCommand(
       @NonNull FrameLayout root,
-      String commandId,
+      int commandId,
       @Nullable ReadableArray args
   ) {
     super.receiveCommand(root, commandId, args);
-    rootId = args.getInt(0);
-    int commandIdInt = Integer.parseInt(commandId);
-
-    switch (commandIdInt) {
+    switch (commandId) {
       case COMMAND_CREATE:
+        rootId = args.getInt(0);
         createFragment(root, rootId);
         break;
       case COMMAND_CLEAR_ALL:
         clearAll();
         break;
-      default: {}
+      case COMMAND_ROTATE:
+        boolean clockwise = args == null || args.getBoolean(0);
+        photoEditorFragment.rotate(clockwise);
+        break;
+      case COMMAND_SUBMIT_CROP:
+        photoEditorFragment.submitCrop();
+        break;
+      default: {
+      }
     }
   }
 
@@ -112,11 +126,11 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     updatePhotoEditorImage();
   }
 
-  @ReactProp(name = "brushColor")
-  public void setBrushColor(FrameLayout view, @Nullable String color) {
+  @ReactProp(name = "toolColor")
+  public void setToolColor(FrameLayout view, @Nullable String color) {
     if (color != null) {
-      this.brushColor = Color.parseColor(color);
-      updatePhotoEditorBrushColor();
+      this.toolColor = Color.parseColor(color);
+      updatePhotoEditorToolColor();
     }
   }
 
@@ -128,9 +142,9 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  private void updatePhotoEditorBrushColor() {
+  private void updatePhotoEditorToolColor() {
     if (photoEditorFragment != null) {
-      photoEditorFragment.setBrushColor(brushColor);
+      photoEditorFragment.setToolColor(toolColor);
     }
   }
 
@@ -147,8 +161,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
-  private void clearAll(){
-    if(photoEditorFragment != null){
+  private void clearAll() {
+    if (photoEditorFragment != null) {
       photoEditorFragment.clearAllViews();
     }
   }
@@ -170,7 +184,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
           .commit();
       setupLayout(parentView);
       updatePhotoEditorImage();
-      updatePhotoEditorBrushColor();
+      updatePhotoEditorToolColor();
       updatePhotoEditorMode();
     }
   }

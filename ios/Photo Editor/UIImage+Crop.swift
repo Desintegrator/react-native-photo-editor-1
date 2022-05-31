@@ -9,26 +9,35 @@
 import UIKit
 
 extension UIImage {
-    func rotatedImageWithTransform(_ rotation: CGAffineTransform, croppedToRect rect: CGRect) -> UIImage {
-        let rotatedImage = rotatedImageWithTransform(rotation)
+    func cropImage(rect: CGRect) -> UIImage? {
+        let cropRect = rect.applying(CGAffineTransform(scaleX: self.scale, y: self.scale))
         
-        let scale = rotatedImage.scale
-        let cropRect = rect.applying(CGAffineTransform(scaleX: scale, y: scale))
+        guard let croppedImage = self.cgImage?.cropping(to: cropRect) else { return nil }
+        let image = UIImage(cgImage: croppedImage, scale: self.scale, orientation: self.imageOrientation)
         
-        let croppedImage = rotatedImage.cgImage?.cropping(to: cropRect)
-        let image = UIImage(cgImage: croppedImage!, scale: self.scale, orientation: rotatedImage.imageOrientation)
         return image
     }
     
-    fileprivate func rotatedImageWithTransform(_ transform: CGAffineTransform) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, true, scale)
-        let context = UIGraphicsGetCurrentContext()
-        context?.translateBy(x: size.width / 2.0, y: size.height / 2.0)
-        context?.concatenate(transform)
-        context?.translateBy(x: size.width / -2.0, y: size.height / -2.0)
-        draw(in: CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height))
-        let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()
+    func rotate(rotationAngle: CGFloat) -> UIImage? {
+        let newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: rotationAngle)).size
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
+        let context = UIGraphicsGetCurrentContext()!
+        context.translateBy(x: newSize.width/2, y: newSize.height/2)
+        context.rotate(by: rotationAngle)
+        self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return rotatedImage!
+
+        return newImage
+    }
+    
+    func withAlpha(alpha: CGFloat) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(at: .zero, blendMode: .normal, alpha: alpha)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
     }
 }

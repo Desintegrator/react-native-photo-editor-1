@@ -21,23 +21,18 @@ class MultiTouchListener implements OnTouchListener {
     private ScaleGestureDetector mScaleGestureDetector;
 
     private int[] location = new int[2];
-    private Rect outRect;
-    private View deleteView;
     private ImageView photoEditImageView;
     private RelativeLayout parentView;
 
     private OnMultiTouchListener onMultiTouchListener;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
-    MultiTouchListener(View deleteView, RelativeLayout parentView,
+    MultiTouchListener(RelativeLayout parentView,
                        ImageView photoEditImageView, OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
         mScaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener());
-        this.deleteView = deleteView;
         this.parentView = parentView;
         this.photoEditImageView = photoEditImageView;
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
-        outRect = new Rect(deleteView.getLeft(), deleteView.getTop(),
-                deleteView.getRight(), deleteView.getBottom());
     }
 
     private static float adjustAngle(float degrees) {
@@ -111,7 +106,6 @@ class MultiTouchListener implements OnTouchListener {
                 mPrevRawX = event.getRawX();
                 mPrevRawY = event.getRawY();
                 mActivePointerId = event.getPointerId(0);
-                deleteView.setVisibility(View.VISIBLE);
                 view.bringToFront();
                 firePhotoEditorSDKListener(view, true);
                 break;
@@ -130,13 +124,6 @@ class MultiTouchListener implements OnTouchListener {
                 break;
             case MotionEvent.ACTION_UP:
                 mActivePointerId = INVALID_POINTER_ID;
-                if (isViewInBounds(deleteView, x, y)) {
-                    if (onMultiTouchListener != null)
-                        onMultiTouchListener.onRemoveViewListener(view);
-                } else if (!isViewInBounds(photoEditImageView, x, y)) {
-                    view.animate().translationY(0).translationY(0);
-                }
-                deleteView.setVisibility(View.GONE);
                 firePhotoEditorSDKListener(view, false);
                 float mCurrentCancelX = event.getRawX();
                 float mCurrentCancelY = event.getRawY();
@@ -193,13 +180,6 @@ class MultiTouchListener implements OnTouchListener {
                     onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.IMAGE);
             }
         }
-    }
-
-    private boolean isViewInBounds(View view, int x, int y) {
-        view.getDrawingRect(outRect);
-        view.getLocationOnScreen(location);
-        outRect.offset(location[0], location[1]);
-        return outRect.contains(x, y);
     }
 
     public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {

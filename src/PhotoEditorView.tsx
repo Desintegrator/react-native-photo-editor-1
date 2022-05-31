@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager, View, Dimensions } from "react-native";
+import {  findNodeHandle, LayoutChangeEvent, Platform, StyleSheet, UIManager as NotTypedUIManager, View, Dimensions } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useDerivedValue } from "react-native-reanimated";
 import { PhotoEditorViewManager } from './PhotoEditorViewManager';
-import { PhotoEditorViewProps, IPhotoEditorViewRef } from "./types";
+import { PhotoEditorViewProps, IPhotoEditorViewRef, RNPhotoEditorUIManager } from "./types";
 
 const DEFAULT_MIN_SCALE = 0.1
 const DEFAULT_MAX_SCALE = 2.5
@@ -14,42 +14,58 @@ const {
   height: WINDOW_HEIGHT
 } = Dimensions.get('window');
 
-const createFragment = (viewId:number|null) =>
-    UIManager.dispatchViewManagerCommand(
-        viewId,
-        //@ts-ignore
-        UIManager?.RNPhotoEditorView?.Commands?.create?.toString(),
-        [viewId]
-    );
+const UIManager = NotTypedUIManager as RNPhotoEditorUIManager;
 
-const clearAll = (viewId:number|null) => {
-  //@ts-ignore
-  const command = UIManager?.RNPhotoEditorView?.Commands?.clearAll;
-  UIManager.dispatchViewManagerCommand(
-      viewId,
-      Platform.OS === 'ios' ? command : command?.toString(),
-      Platform.OS === 'ios' ? [] : [viewId]
-  );
-}
+const Commands = UIManager.RNPhotoEditorView.Commands;
 
 const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
    gesturesEnabled = true,
    minScale = DEFAULT_MIN_SCALE,
    maxScale = DEFAULT_MAX_SCALE,
    ...rest}, photoEditorViewRef) => {
+
   useImperativeHandle(photoEditorViewRef, () => ({
-    clearAll() {
-      const viewId = findNodeHandle(ref.current);
-      clearAll(viewId);
-    }
+    clearAll,
+    rotate,
+    crop
   }));
 
+  const createFragment = () =>{
+    const viewId = findNodeHandle(ref.current)
+    UIManager.dispatchViewManagerCommand(
+      viewId,
+      Commands.create,
+      [viewId]
+    );
+  }
+  const clearAll = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.clearAll,
+      []
+    );
+  }
+
+  const rotate = (clockwise:boolean = true) => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.rotate,
+      [clockwise]
+    );
+  }
+
+  const crop = () => {
+    UIManager.dispatchViewManagerCommand(
+        findNodeHandle(ref.current),
+        Commands.crop,
+        []
+    );
+  }
 
   useEffect(() => {
     if(Platform.OS === 'android'){
       const timeoutId = setTimeout(()=>{
-        const viewId = findNodeHandle(ref.current);
-        createFragment(viewId);
+        createFragment();
       }, 300)
       return ()=>clearTimeout(timeoutId);
     }
@@ -135,10 +151,10 @@ const zoomGesture = Gesture.Pinch()
   }
 
   return (
-      <GestureHandlerRootView  style={styles.flex1}>
-        <View style={styles.container}>
+      <GestureHandlerRootView style={styles.flex1}>
+        <View style={styles.flex1}>
           <GestureDetector gesture={composedGesture}>
-            <Animated.View style={[styles.container,animatedStyle]}>
+            <Animated.View style={[styles.flex1,animatedStyle]}>
               <PhotoEditorViewManager
                 onLayout={onImageLayout}
                 {...rest}
@@ -152,9 +168,6 @@ const zoomGesture = Gesture.Pinch()
 });
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1
-  },
   flex1: {
     flex: 1
   }

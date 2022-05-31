@@ -1,6 +1,6 @@
 {
     "name": "@scm/react-native-photo-editor",
-    "version": "1.2.2",
+    "version": "1.2.4",
     "description": "React Native: Native Photo Editor",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
@@ -9,15 +9,11 @@
     "source": "src/index",
     "files": [
         "README.md",
-        "android",
-        "ios",
         "src",
+        "lib",
         "RNPhotoEditor.podspec",
-        "!android/build",
-        "!ios/build",
-        "!**/__tests__",
-        "!**/__fixtures__",
-        "!**/__mocks__"
+        "ios",
+        "android"
     ],
     "publishConfig": {
         "registry": "https://nexus-dev.pcbltools.ru/repository/npm-public"
@@ -27,6 +23,7 @@
         "typescript": "tsc --noEmit",
         "prepare": "bob build"
     },
+    "repository": "git+ssh://git@bitbucket.pcbltools.ru:7999/class/react-native-photo-editor.git",
     "keywords": [
         "react-native"
     ],
@@ -39,13 +36,17 @@
         "react-native-reanimated": ">=2.8.0"
     },
     "devDependencies": {
-        "@types/react": "^17.0.2",
         "@types/react-native": "^0.66.4",
         "prettier": "^2.3.1",
+        "react": "^17.0.2",
+        "react-native": "^0.66.4",
         "react-native-builder-bob": "^0.18.2",
-        "react-native-gesture-handler": "^2.4.1",
-        "react-native-reanimated": "^2.8.0",
+        "react-native-gesture-handler": "~2.4.1",
+        "react-native-reanimated": "~2.8.0",
         "typescript": "^4.3.4"
+    },
+    "resolutions": {
+        "@types/react": "^17"
     },
     "react-native-builder-bob": {
         "source": "src",

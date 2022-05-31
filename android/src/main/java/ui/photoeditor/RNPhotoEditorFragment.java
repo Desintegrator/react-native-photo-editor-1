@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,30 +22,39 @@ import com.ahmedadeltito.photoeditorsdk.ViewType;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.canhub.cropper.CropImageView;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKListener {
   private RelativeLayout parentImageRelativeLayout;
   private ImageView photoEditImageView;
-
+  private CropImageView cropImageView;
+  private BrushDrawingView brushDrawingView;
+  private Bitmap editedImage;
   public PhotoEditorSDK photoEditorSDK;
-  private int brushColor = Color.BLACK;
+  private int toolColor = Color.BLACK;
   private String mode = "none";
   private EditedImageSource editedImageSource;
 
   public interface OnImageLoadErrorListener {
     void onError(String error);
   }
+
   private OnImageLoadErrorListener onImageLoadErrorListener;
 
   public void setOnImageLoadErrorListener(OnImageLoadErrorListener onImageLoadErrorListener) {
     this.onImageLoadErrorListener = onImageLoadErrorListener;
   }
 
-  public void setBrushColor(int brushColor) {
-    this.brushColor = brushColor;
-    if(photoEditorSDK != null){
-      photoEditorSDK.setBrushColor(brushColor);
+  public void setToolColor(int toolColor) {
+    this.toolColor = toolColor;
+    if (photoEditorSDK != null) {
+      if(isDrawableMode()){
+        photoEditorSDK.setBrushColor(toolColor);
+      }
     }
   }
 
@@ -59,41 +69,86 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   }
 
   public void clearAllViews() {
-    if(photoEditorSDK != null){
+    if (photoEditorSDK != null) {
       photoEditorSDK.clearAllViews();
     }
-    }
+  }
 
-  public void updateEditorMode(){
-    if(photoEditorSDK != null){
-      switch (mode){
-        case "pencil":
-        case "marker":
-          photoEditorSDK.setBrushDrawingMode(true);
-          break;
-        default:
-          photoEditorSDK.setBrushDrawingMode(false);
-          break;
+  public void rotate(boolean clockwise) {
+    if (mode.equals("crop") && photoEditorSDK != null && cropImageView != null) {
+      cropImageView.rotateImage(clockwise ? 90 : -90);
+    }
+  }
+
+  private boolean isDrawableMode (){
+    List<String> drawableActions = Arrays.asList("pencil", "marker");
+    return drawableActions.contains(mode);
+  }
+  public void updateEditorMode() {
+    if (photoEditorSDK != null) {
+      photoEditorSDK.setBrushDrawingMode(isDrawableMode());
+      if(isDrawableMode()){
+        photoEditorSDK.setBrushColor(toolColor);
+        photoEditorSDK.setBrushAlpha(mode.equals("marker")? 120: 255);
+      }
+      if (mode.equals("crop")) {
+        enableCrop();
+      } else {
+        dismissCrop();
       }
     }
   }
 
-  public void updateEditorImage(){
-    if(photoEditImageView != null && editedImageSource != null){
-      Glide
-      .with(getContext())
-      .asBitmap()
-      .load(editedImageSource.getSourceForLoad())
-      .into(new CustomTarget<Bitmap>() {
+  public void enableCrop() {
+    if (photoEditorSDK != null) {
+      cropImageView.setImageBitmap(photoEditorSDK.generateImage());
+      photoEditorSDK.hideViews();
+      cropImageView.resetCropRect();
+    }
+  }
+
+  public void submitCrop() {
+    if (cropImageView != null && editedImage != null) {
+      try {
+        int parentWidth = parentImageRelativeLayout.getWidth();
+        int parentHeight = parentImageRelativeLayout.getHeight();
+        Bitmap croppedImage = cropImageView.getCroppedImage(parentWidth, parentHeight, CropImageView.RequestSizeOptions.RESIZE_FIT);
+        if (croppedImage != null) {
+          photoEditorSDK.addCroppedImage(croppedImage);
+          brushDrawingView.bringToFront();
+          dismissCrop();
+        }
+      } catch (Exception ignored) {
+      }
+    }
+  }
+
+  public void dismissCrop() {
+    cropImageView.clearImage();
+    photoEditorSDK.showViews();
+  }
+
+  private void loadGlideImage(CustomTarget<Bitmap> target) {
+    Glide
+        .with(getContext())
+        .asBitmap()
+        .load(editedImageSource.getSourceForLoad()).into(target);
+  }
+
+  public void updateEditorImage() {
+    if (photoEditImageView != null && editedImageSource != null) {
+      loadGlideImage(new CustomTarget<Bitmap>() {
         @Override
         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-          if(photoEditImageView != null){
+          if (photoEditImageView != null) {
             photoEditImageView.setImageBitmap(resource);
+            editedImage = resource;
           }
         }
+
         @Override
         public void onLoadCleared(@Nullable Drawable placeholder) {
-          if(photoEditImageView != null) {
+          if (photoEditImageView != null) {
             photoEditImageView.setImageDrawable(placeholder);
           }
         }
@@ -101,7 +156,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         @Override
         public void onLoadFailed(@Nullable Drawable errorDrawable) {
           super.onLoadFailed(errorDrawable);
-          if(onImageLoadErrorListener != null){
+          if (onImageLoadErrorListener != null) {
             onImageLoadErrorListener.onError("Failed to load image");
           }
 
@@ -121,22 +176,27 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     parentImageRelativeLayout = (RelativeLayout) view.findViewById(R.id.parent_image_rl);
-    BrushDrawingView brushDrawingView = (BrushDrawingView) view.findViewById(R.id.drawing_view);
+    brushDrawingView = (BrushDrawingView) view.findViewById(R.id.drawing_view);
     photoEditImageView = (ImageView) view.findViewById(R.id.photo_edit_iv);
-    RelativeLayout deleteRelativeLayout = (RelativeLayout) view.findViewById(R.id.delete_rl);
-    Bitmap bitmap = Bitmap.createBitmap(500,500, Bitmap.Config.ARGB_8888);
-    bitmap.eraseColor(Color.WHITE);
-    photoEditImageView.setImageBitmap(bitmap);
+    cropImageView = (CropImageView) view.findViewById(R.id.crop_view);
     photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this.getContext())
         .parentView(parentImageRelativeLayout) // add parent image view
         .childView(photoEditImageView) // add the desired image view
-        .deleteView(deleteRelativeLayout) // add the deleted view that will appear during the movement of the views
         .brushDrawingView(brushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
         .buildPhotoEditorSDK(); // build photo editor sdk
     photoEditorSDK.setOnPhotoEditorSDKListener(this);
-    photoEditorSDK.setBrushColor(brushColor);
+    photoEditorSDK.setBrushColor(toolColor);
     updateEditorMode();
     updateEditorImage();
+    setupCropImageView();
+    updateViewsLayout();
+  }
+
+  private void setupCropImageView() {
+    if (cropImageView != null) {
+      cropImageView.setAutoZoomEnabled(false);
+      cropImageView.setFixedAspectRatio(false);
+    }
   }
 
   @Override
@@ -159,14 +219,27 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   }
 
+  public void updateViewsLayout() {
+    ImageView view = photoEditorSDK.getMainView();
+    RelativeLayout.LayoutParams params = view.getWidth() > 0
+        ? new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight())
+        : new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+    params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
+    params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
+    params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
+    params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
+    brushDrawingView.setLayoutParams(params);
+  }
+
   @Override
   public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-
+    updateViewsLayout();
   }
 
   @Override
   public void onRemoveViewListener(int numberOfAddedViews) {
-
+    updateViewsLayout();
   }
 
   @Override
@@ -176,6 +249,12 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   @Override
   public void onStopViewChangeListener(ViewType viewType) {
-
+    if (viewType == ViewType.BRUSH_DRAWING) {
+      Bitmap bitmap = brushDrawingView.getImageBitmap();
+      if (bitmap != null) {
+        photoEditorSDK.addImage(bitmap);
+        brushDrawingView.clearAll();
+      }
+    }
   }
 }

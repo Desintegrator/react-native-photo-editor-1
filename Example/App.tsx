@@ -1,8 +1,18 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  SafeAreaView,
+} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import PhotoEditorView, {IPhotoEditorViewRef, PhotoEditorViewProps} from '@scm/react-native-photo-editor';
+import PhotoEditorView, {
+  IPhotoEditorViewRef,
+  PhotoEditorViewProps,
+  PhotoEditorModeType,
+} from '@scm/react-native-photo-editor';
 
 const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
@@ -10,100 +20,138 @@ const PHOTO_PATH =
 
 const HEADERS = {};
 
+const Button = ({
+  title,
+  onPress,
+  isActive,
+}: {
+  title: string;
+  onPress(): void;
+  isActive?: boolean;
+}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[
+      styles.action,
+      {
+        backgroundColor: isActive ? 'grey' : 'black',
+      },
+    ]}
+  >
+    <Text style={{color: 'white'}}>{title}</Text>
+  </TouchableOpacity>
+);
+
 export default function App() {
-  const [brushColor, setBrushColor] = useState('black');
+  const [toolColor, setToolColor] = useState('black');
   const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
-  const [rotationDegrees, setRotationDegrees] = useState(0);
+  const [photoEditorVisible, setPhotoEditorVisible] = useState(true);
   const ref = useRef<IPhotoEditorViewRef>(null);
 
-  const Button: React.FC<{color: string; onPress?: () => void}> = ({
-    color,
-    onPress,
-  }) => {
-    const _onPress = onPress || (() => setBrushColor(color));
-    return (
-      <TouchableOpacity
-        onPress={_onPress}
-        style={{
-          flex: 1,
-          backgroundColor: color,
-        }}
-      />
-    );
-  };
+  const ColorButton: React.FC<{color: string; onPress?: () => void}> =
+    useCallback(({color, onPress}) => {
+      const _onPress = onPress || (() => setToolColor(color));
+      return (
+        <TouchableOpacity
+          onPress={_onPress}
+          style={{
+            flex: 1,
+            backgroundColor: color,
+          }}
+        />
+      );
+    }, []);
 
-  const rotateEditorView = (clockwise = true) => {
-    let _rotationDegrees = rotationDegrees + (clockwise ? 90 : -90);
-    if (_rotationDegrees >= 360) {
-      _rotationDegrees = 0;
-    }
-    if (_rotationDegrees < 0) {
-      _rotationDegrees = 270;
-    }
-    setRotationDegrees(_rotationDegrees);
-  };
+  const ActionButton: React.FC<{action: PhotoEditorModeType}> = useCallback(
+    ({action}) => {
+      const onPress = () => {
+        setMode(mode === action ? 'none' : action);
+      };
+      return (
+        <Button title={action} isActive={mode === action} onPress={onPress} />
+      );
+    },
+    [mode],
+  );
 
-  const editorViewStyles = {
-    transform: [{rotateZ: '' + rotationDegrees + 'deg'}],
+  const rotate = () => {
+    ref.current?.rotate();
   };
 
   const clearAll = () => {
     ref.current?.clearAll();
   };
 
-  const toggleMode = () => {
-    setMode(prevState => (prevState === 'pencil' ? 'none' : 'pencil'));
+  const submit = () => {
+    if (mode === 'crop') {
+      ref.current?.crop();
+    }
+    setMode('none');
   };
+
+  const reset = () => {
+    setMode('none');
+    setPhotoEditorVisible(false);
+    setTimeout(() => {
+      setPhotoEditorVisible(true);
+    });
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={styles.container}>
-        <View style={styles.header} />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Button title="Clear all" onPress={clearAll} />
+          <Button title="Reset" onPress={reset} />
+        </View>
         <View style={styles.editorContainer}>
-          <PhotoEditorView
-            ref={ref}
-            style={[styles.editorView, editorViewStyles]}
-            brushColor={brushColor}
-            rotationDegrees={rotationDegrees}
-            mode={mode}
-            source={{
-              uri: PHOTO_PATH,
-              headers: HEADERS,
-            }}
-            onImageLoadError={e => {
-              console.log('ERROR', e.nativeEvent.error);
-            }}
-          />
+          {photoEditorVisible && (
+            <PhotoEditorView
+              ref={ref}
+              style={styles.editorView}
+              toolSize={10}
+              toolColor={toolColor}
+              mode={mode}
+              source={{
+                uri: PHOTO_PATH,
+                headers: HEADERS,
+              }}
+              onImageLoadError={(e: any) => {
+                console.log('ERROR', e.nativeEvent.error);
+              }}
+            />
+          )}
+        </View>
+        <View style={styles.subactions}>
+          {['pencil', 'marker', 'square', 'text'].includes(mode) && (
+            <>
+              <ColorButton color={'black'} />
+              <ColorButton color={'red'} />
+              <ColorButton color={'green'} />
+              <ColorButton color={'blue'} />
+              <ColorButton color={'yellow'} />
+            </>
+          )}
+          {mode === 'crop' && (
+            <>
+              <Button title="Rotate" onPress={rotate} />
+            </>
+          )}
+          {['crop', 'text'].includes(mode) && (
+            <>
+              <Button title="Submit" onPress={submit} />
+            </>
+          )}
         </View>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            onPress={() => rotateEditorView()}
-            style={styles.action}>
-            <Text style={{color: 'white'}}>Rotate</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={clearAll}
-              style={styles.action}>
-            <Text style={{color: 'white'}}>Clear All</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={toggleMode}
-            style={[
-              styles.action,
-              {
-                backgroundColor: mode === 'pencil' ? 'grey' : 'black',
-              },
-            ]}>
-            <Text style={{color: 'white'}}>Pencil</Text>
-          </TouchableOpacity>
+          <ActionButton action="pencil" />
+          <ActionButton action="marker" />
+          <ActionButton action="crop" />
+          <ActionButton action="text" />
+          <ActionButton action="eraser" />
+          <ActionButton action="square" />
         </View>
-        <View style={styles.footer}>
-          <Button color={'black'} />
-          <Button color={'red'} />
-          <Button color={'green'} />
-          <Button color={'blue'} />
-          <Button color={'yellow'} />
-        </View>
-      </View>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }
@@ -118,12 +166,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#3F3F46',
   },
   header: {
+    paddingTop: 40,
     backgroundColor: 'rgba(55, 65, 81, 0.8)',
-    height: 100,
+    flexDirection: 'row',
   },
-  footer: {
+  subactions: {
     backgroundColor: 'rgba(55, 65, 81, 0.8)',
-    height: 60,
+    height: 40,
     flexDirection: 'row',
   },
   editorContainer: {
@@ -133,10 +182,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   action: {
-    width: 100,
-    height: 100,
+    flex: 1,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: 'black',
+    borderWidth: 1,
+    borderColor: 'white',
   },
 });
