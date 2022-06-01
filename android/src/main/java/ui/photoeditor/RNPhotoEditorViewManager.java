@@ -34,8 +34,6 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_CLEAR_ALL = 2;
   public final int COMMAND_SUBMIT_CROP = 3;
   public final int COMMAND_ROTATE = 4;
-  public final int COMMAND_SUBMIT_TEXT = 5;
-
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
