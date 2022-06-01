@@ -129,9 +129,6 @@ export default function App() {
     if (mode === 'crop') {
       ref.current?.crop();
     }
-    if (mode === 'text') {
-      ref.current?.submitText();
-    }
     setMode('none');
   };
 
@@ -172,7 +169,7 @@ export default function App() {
           {COLORED_MODES.includes(mode) &&
             COLORS.map(color => <ColorButton key={color} color={color} />)}
           {mode === 'crop' && <Button title="Rotate" onPress={rotate} />}
-          {['crop', 'text'].includes(mode) && (
+          {['crop', 'square'].includes(mode) && (
             <Button title="Submit" onPress={submit} />
           )}
         </View>

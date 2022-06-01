@@ -28,7 +28,6 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
     clearAll,
     rotate,
     crop,
-    submitText
   }));
 
   const createFragment = () =>{
@@ -59,14 +58,6 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
     UIManager.dispatchViewManagerCommand(
         findNodeHandle(ref.current),
         Commands.crop,
-        []
-    );
-  }
-
-  const submitText = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.submitText,
         []
     );
   }
