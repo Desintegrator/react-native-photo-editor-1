@@ -34,12 +34,14 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_CLEAR_ALL = 2;
   public final int COMMAND_SUBMIT_CROP = 3;
   public final int COMMAND_ROTATE = 4;
+  public final int COMMAND_SUBMIT_TEXT = 5;
 
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
 
   private int toolColor;
+  private int toolSize;
   private int rootId;
   private String mode;
   private EditedImageSource editedImage;
@@ -134,6 +136,14 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     }
   }
 
+
+  @ReactProp(name = "toolSize")
+  public void setToolSize(FrameLayout view, int size) {
+    if (size > 0) {
+      this.toolSize = size;
+      updatePhotoEditorToolSize();
+    }
+  }
   @ReactProp(name = "mode")
   public void setMode(FrameLayout view, @Nullable String mode) {
     if (mode != null) {
@@ -145,6 +155,13 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   private void updatePhotoEditorToolColor() {
     if (photoEditorFragment != null) {
       photoEditorFragment.setToolColor(toolColor);
+    }
+  }
+
+
+  private void updatePhotoEditorToolSize() {
+    if (photoEditorFragment != null) {
+      photoEditorFragment.setToolSize(toolSize);
     }
   }
 
@@ -185,6 +202,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       setupLayout(parentView);
       updatePhotoEditorImage();
       updatePhotoEditorToolColor();
+      updatePhotoEditorToolSize();
       updatePhotoEditorMode();
     }
   }

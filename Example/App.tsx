@@ -18,8 +18,30 @@ const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
   'https://i.pinimg.com/originals/e4/9b/c4/e49bc442a5cd920fc72e5105fa7ee52e.png';
 
-const HEADERS = {};
+const ACTIONS: PhotoEditorModeType[] = [
+  'pencil',
+  'marker',
+  'crop',
+  'text',
+  'eraser',
+  'square',
+];
 
+const SIZES = [12, 18, 24, 36, 48];
+const COLORS = ['black', 'red', 'green', 'blue', 'yellow'];
+
+const COLORED_MODES: PhotoEditorModeType[] = [
+  'pencil',
+  'marker',
+  'square',
+  'text',
+];
+const SIZED_MODES: PhotoEditorModeType[] = [
+  'pencil',
+  'marker',
+  'square',
+  'text',
+];
 const Button = ({
   title,
   onPress,
@@ -44,23 +66,44 @@ const Button = ({
 
 export default function App() {
   const [toolColor, setToolColor] = useState('black');
+  const [toolSize, setToolSize] = useState(SIZES[0]);
   const [mode, setMode] = useState<PhotoEditorViewProps['mode']>('none');
   const [photoEditorVisible, setPhotoEditorVisible] = useState(true);
   const ref = useRef<IPhotoEditorViewRef>(null);
 
   const ColorButton: React.FC<{color: string; onPress?: () => void}> =
-    useCallback(({color, onPress}) => {
-      const _onPress = onPress || (() => setToolColor(color));
+    useCallback(
+      ({color, onPress}) => {
+        const _onPress = onPress || (() => setToolColor(color));
+        return (
+          <TouchableOpacity
+            onPress={_onPress}
+            style={[
+              styles.action,
+              {
+                backgroundColor: color,
+                opacity: toolColor === color ? 0.4 : 1,
+              },
+            ]}
+          />
+        );
+      },
+      [toolColor],
+    );
+
+  const SizeButton: React.FC<{size: number}> = useCallback(
+    ({size}) => {
+      const onPress = () => setToolSize(size);
       return (
-        <TouchableOpacity
-          onPress={_onPress}
-          style={{
-            flex: 1,
-            backgroundColor: color,
-          }}
+        <Button
+          onPress={onPress}
+          title={size.toString()}
+          isActive={size === toolSize}
         />
       );
-    }, []);
+    },
+    [toolSize],
+  );
 
   const ActionButton: React.FC<{action: PhotoEditorModeType}> = useCallback(
     ({action}) => {
@@ -86,6 +129,9 @@ export default function App() {
     if (mode === 'crop') {
       ref.current?.crop();
     }
+    if (mode === 'text') {
+      ref.current?.submitText();
+    }
     setMode('none');
   };
 
@@ -109,12 +155,12 @@ export default function App() {
             <PhotoEditorView
               ref={ref}
               style={styles.editorView}
-              toolSize={10}
+              toolSize={toolSize}
               toolColor={toolColor}
               mode={mode}
               source={{
                 uri: PHOTO_PATH,
-                headers: HEADERS,
+                headers: {},
               }}
               onImageLoadError={(e: any) => {
                 console.log('ERROR', e.nativeEvent.error);
@@ -122,34 +168,22 @@ export default function App() {
             />
           )}
         </View>
-        <View style={styles.subactions}>
-          {['pencil', 'marker', 'square', 'text'].includes(mode) && (
-            <>
-              <ColorButton color={'black'} />
-              <ColorButton color={'red'} />
-              <ColorButton color={'green'} />
-              <ColorButton color={'blue'} />
-              <ColorButton color={'yellow'} />
-            </>
-          )}
-          {mode === 'crop' && (
-            <>
-              <Button title="Rotate" onPress={rotate} />
-            </>
-          )}
+        <View style={styles.actionsRow}>
+          {COLORED_MODES.includes(mode) &&
+            COLORS.map(color => <ColorButton key={color} color={color} />)}
+          {mode === 'crop' && <Button title="Rotate" onPress={rotate} />}
           {['crop', 'text'].includes(mode) && (
-            <>
-              <Button title="Submit" onPress={submit} />
-            </>
+            <Button title="Submit" onPress={submit} />
           )}
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <ActionButton action="pencil" />
-          <ActionButton action="marker" />
-          <ActionButton action="crop" />
-          <ActionButton action="text" />
-          <ActionButton action="eraser" />
-          <ActionButton action="square" />
+        <View style={styles.actionsRow}>
+          {SIZED_MODES.includes(mode) &&
+            SIZES.map(size => <SizeButton key={size} size={size} />)}
+        </View>
+        <View style={styles.actionsRow}>
+          {ACTIONS.map(action => (
+            <ActionButton key={action} action={action} />
+          ))}
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
@@ -170,9 +204,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(55, 65, 81, 0.8)',
     flexDirection: 'row',
   },
-  subactions: {
+  actionsRow: {
     backgroundColor: 'rgba(55, 65, 81, 0.8)',
-    height: 40,
     flexDirection: 'row',
   },
   editorContainer: {
@@ -183,11 +216,12 @@ const styles = StyleSheet.create({
   },
   action: {
     flex: 1,
-    height: 50,
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
     borderWidth: 1,
     borderColor: 'white',
+    minHeight: 40,
   },
 });

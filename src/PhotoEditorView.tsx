@@ -27,7 +27,8 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
   useImperativeHandle(photoEditorViewRef, () => ({
     clearAll,
     rotate,
-    crop
+    crop,
+    submitText
   }));
 
   const createFragment = () =>{
@@ -58,6 +59,14 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
     UIManager.dispatchViewManagerCommand(
         findNodeHandle(ref.current),
         Commands.crop,
+        []
+    );
+  }
+
+  const submitText = () => {
+    UIManager.dispatchViewManagerCommand(
+        findNodeHandle(ref.current),
+        Commands.submitText,
         []
     );
   }
@@ -106,7 +115,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
     });
 
 const zoomGesture = Gesture.Pinch()
-  .enabled(gesturesEnabled)
+  .enabled(gesturesEnabled && rest.mode !== "text")
   .cancelsTouchesInView(true)
   .onUpdate((event) => {
     const newScale = savedScale.value*event.scale;
