@@ -34,6 +34,8 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_CLEAR_ALL = 2;
   public final int COMMAND_SUBMIT_CROP = 3;
   public final int COMMAND_ROTATE = 4;
+  public final int COMMAND_UNDO = 5;
+  public final int COMMAND_REDO = 6;
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
@@ -66,7 +68,9 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
         .of("create", COMMAND_CREATE,
             "clearAll", COMMAND_CLEAR_ALL,
             "rotate", COMMAND_ROTATE,
-            "crop", COMMAND_SUBMIT_CROP
+            "crop", COMMAND_SUBMIT_CROP,
+            "undo", COMMAND_UNDO,
+            "redo", COMMAND_REDO
         );
   }
 
@@ -91,6 +95,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
         break;
       case COMMAND_SUBMIT_CROP:
         photoEditorFragment.submitCrop();
+        break;
+      case COMMAND_UNDO:
+        photoEditorFragment.undo();
+        break;
+      case COMMAND_REDO:
+        photoEditorFragment.redo();
         break;
       default: {
       }
@@ -142,6 +152,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       updatePhotoEditorToolSize();
     }
   }
+
   @ReactProp(name = "mode")
   public void setMode(FrameLayout view, @Nullable String mode) {
     if (mode != null) {

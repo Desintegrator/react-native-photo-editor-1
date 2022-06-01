@@ -91,6 +91,17 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
+  public void undo(){
+    if (photoEditorSDK != null) {
+      photoEditorSDK.undo();
+    }
+  }
+  public void redo(){
+    if (photoEditorSDK != null) {
+      photoEditorSDK.redo();
+    }
+  }
+
   public void rotate(boolean clockwise) {
     if (mode.equals("crop") && photoEditorSDK != null && cropImageView != null) {
       cropImageView.rotateImage(clockwise ? 90 : -90);
@@ -230,7 +241,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     updateEditorMode();
     updateEditorImage();
     setupCropImageView();
-    updateViewsLayout();
+    photoEditorSDK.updateViewsLayout();
     parentImageRelativeLayout.setOnTouchListener(this.onParentViewTouchListener);
   }
 
@@ -261,27 +272,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   }
 
-  public void updateViewsLayout() {
-    ImageView view = photoEditorSDK.getMainView();
-    RelativeLayout.LayoutParams params = view.getWidth() > 0
-        ? new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight())
-        : new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
-    params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
-    brushDrawingView.setLayoutParams(params);
-  }
 
   @Override
   public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-    updateViewsLayout();
   }
 
   @Override
   public void onRemoveViewListener(int numberOfAddedViews) {
-    updateViewsLayout();
   }
 
   @Override

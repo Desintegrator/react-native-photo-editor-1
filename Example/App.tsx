@@ -117,13 +117,10 @@ export default function App() {
     [mode],
   );
 
-  const rotate = () => {
-    ref.current?.rotate();
-  };
-
-  const clearAll = () => {
-    ref.current?.clearAll();
-  };
+  const rotate = () => ref.current?.rotate();
+  const clearAll = () => ref.current?.clearAll();
+  const undo = () => ref.current?.undo();
+  const redo = () => ref.current?.redo();
 
   const submit = () => {
     if (mode === 'crop') {
@@ -145,6 +142,8 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Button title="Clear all" onPress={clearAll} />
+          <Button title="Undo" onPress={undo} />
+          <Button title="Redo" onPress={redo} />
           <Button title="Reset" onPress={reset} />
         </View>
         <View style={styles.editorContainer}>
