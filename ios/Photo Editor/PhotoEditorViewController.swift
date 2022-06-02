@@ -64,6 +64,33 @@ public final class PhotoEditorViewController: UIViewController {
     var layers: [UIImageView] = []
     var activeLayerNumber: Int = 0
 
+    func redo () {
+      // print("redo ", layers.count, activeLayerNumber)
+      let subViews = self.view.subviews
+      if (layers.count > 0 && activeLayerNumber > -1) {
+        for subview in subViews {
+            if subview.tag == 90005 + activeLayerNumber + 2 && subview.alpha == 0 {
+              subview.alpha = 1
+              activeLayerNumber = activeLayerNumber + 1
+              return
+            }
+        }
+      }
+    }
+
+    func undo () {
+      // print("undo ", layers.count, activeLayerNumber)
+      let subViews = self.view.subviews
+      if (layers.count > 0 && activeLayerNumber > -1) {
+        for subview in subViews {
+          if subview.tag == 90005 + activeLayerNumber + 1 && subview.alpha == 1 {
+            subview.alpha = 0
+            activeLayerNumber = activeLayerNumber - 1
+          }
+        }
+      }
+    }
+
 
     //Register Custom font before we load XIB
     public override func loadView() {

@@ -20,13 +20,14 @@ extension PhotoEditorViewController {
                     self.layers.remove(at: self.layers.count - 1)
                     subview.removeFromSuperview()
                 }
+                self.activeLayerNumber = self.layers.count - 1
             }
         }
         if (drawMode == "undo") {
           // make latest layer unvisible
           if (self.layers.count > 0 && self.activeLayerNumber > -1) {
             for subview in subViews {
-                if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 1 {
+                if subview.tag == 90005 + self.activeLayerNumber && subview.alpha == 1 {
                     subview.alpha = 0
                     self.activeLayerNumber = self.layers.count - 1
                     break
@@ -39,7 +40,7 @@ extension PhotoEditorViewController {
           // make first unvisible layer visible
             if (self.layers.count > 0) {
                 for subview in subViews {
-                    if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 0 {
+                    if subview.tag == 90005 + self.activeLayerNumber && subview.alpha == 0 {
                         subview.alpha = 1
                         self.activeLayerNumber = self.activeLayerNumber + 1
                         break
@@ -114,7 +115,16 @@ extension PhotoEditorViewController {
           textView.autocorrectionType = .no
           textView.isScrollEnabled = false
           textView.delegate = self
+
+          let newImageView = UIImageView()
+          newImageView.frame = self.canvasImageView.frame
+          newImageView.bounds = self.canvasImageView.bounds
+          newImageView.tag = 90005 + self.layers.count + 1
+          self.layers.append(newImageView)
+          self.activeLayerNumber = self.layers.count - 1
+
           self.layers[self.activeLayerNumber].addSubview(textView)
+
           addGestures(view: textView)
           textView.becomeFirstResponder()
 
