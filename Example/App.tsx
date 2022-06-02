@@ -164,22 +164,29 @@ export default function App() {
             />
           )}
         </View>
-        <View style={styles.actionsRow}>
-          {COLORED_MODES.includes(mode) &&
-            COLORS.map(color => <ColorButton key={color} color={color} />)}
-          {mode === 'crop' && <Button title="Rotate" onPress={rotate} />}
-          {['crop', 'square'].includes(mode) && (
-            <Button title="Submit" onPress={submit} />
-          )}
-        </View>
-        <View style={styles.actionsRow}>
-          {SIZED_MODES.includes(mode) &&
-            SIZES.map(size => <SizeButton key={size} size={size} />)}
-        </View>
-        <View style={styles.actionsRow}>
-          {ACTIONS.map(action => (
-            <ActionButton key={action} action={action} />
-          ))}
+        <View
+          style={{
+            height: 120,
+            justifyContent: 'flex-end',
+          }}
+        >
+          <View style={styles.actionsRow}>
+            {COLORED_MODES.includes(mode) &&
+              COLORS.map(color => <ColorButton key={color} color={color} />)}
+            {mode === 'crop' && <Button title="Rotate" onPress={rotate} />}
+            {['crop', 'square'].includes(mode) && (
+              <Button title="Submit" onPress={submit} />
+            )}
+          </View>
+          <View style={styles.actionsRow}>
+            {SIZED_MODES.includes(mode) &&
+              SIZES.map(size => <SizeButton key={size} size={size} />)}
+          </View>
+          <View style={styles.actionsRow}>
+            {ACTIONS.map(action => (
+              <ActionButton key={action} action={action} />
+            ))}
+          </View>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

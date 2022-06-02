@@ -5,10 +5,8 @@ package com.ahmedadeltito.photoeditorsdk;
  */
 
 public enum ViewType {
-
+    ERASER_DRAWING,
     BRUSH_DRAWING,
     TEXT,
     IMAGE,
-    EMOJI;
-
 }
