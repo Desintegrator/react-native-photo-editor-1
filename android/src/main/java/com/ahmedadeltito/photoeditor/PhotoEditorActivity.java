@@ -283,7 +283,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
   }
 
   private void undoViews() {
-    photoEditorSDK.viewUndo();
+
   }
 
   private void eraseDrawing() {

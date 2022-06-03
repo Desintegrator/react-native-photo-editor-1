@@ -7,7 +7,7 @@ type Source = {
   };
 };
 
-export type RNPhotoEditorCommands = 'create'|'clearAll'|'crop'|'rotate'
+export type RNPhotoEditorCommands = 'create'|'clearAll'|'crop'|'rotate'|'undo'|'redo'
 
 export interface RNPhotoEditorUIManager extends UIManagerStatic {
   RNPhotoEditorView: {
@@ -43,6 +43,8 @@ export interface IPhotoEditorViewRef {
   clearAll(): void;
   rotate(clockwise?:boolean): void;
   crop(): void;
+  undo(): void;
+  redo(): void;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
