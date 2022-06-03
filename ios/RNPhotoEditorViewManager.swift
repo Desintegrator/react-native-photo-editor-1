@@ -47,4 +47,22 @@ class RNPhotoEditorViewManager: RCTViewManager {
             component.crop()
         }
     }
+    
+    @objc func undo(_ node: NSNumber) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(
+                forReactTag: node
+            ) as! RNPhotoEditorView
+            component.undo()
+        }
+    }
+    
+    @objc func redo(_ node: NSNumber) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(
+                forReactTag: node
+            ) as! RNPhotoEditorView
+            component.redo()
+        }
+    }
 }

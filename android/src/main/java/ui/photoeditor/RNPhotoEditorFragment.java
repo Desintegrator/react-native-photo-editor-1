@@ -56,10 +56,10 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void setToolColor(int toolColor) {
     this.toolColor = toolColor;
     if (photoEditorSDK != null) {
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.setTextColor(toolColor);
       }
     }
@@ -68,10 +68,10 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void setToolSize(int toolSize) {
     this.toolSize = toolSize;
     if (photoEditorSDK != null) {
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushSize(toolSize);
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.setTextSize(toolSize);
       }
     }
@@ -92,14 +92,25 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
-  public void undo(){
+  public void undo() {
     if (photoEditorSDK != null) {
       photoEditorSDK.undo();
+      reloadCrop();
+      reloadEraser();
     }
   }
-  public void redo(){
+
+  public void redo() {
     if (photoEditorSDK != null) {
       photoEditorSDK.redo();
+      reloadCrop();
+      reloadEraser();
+    }
+  }
+
+  private void reloadEraser() {
+    if (mode.equals("eraser")) {
+      photoEditorSDK.setEraserDrawingMode(true);
     }
   }
 
@@ -109,11 +120,12 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
-  private boolean isDrawableMode (){
+  private boolean isDrawableMode() {
     List<String> drawableActions = Arrays.asList("pencil", "marker");
     return drawableActions.contains(mode);
   }
-  private boolean isTextMode (){
+
+  private boolean isTextMode() {
     return mode.equals("text");
   }
 
@@ -121,18 +133,18 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     if (photoEditorSDK != null) {
       photoEditorSDK.setBrushDrawingMode(isDrawableMode());
       photoEditorSDK.setEraserDrawingMode(mode.equals("eraser"));
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
-        photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120: 255);
+        photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120 : 255);
       }
       if (mode.equals("crop")) {
         enableCrop();
       } else {
         dismissCrop();
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.enableTextEditing();
-      }else{
+      } else {
         photoEditorSDK.disableTextEditing();
       }
     }
@@ -141,7 +153,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   private final View.OnTouchListener onParentViewTouchListener = new View.OnTouchListener() {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-      if(isTextMode()){
+      if (isTextMode()) {
         int action = event.getAction();
         float touchX = event.getX();
         float touchY = event.getY();
@@ -152,6 +164,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       return true;
     }
   };
+
+  public void reloadCrop() {
+    if (mode.equals("crop")) {
+      dismissCrop();
+      enableCrop();
+    }
+  }
 
   public void enableCrop() {
     if (photoEditorSDK != null) {

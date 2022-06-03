@@ -143,6 +143,16 @@ class RNPhotoEditorView: UIView {
     func crop() {
         submitСropController();
     }
+    
+    @objc
+    func undo() {
+        photoEditor.undo();
+    }
+    
+    @objc
+    func redo() {
+        photoEditor.redo();
+    }
 
     @objc
     func rotate(clockwise: Bool) {

@@ -13,57 +13,32 @@ extension PhotoEditorViewController {
     override public func touchesBegan(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
         let subViews = self.view.subviews
-        if (isDrawing && drawMode != "undo" && drawMode != "redo") {
+        if (isDrawing) {
             // when drawing - remove all unvisible layers
             for subview in subViews {
-                if (subview.alpha == 0) {
+                if (subview.isHidden) {
                     self.layers.remove(at: self.layers.count - 1)
                     subview.removeFromSuperview()
                 }
             }
-        }
-        if (drawMode == "undo") {
-          // make latest layer unvisible
-          if (self.layers.count > 0 && self.activeLayerNumber > -1) {
-            for subview in subViews {
-                if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 1 {
-                    subview.alpha = 0
-                    self.activeLayerNumber = self.layers.count - 1
-                    break
-                }
-            }
-          }
-          return
-        }
-        if (drawMode == "redo") {
-          // make first unvisible layer visible
-            if (self.layers.count > 0) {
-                for subview in subViews {
-                    if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 0 {
-                        subview.alpha = 1
-                        self.activeLayerNumber = self.activeLayerNumber + 1
-                        break
-                    }
-                }
-            }
-          return
+            self.activeLayerNumber = self.layers.count - 1
         }
 
         if isDrawing {
-            if (self.layers.count < 10) {
-              let newImageView = UIImageView()
-              newImageView.frame = self.canvasImageView.frame
-              newImageView.bounds = self.canvasImageView.bounds
-              newImageView.tag = 90005 + self.layers.count + 1
-              if (drawMode == "marker") {
-                newImageView.alpha = 0.5
-              }
-              self.layers.append(newImageView)
-              self.view.addSubview(newImageView)
-              self.activeLayerNumber = self.layers.count - 1
-            } else {
-              // merge two oldest layers
+//            if (self.layers.count < 10) {
+            let newImageView = UIImageView()
+            newImageView.frame = self.canvasImageView.frame
+            newImageView.bounds = self.canvasImageView.bounds
+            newImageView.tag = 90005 + self.layers.count + 1
+            if (drawMode == "marker") {
+            newImageView.alpha = 0.5
             }
+            self.layers.append(newImageView)
+            self.view.addSubview(newImageView)
+            self.activeLayerNumber = self.layers.count - 1
+//            } else {
+//              // merge two oldest layers
+//            }
 
             swiped = false
             if let touch = touches.first {

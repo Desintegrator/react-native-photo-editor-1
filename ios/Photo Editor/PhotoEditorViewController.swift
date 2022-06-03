@@ -62,9 +62,19 @@ public final class PhotoEditorViewController: UIViewController {
 
 
     var layers: [UIImageView] = []
+    var cropImagesLayersIndexes: [Int] = []
     var activeLayerNumber: Int = 0
+    var firstActiveLayer = -1;
 
-
+    var firstActiveLayerIndex: Int {
+        get {
+            if(cropImagesLayersIndexes.isEmpty){
+                return -1;
+            }
+            return cropImagesLayersIndexes.last!;
+        }
+    }
+    
     //Register Custom font before we load XIB
     public override func loadView() {
         registerFont()
@@ -121,6 +131,32 @@ public final class PhotoEditorViewController: UIViewController {
             layer.isHidden = false
         }
     }
+    
+    func undo(){
+        let subViews = self.view.subviews
+        if (layers.count > 0 && activeLayerNumber > -1) {
+            for subview in subViews {
+              if subview.tag == 90005 + activeLayerNumber + 1 && !subview.isHidden {
+                subview.isHidden = true
+                activeLayerNumber = activeLayerNumber - 1
+              }
+            }
+        }
+    }
+    
+    func redo(){
+        let subViews = self.view.subviews
+        if (layers.count > 0 && activeLayerNumber < layers.count - 1) {
+            for subview in subViews {
+                if subview.tag == 90005 + activeLayerNumber + 2 && subview.isHidden {
+                  subview.isHidden = false
+                  activeLayerNumber = activeLayerNumber + 1
+                  return
+                }
+            }
+        }
+    }
+    
     func generateImage()-> UIImage {
         let size = self.imageView.frame.integral.size
         let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
