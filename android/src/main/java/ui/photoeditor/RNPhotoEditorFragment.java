@@ -6,10 +6,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +38,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   private Bitmap editedImage;
   public PhotoEditorSDK photoEditorSDK;
   private int toolColor = Color.BLACK;
+  private int toolSize = 10;
   private String mode = "none";
   private EditedImageSource editedImageSource;
 
@@ -55,9 +58,23 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       if(isDrawableMode()){
         photoEditorSDK.setBrushColor(toolColor);
       }
+      if(isTextMode()){
+        photoEditorSDK.setTextColor(toolColor);
+      }
     }
   }
 
+  public void setToolSize(int toolSize) {
+    this.toolSize = toolSize;
+    if (photoEditorSDK != null) {
+      if(isDrawableMode()){
+        photoEditorSDK.setBrushSize(toolSize);
+      }
+      if(isTextMode()){
+        photoEditorSDK.setTextSize(toolSize);
+      }
+    }
+  }
   public void setMode(String mode) {
     this.mode = mode;
     updateEditorMode();
@@ -74,6 +91,17 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
+  public void undo(){
+    if (photoEditorSDK != null) {
+      photoEditorSDK.undo();
+    }
+  }
+  public void redo(){
+    if (photoEditorSDK != null) {
+      photoEditorSDK.redo();
+    }
+  }
+
   public void rotate(boolean clockwise) {
     if (mode.equals("crop") && photoEditorSDK != null && cropImageView != null) {
       cropImageView.rotateImage(clockwise ? 90 : -90);
@@ -84,20 +112,44 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     List<String> drawableActions = Arrays.asList("pencil", "marker");
     return drawableActions.contains(mode);
   }
+  private boolean isTextMode (){
+    return mode.equals("text");
+  }
+
   public void updateEditorMode() {
     if (photoEditorSDK != null) {
       photoEditorSDK.setBrushDrawingMode(isDrawableMode());
       if(isDrawableMode()){
         photoEditorSDK.setBrushColor(toolColor);
-        photoEditorSDK.setBrushAlpha(mode.equals("marker")? 120: 255);
+        photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120: 255);
       }
       if (mode.equals("crop")) {
         enableCrop();
       } else {
         dismissCrop();
       }
+      if(isTextMode()){
+        photoEditorSDK.enableTextEditing();
+      }else{
+        photoEditorSDK.disableTextEditing();
+      }
     }
   }
+
+  private View.OnTouchListener onParentViewTouchListener = new View.OnTouchListener() {
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+      if(isTextMode()){
+        int action = event.getAction();
+        float touchX = event.getX();
+        float touchY = event.getY();
+        if ((action & event.getActionMasked()) == MotionEvent.ACTION_UP) {
+          photoEditorSDK.addTextField(touchX, touchY, toolColor, toolSize);
+        }
+      }
+      return true;
+    }
+  };
 
   public void enableCrop() {
     if (photoEditorSDK != null) {
@@ -189,7 +241,8 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     updateEditorMode();
     updateEditorImage();
     setupCropImageView();
-    updateViewsLayout();
+    photoEditorSDK.updateViewsLayout();
+    parentImageRelativeLayout.setOnTouchListener(this.onParentViewTouchListener);
   }
 
   private void setupCropImageView() {
@@ -219,27 +272,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   }
 
-  public void updateViewsLayout() {
-    ImageView view = photoEditorSDK.getMainView();
-    RelativeLayout.LayoutParams params = view.getWidth() > 0
-        ? new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight())
-        : new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
-    params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
-    brushDrawingView.setLayoutParams(params);
-  }
 
   @Override
   public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-    updateViewsLayout();
   }
 
   @Override
   public void onRemoveViewListener(int numberOfAddedViews) {
-    updateViewsLayout();
   }
 
   @Override

@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,7 +14,7 @@ class MultiTouchListener implements OnTouchListener {
     private static final int INVALID_POINTER_ID = -1;
     private boolean isRotateEnabled = true;
     private boolean isTranslateEnabled = true;
-    private boolean isScaleEnabled = true;
+    private boolean isScaleEnabled = false;
     private float minimumScale = 0.5f;
     private float maximumScale = 10.0f;
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -128,10 +129,9 @@ class MultiTouchListener implements OnTouchListener {
                 float mCurrentCancelX = event.getRawX();
                 float mCurrentCancelY = event.getRawY();
                 if (mCurrentCancelX == mPrevRawX || mCurrentCancelY == mPrevRawY) {
-                    if (view instanceof TextView) {
+                    if (view instanceof EditText) {
                         if (onMultiTouchListener != null) {
-                            onMultiTouchListener.onEditTextClickListener(
-                                    ((TextView) view).getText().toString(), ((TextView) view).getCurrentTextColor());
+                            onMultiTouchListener.onEditTextClickListener((EditText) view);
                         }
                         if (onPhotoEditorSDKListener != null) {
                             onPhotoEditorSDKListener.onEditTextChangeListener(
@@ -228,7 +228,7 @@ class MultiTouchListener implements OnTouchListener {
     }
 
     interface OnMultiTouchListener {
-        void onEditTextClickListener(String text, int colorCode);
+        void onEditTextClickListener(EditText view);
         void onRemoveViewListener(View removedView);
     }
 }
