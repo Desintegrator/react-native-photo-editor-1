@@ -84,7 +84,8 @@ class RNPhotoEditorView: UIView {
         didSet {
             photoEditor.toolSize = self.toolSize;
             if(photoEditor.activeTextView != nil){
-                photoEditor.activeTextView.font = photoEditor.activeTextView?.font?.withSize(toolSize)
+                photoEditor.activeTextView!.font = photoEditor.activeTextView?.font?.withSize(toolSize)
+                photoEditor.activeTextView!.sizeToFit()
             }
         }
     }
@@ -92,6 +93,9 @@ class RNPhotoEditorView: UIView {
     @objc var toolColor = UIColor.black {
         didSet {
             photoEditor.toolColor = self.toolColor;
+            if(photoEditor.activeTextView != nil){
+                photoEditor.activeTextView!.textColor = toolColor;
+            }
         }
     }
 

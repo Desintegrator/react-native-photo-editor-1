@@ -74,6 +74,7 @@ extension PhotoEditorViewController {
             textView.layer.backgroundColor = UIColor.clear.cgColor
             textView.autocorrectionType = .no
             textView.isScrollEnabled = false
+            textView.translatesAutoresizingMaskIntoConstraints = true
             textView.delegate = self
             activeTextView = textView
             addLayer(layer: textView)
