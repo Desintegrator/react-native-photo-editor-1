@@ -33,7 +33,14 @@ export interface onImageLoadErrorEvent {
 
 export interface onPhotoProcessedEvent {
   nativeEvent: {
-      error: any;
+      path: string;
+  };
+}
+
+export interface onLayersUpdateEvent {
+  nativeEvent: {
+    layersCount: number,
+    activeLayer: number
   };
 }
 
@@ -58,7 +65,7 @@ export interface IPhotoEditorViewRef {
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
-  onMount?: void
+  onMount?(): void
   gesturesEnabled?: boolean
   minScale?: number
   maxScale?: number

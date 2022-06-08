@@ -204,7 +204,9 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     func updateLayersVisibility(){
-        
+        if(self.onLayersUpdate != nil){
+            self.onLayersUpdate!();
+        }
         self.imageView.isHidden = firstActiveLayerIndex >= 0;
         for (index, layer) in layers.enumerated() {
             layer.isHidden = index < firstActiveLayerIndex || index > lastActiveLayerIndex
@@ -239,7 +241,6 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     func redo(){
-        print("redo", lastActiveLayerIndex, layers.count)
         if(lastActiveLayerIndex < layers.count - 1){
             lastActiveLayerIndex += 1;
             if(layers[lastActiveLayerIndex].tag == CROP_IMAGE_VIEW_TAG){

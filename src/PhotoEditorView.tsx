@@ -96,20 +96,6 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
         []
     );
   }
-  const undo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.undo,
-        []
-    );
-  }
-  const redo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.redo,
-        []
-    );
-  }
 
   useEffect(() => {
     if(Platform.OS === 'android'){
@@ -118,7 +104,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       }, 300)
       return ()=>clearTimeout(timeoutId);
     }
-    onMount()
+    onMount?.()
   }, []);
 
   const ref = useRef(null);

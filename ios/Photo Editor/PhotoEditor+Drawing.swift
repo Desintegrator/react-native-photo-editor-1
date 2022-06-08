@@ -54,12 +54,11 @@ extension PhotoEditorViewController {
     
     override public func touchesEnded(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
-        self.onLayersUpdate!()
         let touchCount = event?.allTouches?.count;
         
         if (drawMode == "text" && touchCount == 1 && activeTextView == nil) {
             isTyping = true
-            let touchPoint = touches.first!.location(in: self.view)
+            let touchPoint = touches.first!.location(in: self.canvasImageView)
             
             let textView = UITextView(frame: CGRect(x: touchPoint.x, y: touchPoint.y,
                                                     width: self.firstActiveLayer.frame.width, height: toolSize+10))
