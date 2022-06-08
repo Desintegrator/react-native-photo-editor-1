@@ -7,7 +7,7 @@ type Source = {
   };
 };
 
-export type RNPhotoEditorCommands = 'create'|'clearAll'|'crop'|'rotate'
+export type RNPhotoEditorCommands = 'create'|'clearAll'|'crop'|'rotate'|'redo'|'undo'|'reload'|'processPhoto'
 
 export interface RNPhotoEditorUIManager extends UIManagerStatic {
   RNPhotoEditorView: {
@@ -31,21 +31,34 @@ export interface onImageLoadErrorEvent {
   };
 }
 
+export interface onPhotoProcessedEvent {
+  nativeEvent: {
+      error: any;
+  };
+}
+
 export interface NativePhotoEditorViewProps extends ViewProps {
   toolColor: string;
   toolSize: number;
   source: Source | number;
   mode: PhotoEditorModeType;
   onImageLoadError?(e:onImageLoadErrorEvent): void;
+  onLayersUpdate?(e:onLayersUpdateEvent): void;
+  onPhotoProcessed?(e:onPhotoProcessedEvent): void;
 }
 
 export interface IPhotoEditorViewRef {
   clearAll(): void;
   rotate(clockwise?:boolean): void;
   crop(): void;
+  redo(): void;
+  undo(): void;
+  reload(): void;
+  processPhoto(): void;
 }
 
 export interface PhotoEditorViewProps extends NativePhotoEditorViewProps {
+  onMount?: void
   gesturesEnabled?: boolean
   minScale?: number
   maxScale?: number

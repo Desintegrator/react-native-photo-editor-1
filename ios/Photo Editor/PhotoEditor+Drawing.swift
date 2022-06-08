@@ -20,16 +20,25 @@ extension PhotoEditorViewController {
                     self.layers.remove(at: self.layers.count - 1)
                     subview.removeFromSuperview()
                 }
+                self.activeLayerNumber = self.layers.count - 1
+
+                if(self.onLayersUpdate != nil){
+                    self.onLayersUpdate!();
+                }
             }
         }
         if (drawMode == "undo") {
           // make latest layer unvisible
           if (self.layers.count > 0 && self.activeLayerNumber > -1) {
             for subview in subViews {
-                if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 1 {
+                if subview.tag == 90005 + self.activeLayerNumber && subview.alpha == 1 {
                     subview.alpha = 0
-                    self.activeLayerNumber = self.layers.count - 1
+                    self.activeLayerNumber = self.layers.count - 1 
+
                     break
+                }
+                if(self.onLayersUpdate != nil){
+                    self.onLayersUpdate!();
                 }
             }
           }
@@ -39,18 +48,21 @@ extension PhotoEditorViewController {
           // make first unvisible layer visible
             if (self.layers.count > 0) {
                 for subview in subViews {
-                    if subview.tag == 90005 + self.activeLayerNumber + 2 && subview.alpha == 0 {
+                    if subview.tag == 90005 + self.activeLayerNumber && subview.alpha == 0 {
                         subview.alpha = 1
                         self.activeLayerNumber = self.activeLayerNumber + 1
                         break
                     }
+                }
+                if(self.onLayersUpdate != nil){
+                    self.onLayersUpdate!();
                 }
             }
           return
         }
 
         if isDrawing {
-            if (self.layers.count < 10) {
+            if (self.layers.count < 30) { // TODO: reduce to 10 later
                 let newImageView = UIImageView()
                 newImageView.frame = self.canvasImageView.frame
                 newImageView.bounds = self.canvasImageView.bounds
@@ -60,9 +72,15 @@ extension PhotoEditorViewController {
                 }
                 self.layers.append(newImageView)
                 self.view.addSubview(newImageView)
+
                 self.activeLayerNumber = self.layers.count - 1
+
+                if(self.onLayersUpdate != nil){
+                    self.onLayersUpdate!();
+                }
             } else {
-              // merge two oldest layers
+              // TODO: merge two oldest layers
+              // to keep memory usage (it helps maybe)
             }
 
             swiped = false
@@ -96,10 +114,19 @@ extension PhotoEditorViewController {
     
     override public func touchesEnded(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
+        self.onLayersUpdate!()
         let touchCount = event?.allTouches?.count;
 
         if (drawMode == "text" && touchCount == 1) {
+          let newImageView = UIImageView()
+          newImageView.frame = self.canvasImageView.frame
+          newImageView.bounds = self.canvasImageView.bounds
+          newImageView.tag = 90005 + self.layers.count + 1
+          self.layers.append(newImageView)
+          self.activeLayerNumber = self.layers.count - 1
+
           isTyping = true
+
           let textView = UITextView(frame: CGRect(x: 0, y: self.layers[self.activeLayerNumber].center.y,
                                                   width: UIScreen.main.bounds.width, height: toolSize))
           
@@ -114,10 +141,15 @@ extension PhotoEditorViewController {
           textView.autocorrectionType = .no
           textView.isScrollEnabled = false
           textView.delegate = self
+
           self.layers[self.activeLayerNumber].addSubview(textView)
+
           addGestures(view: textView)
           textView.becomeFirstResponder()
 
+          if(self.onLayersUpdate != nil){
+              self.onLayersUpdate!();
+          }
           return
         }
 

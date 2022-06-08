@@ -60,9 +60,17 @@ public final class PhotoEditorViewController: UIViewController {
     var imageViewToPan: UIImageView?
     var isTyping: Bool = false
 
+    var onLayersUpdate: (() -> ())? = nil
+    var onPhotoProcessed: ((String) -> ())? = nil
 
     var layers: [UIImageView] = []
     var activeLayerNumber: Int = 0
+
+    var hiddenMarkerLayers: [Int] = []
+    
+    func baseFunc() -> String {
+        return "";
+    }
 
 
     //Register Custom font before we load XIB
@@ -99,6 +107,94 @@ public final class PhotoEditorViewController: UIViewController {
             imageViewHeightConstraint.constant = (size?.height)!
             imageViewWidthConstraint.constant = (size?.width)!
         }
+    }
+
+    func reload() {
+        if(self.onLayersUpdate != nil){
+            self.onLayersUpdate!();
+        }
+    }
+
+    func processPhoto() {
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("examplePng.png")
+        
+        let pngData = self.generateImage().pngData()
+
+        // print("path=> ", path)
+        let url = path
+        if (pngData != nil && url != nil) {
+            do {
+              try? pngData!.write(to: url, options: .atomic)
+            } catch {
+              self.onPhotoProcessed!("error")
+            }
+        }
+        
+        if(self.onPhotoProcessed != nil) {
+          do {
+            try self.onPhotoProcessed!("\(path)");
+          } catch {
+            self.onPhotoProcessed!("error")
+          }
+        }
+    }
+
+    func undo() {
+      // print("undo ", layers.count, activeLayerNumber)
+      let subViews = self.view.subviews
+      if (layers.count > 0 && activeLayerNumber > -1) {
+        for subview in subViews {
+          if subview.tag == 90005 + activeLayerNumber + 1 && subview.alpha > 0 {
+            if (subview.alpha == 0.5) {
+              hiddenMarkerLayers.append(subview.tag)
+            }
+
+            subview.alpha = 0
+            activeLayerNumber = activeLayerNumber - 1
+            // if (activeLayerNumber < 0) {
+            //   activeLayerNumber = 0
+            // }
+          }
+        }
+      }
+      if(self.onLayersUpdate != nil){
+          self.onLayersUpdate!();
+      }
+    }
+
+    func redo() {
+      // print("redo ", layers.count, activeLayerNumber)
+      let subViews = self.view.subviews
+      if (layers.count > 0 && activeLayerNumber > -2) {
+        for subview in subViews {
+            if subview.tag == 90005 + activeLayerNumber + 2 && subview.alpha == 0 {
+              var isMarker = false
+
+              for (index, hiddenLayer) in hiddenMarkerLayers.enumerated() {
+                if (hiddenLayer == subview.tag) {
+                  isMarker = true
+                  hiddenMarkerLayers.remove(at: index)
+                  break
+                }
+              }
+
+              if (isMarker) {
+                subview.alpha = 0.5
+              } else {
+                subview.alpha = 1
+              }
+              
+              activeLayerNumber = activeLayerNumber + 1
+              if(self.onLayersUpdate != nil){
+                  self.onLayersUpdate!();
+              }
+              return
+            }
+        }
+      }
+      if(self.onLayersUpdate != nil){
+          self.onLayersUpdate!();
+      }
     }
 
     func clearAll() {
