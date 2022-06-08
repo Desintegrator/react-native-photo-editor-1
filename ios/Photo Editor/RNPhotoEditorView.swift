@@ -10,6 +10,10 @@ class RNPhotoEditorView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         photoEditor = PhotoEditorViewController(nibName:"PhotoEditorViewController",bundle: Bundle(for: PhotoEditorViewController.self));
+
+        photoEditor.onLayersUpdate = _onLayersUpdate;
+        photoEditor.onPhotoProcessed = _onPhotoProcessed;
+
         let photoEditorView = photoEditor.view;
         photoEditorView?.frame = self.frame;
         photoEditorView?.bounds = self.bounds;
@@ -79,7 +83,6 @@ class RNPhotoEditorView: UIView {
         photoEditor.updateLayersVisibility();
     }
 
-
     @objc var toolSize: CGFloat = 50.0 {
         didSet {
             photoEditor.toolSize = self.toolSize;
@@ -97,6 +100,28 @@ class RNPhotoEditorView: UIView {
                 photoEditor.activeTextView!.textColor = toolColor;
             }
         }
+    }
+
+    @objc var onLayersUpdate: RCTDirectEventBlock?
+    @objc var onPhotoProcessed: RCTDirectEventBlock?
+
+    func _onLayersUpdate() {
+      if (self.onLayersUpdate != nil) {
+        // print("TEST=> _onLayersUpdate")
+        self.onLayersUpdate!([
+          "layersCount": photoEditor.layers.count,
+          "activeLayer": photoEditor.activeLayerNumber
+        ]);
+      }
+    }
+
+    func _onPhotoProcessed(path: String) {
+      if (self.onLayersUpdate != nil) {
+        // print("TEST=> _onPhotoProcessed")
+        self.onPhotoProcessed!([
+          "path": path,
+        ]);
+      }
     }
 
     @objc var onImageLoadError: RCTDirectEventBlock?
@@ -154,5 +179,25 @@ class RNPhotoEditorView: UIView {
     @objc
     func rotate(clockwise: Bool) {
         cropController?.cropView?.rotateImage(rotationAngle: (clockwise == true ? .pi/2:-.pi/2));
+    }
+
+    @objc
+    func redo() {
+        photoEditor.redo()
+    }
+
+    @objc
+    func undo() {
+        photoEditor.undo()
+    }
+
+    @objc
+    func reload() {
+        photoEditor.reload()
+    }
+
+    @objc
+    func processPhoto() {
+        photoEditor.processPhoto()
     }
 }

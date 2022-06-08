@@ -56,6 +56,8 @@ public final class PhotoEditorViewController: UIViewController {
     var isTyping: Bool = false
     var textExists: Bool = false
 
+    var onLayersUpdate: (() -> ())? = nil
+    var onPhotoProcessed: ((String) -> ())? = nil
 
     var layers: [UIView] = []
     var cropImagesLayersIndexes: [Int] = []
@@ -114,11 +116,37 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
 
-
-    func updateCanvasLayout(){
-        
+    func reload() {
+        if(self.onLayersUpdate != nil){
+            self.onLayersUpdate!();
+        }
     }
-    
+
+    func processPhoto() {
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("examplePng.png")
+        
+        let pngData = self.generateImage().pngData()
+
+        // print("path=> ", path)
+        let url = path
+        if (pngData != nil && url != nil) {
+            do {
+              try? pngData!.write(to: url, options: .atomic)
+            } catch {
+              self.onPhotoProcessed!("error")
+            }
+        }
+        
+        if(self.onPhotoProcessed != nil) {
+          do {
+            try self.onPhotoProcessed!("\(path)");
+          } catch {
+            self.onPhotoProcessed!("error")
+          }
+        }
+    }
+
+
     func clearAll() {
         self.layers.forEach {
             layer in layer.removeFromSuperview();
@@ -176,6 +204,7 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     func updateLayersVisibility(){
+        
         self.imageView.isHidden = firstActiveLayerIndex >= 0;
         for (index, layer) in layers.enumerated() {
             layer.isHidden = index < firstActiveLayerIndex || index > lastActiveLayerIndex
@@ -199,7 +228,6 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     func undo(){
-        print("undo", lastActiveLayerIndex, layers.count)
         if(lastActiveLayerIndex >= 0){
             lastActiveLayerIndex -= 1;
             if(lastActiveLayerIndex < firstActiveLayerIndex){

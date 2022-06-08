@@ -54,6 +54,7 @@ extension PhotoEditorViewController {
     
     override public func touchesEnded(_ touches: Set<UITouch>,
                                       with event: UIEvent?){
+        self.onLayersUpdate!()
         let touchCount = event?.allTouches?.count;
         
         if (drawMode == "text" && touchCount == 1 && activeTextView == nil) {
