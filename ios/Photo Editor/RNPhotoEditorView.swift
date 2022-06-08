@@ -107,17 +107,15 @@ class RNPhotoEditorView: UIView {
 
     func _onLayersUpdate() {
       if (self.onLayersUpdate != nil) {
-        // print("TEST=> _onLayersUpdate")
         self.onLayersUpdate!([
           "layersCount": photoEditor.layers.count,
-          "activeLayer": photoEditor.activeLayerNumber
+          "activeLayer": photoEditor.lastActiveLayerIndex
         ]);
       }
     }
 
     func _onPhotoProcessed(path: String) {
       if (self.onLayersUpdate != nil) {
-        // print("TEST=> _onPhotoProcessed")
         self.onPhotoProcessed!([
           "path": path,
         ]);
@@ -179,16 +177,6 @@ class RNPhotoEditorView: UIView {
     @objc
     func rotate(clockwise: Bool) {
         cropController?.cropView?.rotateImage(rotationAngle: (clockwise == true ? .pi/2:-.pi/2));
-    }
-
-    @objc
-    func redo() {
-        photoEditor.redo()
-    }
-
-    @objc
-    func undo() {
-        photoEditor.undo()
     }
 
     @objc
