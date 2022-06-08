@@ -26,6 +26,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import static java.util.Map.entry;
 import java.util.Map;
 
 
@@ -69,16 +70,16 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   @Nullable
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder
-        .of("create", COMMAND_CREATE,
-            "clearAll", COMMAND_CLEAR_ALL,
-            "rotate", COMMAND_ROTATE,
-            "crop", COMMAND_SUBMIT_CROP,
-            "undo", COMMAND_UNDO,
-            "redo", COMMAND_REDO,
-            "reload", COMMAND_RELOAD,
-            "processPhoto", COMMAND_PROCESS_PHOTO
-        );
+    return Map.ofEntries(
+        entry("create", COMMAND_CREATE),
+        entry("clearAll", COMMAND_CLEAR_ALL),
+        entry("rotate", COMMAND_ROTATE),
+        entry("crop", COMMAND_SUBMIT_CROP),
+        entry("undo", COMMAND_UNDO),
+        entry("redo", COMMAND_REDO),
+        entry("reload", COMMAND_RELOAD),
+        entry("processPhoto", COMMAND_PROCESS_PHOTO)
+    );
   }
 
   @Override
