@@ -33,7 +33,14 @@ export interface onImageLoadErrorEvent {
 
 export interface onPhotoProcessedEvent {
   nativeEvent: {
-      error: any;
+      path: any;
+  };
+}
+
+export interface onLayersUpdateEvent {
+  nativeEvent: {
+    layersCount: any;
+    activeLayer: any;
   };
 }
 

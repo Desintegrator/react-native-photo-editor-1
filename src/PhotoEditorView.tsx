@@ -82,6 +82,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       []
     );
   }
+
   const rotate = (clockwise:boolean = true) => {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(ref.current),
@@ -89,24 +90,11 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       [clockwise]
     );
   }
+
   const crop = () => {
     UIManager.dispatchViewManagerCommand(
         findNodeHandle(ref.current),
         Commands.crop,
-        []
-    );
-  }
-  const undo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.undo,
-        []
-    );
-  }
-  const redo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.redo,
         []
     );
   }

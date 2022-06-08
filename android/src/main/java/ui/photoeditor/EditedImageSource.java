@@ -20,6 +20,8 @@ public class EditedImageSource extends ImageSource {
     private static final String LOCAL_FILE_SCHEME = "file";
 
     public static final String ON_IMAGE_LOAD_ERROR_EVENT = "onImageLoadError";
+    public static final String ON_PHOTO_PROCESSED_EVENT = "onPhotoProcessed";
+    public static final String ON_LAYERS_UPDATE_EVENT = "onLayersUpdate";
 
     private Headers mHeaders;
     private Uri mUri;

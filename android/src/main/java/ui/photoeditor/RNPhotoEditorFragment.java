@@ -42,6 +42,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   private String mode = "none";
   private EditedImageSource editedImageSource;
 
+  // image error
   public interface OnImageLoadErrorListener {
     void onError(String error);
   }
@@ -51,6 +52,18 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void setOnImageLoadErrorListener(OnImageLoadErrorListener onImageLoadErrorListener) {
     this.onImageLoadErrorListener = onImageLoadErrorListener;
   }
+
+  // photo processed
+  public interface OnPhotoProcessedListener {
+    void onError(String error);
+  }
+
+  private OnPhotoProcessedListener onPhotoProcessedListener;
+
+  public void setOnPhotoProcessedListener(OnPhotoProcessedListener onPhotoProcessedListener) {
+    this.onPhotoProcessedListener = onPhotoProcessedListener;
+  }
+  // 
 
   public void setToolColor(int toolColor) {
     this.toolColor = toolColor;
@@ -100,6 +113,15 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     if (photoEditorSDK != null) {
       photoEditorSDK.redo();
     }
+  }
+
+  public void reload() {
+    Log.d("TEST", "reload=>");
+    // TODO: call "onLayersUpdate" here
+  }
+
+  public void processPhoto() {
+    Log.d("TEST", "processPhoto=>");
   }
 
   public void rotate(boolean clockwise) {
@@ -213,6 +235,18 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
           }
 
         }
+
+        // public void onPhotoProcessed() {
+        //   if (onPhotoProcessedListener != null) {
+        //     onPhotoProcessedListener
+        //   }
+        // }
+
+        // public void onLayersUpdate() {
+        //   if (onLayersUpdateistener != null) {
+        //     onLayersUpdateListener
+        //   }
+        // }
       });
     }
   }
