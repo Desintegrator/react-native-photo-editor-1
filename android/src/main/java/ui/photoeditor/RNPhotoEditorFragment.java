@@ -76,6 +76,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       }
     }
   }
+
   public void setMode(String mode) {
     this.mode = mode;
     updateEditorMode();
@@ -89,6 +90,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void clearAllViews() {
     if (photoEditorSDK != null) {
       photoEditorSDK.clearAllViews();
+      reloadEraser();
     }
   }
 
@@ -132,7 +134,6 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void updateEditorMode() {
     if (photoEditorSDK != null) {
       photoEditorSDK.setBrushDrawingMode(isDrawableMode());
-      photoEditorSDK.setEraserDrawingMode(mode.equals("eraser"));
       if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
         photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120 : 255);
@@ -147,6 +148,11 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       } else {
         photoEditorSDK.disableTextEditing();
       }
+      if (mode.equals("eraser")) {
+        photoEditorSDK.setEraserDrawingMode(true);
+        photoEditorSDK.updateViewsLayout();
+      }
+
     }
   }
 
@@ -189,6 +195,8 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         if (croppedImage != null) {
           photoEditorSDK.addCroppedImage(croppedImage);
           dismissCrop();
+
+
         }
       } catch (Exception ignored) {
       }

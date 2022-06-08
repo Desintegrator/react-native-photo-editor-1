@@ -69,8 +69,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
     addCropImageIndex(lastActiveLayerIndex);
     addLayer(imageRootView, params);
-
-    updateViewsLayout();
   }
 
   public void addImage(Bitmap desiredImage) {
@@ -84,7 +82,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
     addLayer(imageRootView, params);
-    updateViewsLayout();
   }
 
   public void addTextField(float x, float y, int colorCodeTextView, int textSize) {
@@ -108,7 +105,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     addLayer(addTextRootView, params);
     activeEditTextView = addTextView;
     addTextRootView.requestFocus();
-    updateViewsLayout();
   }
 
   private void addLayer(View view, ViewGroup.LayoutParams params) {
@@ -181,16 +177,17 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
   public void updateViewsLayout() {
     ImageView view = getMainView();
-    RelativeLayout.LayoutParams params = view.getWidth() > 0
-        ? new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight())
-        : new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
-    params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
-    brushDrawingView.setLayoutParams(params);
-    eraserDrawingView.setLayoutParams(params);
+    if (view.getWidth() > 0) {
+      RelativeLayout.LayoutParams params =
+          new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight());
+      params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+      params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
+      params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
+      params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
+      params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
+      brushDrawingView.setLayoutParams(params);
+      eraserDrawingView.setLayoutParams(params);
+    }
   }
 
   public void disableTextEditing() {
@@ -200,27 +197,6 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
     textEditingEnabled = false;
   }
-
-  // DEPRECATED
-  public void addText(String text, int colorCodeTextView) {
-    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_field, null);
-    TextView addTextView = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_field);
-    addTextView.setGravity(Gravity.CENTER);
-    addTextView.setText(text);
-    if (colorCodeTextView != -1)
-      addTextView.setTextColor(colorCodeTextView);
-    MultiTouchListener multiTouchListener = new MultiTouchListener(
-        parentView, this.imageView, onPhotoEditorSDKListener);
-    multiTouchListener.setOnMultiTouchListener(this);
-    addTextRootView.setOnTouchListener(multiTouchListener);
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    parentView.addView(addTextRootView, params);
-    addedViews.add(addTextRootView);
-  }
-
 
   public void setEraserDrawingMode(boolean eraserDrawMode) {
     if (eraserDrawingView != null) {
