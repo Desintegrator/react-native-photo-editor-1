@@ -9,9 +9,8 @@
 import Foundation
 import UIKit
 /**
- - didSelectView
- - didSelectImage
- - stickersViewDidDisappear
+ - doneEditing
+ - canceledEditing
  */
 
 @objc public protocol PhotoEditorDelegate {
@@ -25,26 +24,6 @@ import UIKit
     func canceledEditing()
 }
 
-
-/**
- - didSelectView
- - didSelectImage
- - stickersViewDidDisappear
- */
-protocol StickersViewControllerDelegate {
-    /**
-     - Parameter view: selected view from StickersViewController
-     */
-    func didSelectView(view: UIView)
-    /**
-     - Parameter image: selected Image from StickersViewController
-     */
-    func didSelectImage(image: UIImage)
-    /**
-     StickersViewController did Disappear
-     */
-    func stickersViewDidDisappear()
-}
 
 /**
  - didSelectColor
