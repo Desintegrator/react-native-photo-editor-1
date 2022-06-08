@@ -74,7 +74,6 @@ class RNPhotoEditorViewManager: RCTViewManager {
             component.undo()
         }
     }
-
     @objc func redo(_ node: NSNumber) {
         DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(

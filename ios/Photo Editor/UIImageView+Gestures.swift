@@ -1,17 +1,15 @@
 //
-//  PhotoEditor+Gestures.swift
+//  UIImageViewExtenstions.swift
 //  Photo Editor
 //
-//  Created by Mohamed Hamed on 6/16/17.
+//  Created by Mohamed Hamed on 5/10/17.
 //
 //
 
 import Foundation
-
-
 import UIKit
 
-extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
+extension UIImageView : UIGestureRecognizerDelegate {
     
     /**
      UIPanGestureRecognizer - Moving Objects
@@ -19,24 +17,9 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
      */
     @objc func panGesture(_ recognizer: UIPanGestureRecognizer) {
         if let view = recognizer.view {
-            if view is UIImageView {
-                //Tap only on visible parts on the image
-                if recognizer.state == .began {
-                    for imageView in subImageViews(view: self.canvasImageView) {
-                        let location = recognizer.location(in: imageView)
-                        let alpha = imageView.alphaAtPoint(location)
-                        if alpha > 0 {
-                            imageViewToPan = imageView
-                            break
-                        }
-                    }
-                }
-                if imageViewToPan != nil {
-                    moveView(view: imageViewToPan!, recognizer: recognizer)
-                }
-            } else {
-                moveView(view: view, recognizer: recognizer)
-            }
+
+            moveView(view: view, recognizer: recognizer)
+            
         }
     }
     
@@ -47,24 +30,24 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
     @objc func pinchGesture(_ recognizer: UIPinchGestureRecognizer) {
         if let view = recognizer.view {
             if view is UITextView {
-//                let textView = view as! UITextView
-//
-//                if textView.font!.pointSize * recognizer.scale < 90 {
-//                    let font = UIFont(name: textView.font!.fontName, size: textView.font!.pointSize * recognizer.scale)
-//                    textView.font = font
-//                    let sizeToFit = textView.sizeThatFits(CGSize(width: UIScreen.main.bounds.size.width,
-//                                                                 height:CGFloat.greatestFiniteMagnitude))
-//                    textView.bounds.size = CGSize(width: textView.intrinsicContentSize.width,
-//                                                  height: sizeToFit.height)
-//                } else {
-//                    let sizeToFit = textView.sizeThatFits(CGSize(width: UIScreen.main.bounds.size.width,
-//                                                                 height:CGFloat.greatestFiniteMagnitude))
-//                    textView.bounds.size = CGSize(width: textView.intrinsicContentSize.width,
-//                                                  height: sizeToFit.height)
-//                }
-//
-//
-//                textView.setNeedsDisplay()
+                let textView = view as! UITextView
+                
+                if textView.font!.pointSize * recognizer.scale < 90 {
+                    let font = UIFont(name: textView.font!.fontName, size: textView.font!.pointSize * recognizer.scale)
+                    textView.font = font
+                    let sizeToFit = textView.sizeThatFits(CGSize(width: UIScreen.main.bounds.size.width,
+                                                                 height:CGFloat.greatestFiniteMagnitude))
+                    textView.bounds.size = CGSize(width: textView.intrinsicContentSize.width,
+                                                  height: sizeToFit.height)
+                } else {
+                    let sizeToFit = textView.sizeThatFits(CGSize(width: UIScreen.main.bounds.size.width,
+                                                                 height:CGFloat.greatestFiniteMagnitude))
+                    textView.bounds.size = CGSize(width: textView.intrinsicContentSize.width,
+                                                  height: sizeToFit.height)
+                }
+                
+                
+                textView.setNeedsDisplay()
             } else {
                 view.transform = view.transform.scaledBy(x: recognizer.scale, y: recognizer.scale)
             }
@@ -89,23 +72,7 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
      */
     @objc func tapGesture(_ recognizer: UITapGestureRecognizer) {
         if let view = recognizer.view {
-            if view is UIImageView {
-                //Tap only on visible parts on the image
-                for imageView in subImageViews(view: canvasImageView) {
-                    let location = recognizer.location(in: imageView)
-                    let alpha = imageView.alphaAtPoint(location)
-                    if alpha > 0 {
-                        scaleEffect(view: imageView)
-                        break
-                    }
-                }
-            } else {
-                scaleEffect(view: view)
-                if(view is UITextView){
-                    view.becomeFirstResponder()
-                    activeTextView = view as? UITextView
-                }
-            }
+            scaleEffect(view: view)
         }
     }
     
@@ -126,11 +93,6 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
     
     @objc func screenEdgeSwiped(_ recognizer: UIScreenEdgePanGestureRecognizer) {
         
-    }
-    
-    // to Override Control Center screen edge pan from bottom
-    override public var prefersStatusBarHidden: Bool {
-        return true
     }
     
     /**
@@ -156,27 +118,18 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
     }
     
     /**
-     Moving Objects 
+     Moving Objects
      delete the view if it's inside the delete view
      Snap the view back if it's out of the canvas
      */
 
-    func moveView(view: UIView, recognizer: UIPanGestureRecognizer)  {        
+    func moveView(view: UIView, recognizer: UIPanGestureRecognizer)  {
         view.superview?.bringSubviewToFront(view)
 
-        view.center = CGPoint(x: view.center.x + recognizer.translation(in: firstActiveLayer).x,
-                              y: view.center.y + recognizer.translation(in: firstActiveLayer).y)
+        view.center = CGPoint(x: view.center.x + recognizer.translation(in: self).x,
+                              y: view.center.y + recognizer.translation(in: self).y)
         
-        recognizer.setTranslation(CGPoint.zero, in: firstActiveLayer)
-               
-        if recognizer.state == .ended {
-            imageViewToPan = nil
-            if !firstActiveLayer.bounds.contains(view.center) { //Snap the view back to canvasImageView
-                UIView.animate(withDuration: 0.3, animations: {
-                    view.center = self.firstActiveLayer.center
-                })
-            }
-        }
+        recognizer.setTranslation(CGPoint.zero, in: self)
     }
     
     func subImageViews(view: UIView) -> [UIImageView] {

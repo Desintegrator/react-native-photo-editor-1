@@ -34,9 +34,6 @@
                                 <constraint firstAttribute="width" constant="390" id="DdY-qb-dfw"/>
                             </constraints>
                         </imageView>
-                        <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n3p-yR-4xc">
-                            <rect key="frame" x="0.0" y="0.0" width="390" height="667"/>
-                        </imageView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
@@ -45,13 +42,13 @@
                         <constraint firstAttribute="width" constant="390" id="Cnv-qb-dfw"/>
                         <constraint firstItem="5rw-9v-ExQ" firstAttribute="centerY" secondItem="S1Y-ZS-dct" secondAttribute="centerY" id="KyP-cQ-CLv"/>
                         <constraint firstItem="5rw-9v-ExQ" firstAttribute="centerY" secondItem="S1Y-ZS-dct" secondAttribute="centerY" id="ShJ-vP-jck"/>
-                        <constraint firstItem="n3p-yR-4xc" firstAttribute="centerX" secondItem="5rw-9v-ExQ" secondAttribute="centerX" id="WQj-O5-IU1"/>
-                        <constraint firstItem="n3p-yR-4xc" firstAttribute="height" secondItem="5rw-9v-ExQ" secondAttribute="height" id="WQj-O5-IU3"/>
-                        <constraint firstItem="n3p-yR-4xc" firstAttribute="width" secondItem="5rw-9v-ExQ" secondAttribute="width" id="pvY-Cw-nP5"/>
-                        <constraint firstItem="n3p-yR-4xc" firstAttribute="centerY" secondItem="5rw-9v-ExQ" secondAttribute="centerY" id="pvY-Cw-nPi"/>
                         <constraint firstItem="5rw-9v-ExQ" firstAttribute="centerX" secondItem="S1Y-ZS-dct" secondAttribute="centerX" id="xzP-qW-C5X"/>
                     </constraints>
                 </view>
+                <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n3p-yR-4xc">
+                    <rect key="frame" x="0.0" y="88" width="390" height="667"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
             </subviews>
             <constraints>
                 <constraint firstItem="S1Y-ZS-dct" firstAttribute="top" secondItem="HPk-Bg-V0q" secondAttribute="top" id="E2J-Rc-J8g"/>

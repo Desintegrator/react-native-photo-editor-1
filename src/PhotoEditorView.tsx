@@ -106,7 +106,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       }, 300)
       return ()=>clearTimeout(timeoutId);
     }
-    onMount()
+    onMount?.()
   }, []);
 
   const ref = useRef(null);
