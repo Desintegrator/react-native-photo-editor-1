@@ -1,6 +1,6 @@
 {
     "name": "@scm/react-native-photo-editor",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "React Native: Native Photo Editor",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
