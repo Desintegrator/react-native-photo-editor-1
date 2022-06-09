@@ -285,6 +285,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     addedViews.clear();
     lastActiveLayerIndex = 0;
     showViews();
+    updateViewsLayout();
   }
 
   public Bitmap generateImage() {

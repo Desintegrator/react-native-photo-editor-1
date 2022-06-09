@@ -31,7 +31,6 @@ public class BrushDrawingView extends View {
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
     private boolean brushDrawMode;
-    private boolean eraserMode;
     private boolean isRectangle;
     private int brushAlpha = 255;
 

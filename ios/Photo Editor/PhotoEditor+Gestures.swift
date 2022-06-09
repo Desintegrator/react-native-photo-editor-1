@@ -166,12 +166,12 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
 
         view.center = CGPoint(x: view.center.x + recognizer.translation(in: firstActiveLayer).x,
                               y: view.center.y + recognizer.translation(in: firstActiveLayer).y)
-        
+
         recognizer.setTranslation(CGPoint.zero, in: firstActiveLayer)
-               
+//
         if recognizer.state == .ended {
             imageViewToPan = nil
-            if !firstActiveLayer.bounds.contains(view.center) { //Snap the view back to canvasImageView
+            if !firstActiveLayer.frame.contains(view.center) {
                 UIView.animate(withDuration: 0.3, animations: {
                     view.center = self.firstActiveLayer.center
                 })

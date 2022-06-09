@@ -87,8 +87,13 @@ class RNPhotoEditorView: UIView {
         didSet {
             photoEditor.toolSize = self.toolSize;
             if(photoEditor.activeTextView != nil){
-                photoEditor.activeTextView!.font = photoEditor.activeTextView?.font?.withSize(toolSize)
-                photoEditor.activeTextView!.sizeToFit()
+                let textView = photoEditor.activeTextView!
+                textView.font = textView.font?.withSize(toolSize)
+                let maxWidth = self.photoEditor.firstActiveLayer.frame.width
+                let newSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
+                textView.frame.size = CGSize(width: newSize.width, height: newSize.height)
+                
+                textView.sizeToFit()
             }
         }
     }
