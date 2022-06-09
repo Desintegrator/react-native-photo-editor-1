@@ -145,7 +145,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   }
 
   private boolean isDrawableMode() {
-    List<String> drawableActions = Arrays.asList("pencil", "marker");
+    List<String> drawableActions = Arrays.asList("pencil", "marker", "square");
     return drawableActions.contains(mode);
   }
 
@@ -155,7 +155,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public void updateEditorMode() {
     if (photoEditorSDK != null) {
-      photoEditorSDK.setBrushDrawingMode(isDrawableMode());
+      photoEditorSDK.setBrushDrawingMode(isDrawableMode(), mode);
       if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
         photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120 : 255);
