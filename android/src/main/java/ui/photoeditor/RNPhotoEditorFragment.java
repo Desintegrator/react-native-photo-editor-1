@@ -57,7 +57,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   // photo processed
   public interface OnPhotoProcessedListener {
-    void onError(String error);
+    void onUpdate(String path);
   }
 
   private OnPhotoProcessedListener onPhotoProcessedListener;
@@ -140,13 +140,10 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
-  public void reload() {
-    Log.d("TEST", "reload=>");
-    // TODO: call "onLayersUpdate" here
-  }
+  public void reload() {}
 
   public void processPhoto() {
-    Log.d("TEST", "processPhoto=>");
+    photoEditorSDK.processPhoto();
   }
 
   public void rotate(boolean clockwise) {
@@ -371,6 +368,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void onLayersUpdate(int activeLayer, int layersCount) {
       if (onLayersUpdateListener != null) {
         onLayersUpdateListener.onUpdate(activeLayer,layersCount);
+      }
+  }
+
+  @Override
+  public void onPhotoProcessedUpdate(String path) {
+      if (onPhotoProcessedListener != null) {
+        onPhotoProcessedListener.onUpdate(path);
       }
   }
 }

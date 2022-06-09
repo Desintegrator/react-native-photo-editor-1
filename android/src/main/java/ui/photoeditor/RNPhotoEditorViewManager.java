@@ -1,7 +1,6 @@
 package ui.photoeditor;
 
 import static ui.photoeditor.EditedImageSource.ON_IMAGE_LOAD_ERROR_EVENT;
-import static ui.photoeditor.EditedImageSource.ON_PHOTO_PROCESSED_EVENT;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -43,6 +42,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_PROCESS_PHOTO = 8;
 
   public static final String ON_LAYERS_UPDATE_EVENT = "onLayersUpdate";
+  public static final String ON_PHOTO_PROCESSED_EVENT = "onPhotoProcessed";
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
@@ -129,10 +129,10 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     eventEmitter.receiveEvent(rootId, ON_IMAGE_LOAD_ERROR_EVENT, event);
   }
 
-  public void onPhotoProcessed() {
+  public void onPhotoProcessed(String path) {
     RCTEventEmitter eventEmitter = reactContext.getJSModule(RCTEventEmitter.class);
     WritableMap event = new WritableNativeMap();
-    // event.putString("error", error);
+    event.putString("path", path);
     eventEmitter.receiveEvent(rootId, ON_PHOTO_PROCESSED_EVENT, event);
   }
 
@@ -258,6 +258,14 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
         onLayersUpdate(activeLayer, layersCount);
       }
     });
+
+    photoEditorFragment.setOnPhotoProcessedListener(new RNPhotoEditorFragment.OnPhotoProcessedListener() {
+      @Override
+      public void onUpdate(String path) {
+        onPhotoProcessed(path);
+      }
+    });
+
     FragmentActivity activity = (FragmentActivity) reactContext.getCurrentActivity();
     if (activity != null) {
       activity.getSupportFragmentManager()
