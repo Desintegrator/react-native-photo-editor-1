@@ -4,20 +4,19 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
+import com.ahmedadeltito.photoeditorsdk.EraserDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
@@ -28,6 +27,7 @@ import com.canhub.cropper.CropImageView;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKListener {
@@ -35,6 +35,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   private ImageView photoEditImageView;
   private CropImageView cropImageView;
   private BrushDrawingView brushDrawingView;
+  private EraserDrawingView eraserDrawingView;
   private Bitmap editedImage;
   public PhotoEditorSDK photoEditorSDK;
   private int toolColor = Color.BLACK;
@@ -42,6 +43,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   private String mode = "none";
   private EditedImageSource editedImageSource;
 
+  // image error
   public interface OnImageLoadErrorListener {
     void onError(String error);
   }
@@ -52,13 +54,25 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     this.onImageLoadErrorListener = onImageLoadErrorListener;
   }
 
+  // photo processed
+  public interface OnPhotoProcessedListener {
+    void onError(String error);
+  }
+
+  private OnPhotoProcessedListener onPhotoProcessedListener;
+
+  public void setOnPhotoProcessedListener(OnPhotoProcessedListener onPhotoProcessedListener) {
+    this.onPhotoProcessedListener = onPhotoProcessedListener;
+  }
+  // 
+
   public void setToolColor(int toolColor) {
     this.toolColor = toolColor;
     if (photoEditorSDK != null) {
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.setTextColor(toolColor);
       }
     }
@@ -67,14 +81,15 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void setToolSize(int toolSize) {
     this.toolSize = toolSize;
     if (photoEditorSDK != null) {
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushSize(toolSize);
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.setTextSize(toolSize);
       }
     }
   }
+
   public void setMode(String mode) {
     this.mode = mode;
     updateEditorMode();
@@ -88,18 +103,39 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void clearAllViews() {
     if (photoEditorSDK != null) {
       photoEditorSDK.clearAllViews();
+      reloadEraser();
     }
   }
 
-  public void undo(){
+  public void undo() {
     if (photoEditorSDK != null) {
       photoEditorSDK.undo();
+      reloadCrop();
+      reloadEraser();
     }
   }
-  public void redo(){
+
+  public void redo() {
     if (photoEditorSDK != null) {
       photoEditorSDK.redo();
+      reloadCrop();
+      reloadEraser();
     }
+  }
+
+  private void reloadEraser() {
+    if (mode.equals("eraser")) {
+      photoEditorSDK.setEraserDrawingMode(true);
+    }
+  }
+
+  public void reload() {
+    Log.d("TEST", "reload=>");
+    // TODO: call "onLayersUpdate" here
+  }
+
+  public void processPhoto() {
+    Log.d("TEST", "processPhoto=>");
   }
 
   public void rotate(boolean clockwise) {
@@ -108,38 +144,44 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
     }
   }
 
-  private boolean isDrawableMode (){
+  private boolean isDrawableMode() {
     List<String> drawableActions = Arrays.asList("pencil", "marker");
     return drawableActions.contains(mode);
   }
-  private boolean isTextMode (){
+
+  private boolean isTextMode() {
     return mode.equals("text");
   }
 
   public void updateEditorMode() {
     if (photoEditorSDK != null) {
       photoEditorSDK.setBrushDrawingMode(isDrawableMode());
-      if(isDrawableMode()){
+      if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
-        photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120: 255);
+        photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120 : 255);
       }
       if (mode.equals("crop")) {
         enableCrop();
       } else {
         dismissCrop();
       }
-      if(isTextMode()){
+      if (isTextMode()) {
         photoEditorSDK.enableTextEditing();
-      }else{
+      } else {
         photoEditorSDK.disableTextEditing();
       }
+      if (mode.equals("eraser")) {
+        photoEditorSDK.setEraserDrawingMode(true);
+        photoEditorSDK.updateViewsLayout();
+      }
+
     }
   }
 
-  private View.OnTouchListener onParentViewTouchListener = new View.OnTouchListener() {
+  private final View.OnTouchListener onParentViewTouchListener = new View.OnTouchListener() {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-      if(isTextMode()){
+      if (isTextMode()) {
         int action = event.getAction();
         float touchX = event.getX();
         float touchY = event.getY();
@@ -150,6 +192,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       return true;
     }
   };
+
+  public void reloadCrop() {
+    if (mode.equals("crop")) {
+      dismissCrop();
+      enableCrop();
+    }
+  }
 
   public void enableCrop() {
     if (photoEditorSDK != null) {
@@ -167,8 +216,9 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         Bitmap croppedImage = cropImageView.getCroppedImage(parentWidth, parentHeight, CropImageView.RequestSizeOptions.RESIZE_FIT);
         if (croppedImage != null) {
           photoEditorSDK.addCroppedImage(croppedImage);
-          brushDrawingView.bringToFront();
           dismissCrop();
+
+
         }
       } catch (Exception ignored) {
       }
@@ -182,7 +232,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   private void loadGlideImage(CustomTarget<Bitmap> target) {
     Glide
-        .with(getContext())
+        .with(Objects.requireNonNull(getContext()))
         .asBitmap()
         .load(editedImageSource.getSourceForLoad()).into(target);
   }
@@ -213,28 +263,42 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
           }
 
         }
+
+        // public void onPhotoProcessed() {
+        //   if (onPhotoProcessedListener != null) {
+        //     onPhotoProcessedListener
+        //   }
+        // }
+
+        // public void onLayersUpdate() {
+        //   if (onLayersUpdateistener != null) {
+        //     onLayersUpdateListener
+        //   }
+        // }
       });
     }
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+  public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
     super.onCreateView(inflater, parent, savedInstanceState);
     int layout = R.layout.fragment_photo_editor;
     return inflater.inflate(layout, parent, false);
   }
 
   @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     parentImageRelativeLayout = (RelativeLayout) view.findViewById(R.id.parent_image_rl);
     brushDrawingView = (BrushDrawingView) view.findViewById(R.id.drawing_view);
     photoEditImageView = (ImageView) view.findViewById(R.id.photo_edit_iv);
     cropImageView = (CropImageView) view.findViewById(R.id.crop_view);
+    eraserDrawingView = (EraserDrawingView) view.findViewById(R.id.eraser_view);
     photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(this.getContext())
         .parentView(parentImageRelativeLayout) // add parent image view
         .childView(photoEditImageView) // add the desired image view
         .brushDrawingView(brushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
+        .eraserDrawingView(eraserDrawingView) // add the brush drawing view that is responsible for drawing on the image view
         .buildPhotoEditorSDK(); // build photo editor sdk
     photoEditorSDK.setOnPhotoEditorSDKListener(this);
     photoEditorSDK.setBrushColor(toolColor);
@@ -293,6 +357,13 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       if (bitmap != null) {
         photoEditorSDK.addImage(bitmap);
         brushDrawingView.clearAll();
+      }
+    }
+    if (viewType == ViewType.ERASER_DRAWING) {
+      Bitmap bitmap = eraserDrawingView.getImageBitmap();
+      if (bitmap != null) {
+        photoEditorSDK.addImage(bitmap);
+        eraserDrawingView.clearAll();
       }
     }
   }

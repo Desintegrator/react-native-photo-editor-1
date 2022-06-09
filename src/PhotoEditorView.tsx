@@ -22,15 +22,50 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
    gesturesEnabled = true,
    minScale = DEFAULT_MIN_SCALE,
    maxScale = DEFAULT_MAX_SCALE,
+   onMount,
    ...rest}, photoEditorViewRef) => {
 
   useImperativeHandle(photoEditorViewRef, () => ({
     clearAll,
     rotate,
     crop,
+    redo,
     undo,
-    redo
+    reload,
+    processPhoto,
   }));
+
+  const redo = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.redo,
+      []
+    );
+  }
+
+  const undo = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.undo,
+      []
+    );
+  }
+
+  const processPhoto = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.processPhoto,
+      []
+    );
+  }
+
+  const reload = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(ref.current),
+      Commands.reload,
+      []
+    );
+  }
 
   const createFragment = () =>{
     const viewId = findNodeHandle(ref.current)
@@ -47,6 +82,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       []
     );
   }
+
   const rotate = (clockwise:boolean = true) => {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(ref.current),
@@ -54,24 +90,11 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       [clockwise]
     );
   }
+
   const crop = () => {
     UIManager.dispatchViewManagerCommand(
         findNodeHandle(ref.current),
         Commands.crop,
-        []
-    );
-  }
-  const undo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.undo,
-        []
-    );
-  }
-  const redo = () => {
-    UIManager.dispatchViewManagerCommand(
-        findNodeHandle(ref.current),
-        Commands.redo,
         []
     );
   }
@@ -83,6 +106,7 @@ const PhotoEditorView = forwardRef<IPhotoEditorViewRef, PhotoEditorViewProps>(({
       }, 300)
       return ()=>clearTimeout(timeoutId);
     }
+    onMount?.()
   }, []);
 
   const ref = useRef(null);

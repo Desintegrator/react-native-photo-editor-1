@@ -23,6 +23,8 @@ public final class PhotoEditorViewController: UIViewController {
     @IBOutlet weak var canvasView: UIView!
     //To hold the image
     @IBOutlet var imageView: UIImageView!
+//    @IBOutlet var drawImageView: UIImageView!
+
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var canvasHeightConstraint: NSLayoutConstraint!
@@ -30,19 +32,12 @@ public final class PhotoEditorViewController: UIViewController {
     //To hold the drawings
     @IBOutlet weak var canvasImageView: UIImageView!
 
-    //Controls
     @objc public var image: UIImage?
 
-    /**
-     Array of Colors that will show while drawing or typing
-     */
-    @objc public var colors  : [UIColor] = []
-
     @objc public var photoEditorDelegate: PhotoEditorDelegate?
-
-    // list of controls to be hidden
-    @objc public var hiddenControls : [NSString] = []
-
+    
+    let CROP_IMAGE_VIEW_TAG = 8000
+    
     var toolSize: CGFloat = 50.0
     var toolColor: UIColor = UIColor.black
     var textColor: UIColor = UIColor.white
@@ -59,15 +54,34 @@ public final class PhotoEditorViewController: UIViewController {
     var activeTextView: UITextView?
     var imageViewToPan: UIImageView?
     var isTyping: Bool = false
+    var textExists: Bool = false
 
+    var onLayersUpdate: (() -> ())? = nil
+    var onPhotoProcessed: ((String) -> ())? = nil
 
-    var layers: [UIImageView] = []
-    var activeLayerNumber: Int = 0
+    var layers: [UIView] = []
+    var cropImagesLayersIndexes: [Int] = []
+    var lastActiveLayerIndex = -1;
 
-
+    
+    var firstActiveLayerIndex: Int {
+        get {
+            if(cropImagesLayersIndexes.isEmpty){
+                return -1;
+            }
+            return cropImagesLayersIndexes.last!;
+        }
+    }
+    
+    var firstActiveLayer: UIImageView {
+        get {
+            if(firstActiveLayerIndex == -1) {return imageView}
+            return layers[firstActiveLayerIndex] as! UIImageView
+        }
+    }
+    
     //Register Custom font before we load XIB
     public override func loadView() {
-        registerFont()
         super.loadView()
     }
 
@@ -100,38 +114,154 @@ public final class PhotoEditorViewController: UIViewController {
             imageViewWidthConstraint.constant = (size?.width)!
         }
     }
+    
+
+    func reload() {
+        if(self.onLayersUpdate != nil){
+            self.onLayersUpdate!();
+        }
+    }
+
+    func processPhoto() {
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("examplePng.png")
+        
+        let pngData = self.generateImage().pngData()
+
+        // print("path=> ", path)
+        let url = path
+        if (pngData != nil && url != nil) {
+            do {
+              try? pngData!.write(to: url, options: .atomic)
+            } catch {
+              self.onPhotoProcessed!("error")
+            }
+        }
+        
+        if(self.onPhotoProcessed != nil) {
+          do {
+            try self.onPhotoProcessed!("\(path)");
+          } catch {
+            self.onPhotoProcessed!("error")
+          }
+        }
+    }
+
 
     func clearAll() {
         self.layers.forEach {
             layer in layer.removeFromSuperview();
         }
         layers.removeAll()
+        lastActiveLayerIndex = -1;
+        cropImagesLayersIndexes.removeAll()
+        updateLayersVisibility()
     }
     
+    func addLayer(layer: UIView) {
+        if(lastActiveLayerIndex > -1){
+            while(layers.count - 1 > lastActiveLayerIndex){
+                layers.popLast()?.removeFromSuperview();
+            }
+            lastActiveLayerIndex = layers.count - 1
+        }
+        layers.append(layer)
+        if(layer is UITextView){
+            canvasImageView.addSubview(layer)
+            textExists = true;
+        }else{
+            canvasView.addSubview(layer)
+        }
+        view.bringSubviewToFront(canvasImageView)
+        self.lastActiveLayerIndex += 1
+    }
+    
+    func saveTextLayers(){
+        if(activeTextView != nil){
+            activeTextView!.endEditing(true)
+        }
+        if(textExists){
+            for (index, layer) in layers.enumerated() {
+                if(layer is UITextView && !layer.isHidden){
+                    let imageView = UIImageView(frame: firstActiveLayer.frame);
+                    layer.removeFromSuperview();
+                    imageView.addSubview(layer);
+                    layers[index] = imageView;
+                    canvasView.addSubview(imageView)
+                }
+            }
+            textExists = false
+        }
+    }
+    
+    func addCropImageIndex(index: Int){
+        cropImagesLayersIndexes.append(index)
+        updateLayersVisibility()
+    }
+    
+    func removeLastCropImageIndex(){
+        cropImagesLayersIndexes.removeLast();
+        updateLayersVisibility()
+    }
+    
+    func updateLayersVisibility(){
+        if(self.onLayersUpdate != nil){
+            self.onLayersUpdate!();
+        }
+        self.imageView.isHidden = firstActiveLayerIndex >= 0;
+        for (index, layer) in layers.enumerated() {
+            layer.isHidden = index < firstActiveLayerIndex || index > lastActiveLayerIndex
+        }    
+    }
+    
+    func removeLayerByIndex(index: Int){
+        let layer = layers[index];
+        layer.removeFromSuperview();
+        layers.remove(at: index)
+        if(self.lastActiveLayerIndex >= layers.count) {
+            self.lastActiveLayerIndex = layers.count - 1
+        }
+    }
     func hideLayers(){
+        imageView.isHidden = true;
         layers.forEach {
             layer in
             layer.isHidden = true
         }
     }
     
-    func showLayers(){
-        layers.forEach {
-            layer in
-            layer.isHidden = false
+    func undo(){
+        if(lastActiveLayerIndex >= 0){
+            lastActiveLayerIndex -= 1;
+            if(lastActiveLayerIndex < firstActiveLayerIndex){
+                removeLastCropImageIndex()
+            }
+            updateLayersVisibility()
+        }
+       
+    }
+    
+    func redo(){
+        if(lastActiveLayerIndex < layers.count - 1){
+            lastActiveLayerIndex += 1;
+            if(layers[lastActiveLayerIndex].tag == CROP_IMAGE_VIEW_TAG){
+                addCropImageIndex(index: lastActiveLayerIndex)
+            }
+            updateLayersVisibility()
         }
     }
+    
     func generateImage()-> UIImage {
-        let size = self.imageView.frame.integral.size
+        let size = self.firstActiveLayer.frame.integral.size
         let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
 
         UIGraphicsBeginImageContextWithOptions(size, false, 0);
-        self.imageView.image!.draw(in: areaSize);
+        self.firstActiveLayer.image!.draw(in: areaSize);
         layers.forEach {
-            layer in
-            layer.image?.withAlpha(alpha: layer.alpha)?.draw(in: areaSize);
+            layer in if(!layer.isHidden){
+                layer.drawHierarchy(in: areaSize, afterScreenUpdates: true);
+            }
+            
         }
-        
         return UIGraphicsGetImageFromCurrentImageContext()!;
     }
 }

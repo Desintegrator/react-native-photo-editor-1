@@ -1,6 +1,8 @@
 package ui.photoeditor;
 
 import static ui.photoeditor.EditedImageSource.ON_IMAGE_LOAD_ERROR_EVENT;
+import static ui.photoeditor.EditedImageSource.ON_PHOTO_PROCESSED_EVENT;
+import static ui.photoeditor.EditedImageSource.ON_LAYERS_UPDATE_EVENT;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import static java.util.Map.entry;
 import java.util.Map;
 
 
@@ -36,6 +39,9 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_ROTATE = 4;
   public final int COMMAND_UNDO = 5;
   public final int COMMAND_REDO = 6;
+  public final int COMMAND_RELOAD = 7;
+  public final int COMMAND_PROCESS_PHOTO = 8;
+
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
@@ -64,14 +70,16 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   @Nullable
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder
-        .of("create", COMMAND_CREATE,
-            "clearAll", COMMAND_CLEAR_ALL,
-            "rotate", COMMAND_ROTATE,
-            "crop", COMMAND_SUBMIT_CROP,
-            "undo", COMMAND_UNDO,
-            "redo", COMMAND_REDO
-        );
+    return Map.ofEntries(
+        entry("create", COMMAND_CREATE),
+        entry("clearAll", COMMAND_CLEAR_ALL),
+        entry("rotate", COMMAND_ROTATE),
+        entry("crop", COMMAND_SUBMIT_CROP),
+        entry("undo", COMMAND_UNDO),
+        entry("redo", COMMAND_REDO),
+        entry("reload", COMMAND_RELOAD),
+        entry("processPhoto", COMMAND_PROCESS_PHOTO)
+    );
   }
 
   @Override
@@ -102,6 +110,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       case COMMAND_REDO:
         photoEditorFragment.redo();
         break;
+      case COMMAND_RELOAD:
+        photoEditorFragment.reload();
+        break;
+      case COMMAND_PROCESS_PHOTO:
+        photoEditorFragment.processPhoto();
+        break;
       default: {
       }
     }
@@ -114,12 +128,46 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     eventEmitter.receiveEvent(rootId, ON_IMAGE_LOAD_ERROR_EVENT, event);
   }
 
+  public void onPhotoProcessed() {
+    RCTEventEmitter eventEmitter = reactContext.getJSModule(RCTEventEmitter.class);
+    WritableMap event = new WritableNativeMap();
+    // event.putString("error", error);
+    eventEmitter.receiveEvent(rootId, ON_PHOTO_PROCESSED_EVENT, event);
+  }
+
+  public void onLayersUpdate() {
+    RCTEventEmitter eventEmitter = reactContext.getJSModule(RCTEventEmitter.class);
+    WritableMap event = new WritableNativeMap();
+    // event.putString("error", error);
+    eventEmitter.receiveEvent(rootId, ON_LAYERS_UPDATE_EVENT, event);
+  }
+
   @Override
   public @Nullable
   Map getExportedCustomDirectEventTypeConstants() {
-    return MapBuilder.of(
-        ON_IMAGE_LOAD_ERROR_EVENT, MapBuilder.of("registrationName", ON_IMAGE_LOAD_ERROR_EVENT)
-    );
+    return  MapBuilder.builder()
+      .put(
+          ON_IMAGE_LOAD_ERROR_EVENT,
+          MapBuilder.of(
+            "registrationName",
+            ON_IMAGE_LOAD_ERROR_EVENT
+          )
+      )
+      .put(
+        ON_PHOTO_PROCESSED_EVENT,
+        MapBuilder.of(
+          "registrationName",
+          ON_PHOTO_PROCESSED_EVENT
+        )
+      )
+      .put(
+        ON_LAYERS_UPDATE_EVENT,
+        MapBuilder.of(
+          "registrationName",
+          ON_LAYERS_UPDATE_EVENT
+        )
+      )
+      .build();
   }
 
   @ReactProp(name = "source")

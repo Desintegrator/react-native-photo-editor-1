@@ -2,6 +2,7 @@ package com.ahmedadeltito.photoeditorsdk;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 
 import androidx.annotation.ColorInt;
@@ -34,6 +35,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
   private final RelativeLayout parentView;
   private final ImageView imageView;
   private final BrushDrawingView brushDrawingView;
+  private final EraserDrawingView eraserDrawingView;
   private final List<View> addedViews;
   private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
   private EditText activeEditTextView;
@@ -47,6 +49,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     this.parentView = photoEditorSDKBuilder.parentView;
     this.imageView = photoEditorSDKBuilder.imageView;
     this.brushDrawingView = photoEditorSDKBuilder.brushDrawingView;
+    this.eraserDrawingView = photoEditorSDKBuilder.eraserDrawingView;
     addedViews = new ArrayList<>();
     cropImagesIndexesList = new ArrayList<>();
   }
@@ -64,10 +67,8 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     imageView.setImageBitmap(croppedImage);
     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    parentView.addView(imageRootView, params);
     addCropImageIndex(lastActiveLayerIndex);
-    addLayer(imageRootView);
-    updateViewsLayout();
+    addLayer(imageRootView, params);
   }
 
   public void addImage(Bitmap desiredImage) {
@@ -80,9 +81,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    parentView.addView(imageRootView, params);
-    addLayer(imageRootView);
-    updateViewsLayout();
+    addLayer(imageRootView, params);
   }
 
   public void addTextField(float x, float y, int colorCodeTextView, int textSize) {
@@ -103,18 +102,17 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     params.topMargin = (int) y - 12;
     params.leftMargin = (int) x - 12;
-    parentView.addView(addTextRootView, params);
-    addLayer(addTextRootView);
+    addLayer(addTextRootView, params);
     activeEditTextView = addTextView;
     addTextRootView.requestFocus();
-    updateViewsLayout();
   }
 
-  private void addLayer(View view) {
+  private void addLayer(View view, ViewGroup.LayoutParams params) {
     // delete layers hidden by undo
     while (addedViews.size() > lastActiveLayerIndex) {
       parentView.removeView(addedViews.remove(lastActiveLayerIndex));
     }
+    parentView.addView(view, lastActiveLayerIndex + 1, params);
     addedViews.add(lastActiveLayerIndex, view);
     lastActiveLayerIndex++;
     updateViewsLayout();
@@ -179,15 +177,17 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
   public void updateViewsLayout() {
     ImageView view = getMainView();
-    RelativeLayout.LayoutParams params = view.getWidth() > 0
-        ? new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight())
-        : new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
-    params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
-    params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
-    brushDrawingView.setLayoutParams(params);
+    if (view.getWidth() > 0) {
+      RelativeLayout.LayoutParams params =
+          new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight());
+      params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+      params.addRule(RelativeLayout.ALIGN_LEFT, view.getId());
+      params.addRule(RelativeLayout.ALIGN_TOP, view.getId());
+      params.addRule(RelativeLayout.ALIGN_RIGHT, view.getId());
+      params.addRule(RelativeLayout.ALIGN_BOTTOM, view.getId());
+      brushDrawingView.setLayoutParams(params);
+      eraserDrawingView.setLayoutParams(params);
+    }
   }
 
   public void disableTextEditing() {
@@ -198,30 +198,25 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     textEditingEnabled = false;
   }
 
-  // DEPRECATED
-  public void addText(String text, int colorCodeTextView) {
-    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_field, null);
-    TextView addTextView = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_field);
-    addTextView.setGravity(Gravity.CENTER);
-    addTextView.setText(text);
-    if (colorCodeTextView != -1)
-      addTextView.setTextColor(colorCodeTextView);
-    MultiTouchListener multiTouchListener = new MultiTouchListener(
-        parentView, this.imageView, onPhotoEditorSDKListener);
-    multiTouchListener.setOnMultiTouchListener(this);
-    addTextRootView.setOnTouchListener(multiTouchListener);
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-    parentView.addView(addTextRootView, params);
-    addedViews.add(addTextRootView);
+  public void setEraserDrawingMode(boolean eraserDrawMode) {
+    if (eraserDrawingView != null) {
+      eraserDrawingView.setEraserDrawingMode(eraserDrawMode);
+      if (eraserDrawMode) {
+        ImageView imageView = getMainView();
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        eraserDrawingView.setBackgroundImage(bitmap);
+        eraserDrawingView.bringToFront();
+      }
+    }
   }
 
-
   public void setBrushDrawingMode(boolean brushDrawingMode) {
-    if (brushDrawingView != null)
+    if (brushDrawingView != null) {
       brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+      if (brushDrawingMode) {
+        brushDrawingView.bringToFront();
+      }
+    }
   }
 
   public void setBrushSize(float size) {
@@ -285,6 +280,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
       parentView.removeView(addedViews.get(i));
     }
     addedViews.clear();
+    lastActiveLayerIndex = 0;
     showViews();
   }
 
@@ -343,6 +339,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
   public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
     this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
     brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
+    eraserDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
   }
 
   @Override
@@ -363,6 +360,7 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     private RelativeLayout parentView;
     private ImageView imageView;
     private BrushDrawingView brushDrawingView;
+    private EraserDrawingView eraserDrawingView;
 
     public PhotoEditorSDKBuilder(Context context) {
       this.context = context;
@@ -378,9 +376,13 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
       return this;
     }
 
-
     public PhotoEditorSDKBuilder brushDrawingView(BrushDrawingView brushDrawingView) {
       this.brushDrawingView = brushDrawingView;
+      return this;
+    }
+
+    public PhotoEditorSDKBuilder eraserDrawingView(EraserDrawingView eraserDrawingView) {
+      this.eraserDrawingView = eraserDrawingView;
       return this;
     }
 

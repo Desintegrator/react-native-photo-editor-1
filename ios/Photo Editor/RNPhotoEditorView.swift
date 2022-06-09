@@ -10,6 +10,10 @@ class RNPhotoEditorView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         photoEditor = PhotoEditorViewController(nibName:"PhotoEditorViewController",bundle: Bundle(for: PhotoEditorViewController.self));
+
+        photoEditor.onLayersUpdate = _onLayersUpdate;
+        photoEditor.onPhotoProcessed = _onPhotoProcessed;
+
         let photoEditorView = photoEditor.view;
         photoEditorView?.frame = self.frame;
         photoEditorView?.bounds = self.bounds;
@@ -17,16 +21,10 @@ class RNPhotoEditorView: UIView {
         let emptyImage = UIColor.white.image(CGSize(width: 512, height: 256))
         photoEditor.setImageView(image: emptyImage);
         addSubview(photoEditorView!);
-        setupView()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupView()
-    }
-
-    private func setupView() {
-        photoEditor.loadViewIfNeeded()
     }
 
     @objc
@@ -43,8 +41,11 @@ class RNPhotoEditorView: UIView {
     
     func updatePhotoEditor(){
         let mode = photoEditor.mode;
-        photoEditor.isDrawing = ["pencil","marker","square"].contains(mode);
+        photoEditor.isDrawing = ["pencil","marker","square","eraser"].contains(mode);
         photoEditor.drawMode = mode;
+        if(mode != "text") {
+            photoEditor.saveTextLayers()
+        }
         if(mode == "crop"){
             addСropController()
         }else{
@@ -57,14 +58,10 @@ class RNPhotoEditorView: UIView {
             controller.delegate = photoEditor;
             let croppedImage = photoEditor.generateImage();
             controller.image = croppedImage;
-//            photoEditor.canvasImageView.addSubview(controller.view);
             addSubview(controller.view)
-//            photoEditor.addChild(controller);
-//            controller.view?.frame = photoEditor.imageView.bounds;
             controller.view.frame = frame;
             controller.view.bounds = bounds;
             photoEditor.hideLayers();
-            photoEditor.imageView.isHidden = true;
             controller.resetCropRect();
             cropController = controller;
             controller.didMove(toParent: photoEditor);
@@ -83,23 +80,46 @@ class RNPhotoEditorView: UIView {
                 cropController!.view.removeFromSuperview();
             }
         }
-        photoEditor.imageView.isHidden = false;
-        photoEditor.showLayers();
+        photoEditor.updateLayersVisibility();
     }
-
 
     @objc var toolSize: CGFloat = 50.0 {
         didSet {
             photoEditor.toolSize = self.toolSize;
-            self.setupView()
+            if(photoEditor.activeTextView != nil){
+                photoEditor.activeTextView!.font = photoEditor.activeTextView?.font?.withSize(toolSize)
+                photoEditor.activeTextView!.sizeToFit()
+            }
         }
     }
 
     @objc var toolColor = UIColor.black {
         didSet {
             photoEditor.toolColor = self.toolColor;
-            self.setupView()
+            if(photoEditor.activeTextView != nil){
+                photoEditor.activeTextView!.textColor = toolColor;
+            }
         }
+    }
+
+    @objc var onLayersUpdate: RCTDirectEventBlock?
+    @objc var onPhotoProcessed: RCTDirectEventBlock?
+
+    func _onLayersUpdate() {
+      if (self.onLayersUpdate != nil) {
+        self.onLayersUpdate!([
+          "layersCount": photoEditor.layers.count,
+          "activeLayer": photoEditor.lastActiveLayerIndex
+        ]);
+      }
+    }
+
+    func _onPhotoProcessed(path: String) {
+      if (self.onLayersUpdate != nil) {
+        self.onPhotoProcessed!([
+          "path": path,
+        ]);
+      }
     }
 
     @objc var onImageLoadError: RCTDirectEventBlock?
@@ -143,9 +163,29 @@ class RNPhotoEditorView: UIView {
     func crop() {
         submitСropController();
     }
+    
+    @objc
+    func undo() {
+        photoEditor.undo();
+    }
+    
+    @objc
+    func redo() {
+        photoEditor.redo();
+    }
 
     @objc
     func rotate(clockwise: Bool) {
         cropController?.cropView?.rotateImage(rotationAngle: (clockwise == true ? .pi/2:-.pi/2));
+    }
+
+    @objc
+    func reload() {
+        photoEditor.reload()
+    }
+
+    @objc
+    func processPhoto() {
+        photoEditor.processPhoto()
     }
 }
