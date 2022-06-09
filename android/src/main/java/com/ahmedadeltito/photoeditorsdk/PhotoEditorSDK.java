@@ -334,6 +334,13 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     return selectedOutputPath;
   }
 
+  public void processPhoto() {
+    if (onPhotoEditorSDKListener != null) {
+      String path = saveImage("SCM", "example.jpg");
+      onPhotoEditorSDKListener.onPhotoProcessedUpdate(path);
+    }
+  }
+
   private boolean isSDCARDMounted() {
     String status = Environment.getExternalStorageState();
     return status.equals(Environment.MEDIA_MOUNTED);

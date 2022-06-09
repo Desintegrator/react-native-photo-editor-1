@@ -17,4 +17,6 @@ public interface OnPhotoEditorSDKListener {
     void onStopViewChangeListener(ViewType viewType);
 
     void onLayersUpdate(int activeLayer, int layersCount);
+
+    void onPhotoProcessedUpdate(String path);
 }
