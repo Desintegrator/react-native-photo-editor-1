@@ -83,9 +83,9 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
       }
-      if (isTextMode()) {
-        photoEditorSDK.setTextColor(toolColor);
-      }
+//      if (isTextMode()) {
+//        photoEditorSDK.setTextColor(toolColor);
+//      }
     }
   }
 
@@ -95,9 +95,9 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       if (isDrawableMode()) {
         photoEditorSDK.setBrushSize(toolSize);
       }
-      if (isTextMode()) {
-        photoEditorSDK.setTextSize(toolSize);
-      }
+//      if (isTextMode()) {
+//        photoEditorSDK.setTextSize(toolSize);
+//      }
     }
   }
 
@@ -113,7 +113,7 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
 
   public void clearAllViews() {
     if (photoEditorSDK != null) {
-      photoEditorSDK.clearAllViews();
+      photoEditorSDK.addCroppedImage(editedImage);
       reloadEraser();
     }
   }
@@ -167,20 +167,23 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
       if (isDrawableMode()) {
         photoEditorSDK.setBrushColor(toolColor);
         photoEditorSDK.setBrushAlpha(mode.equals("marker") ? 120 : 255);
-      }
-      if (mode.equals("crop")) {
-        enableCrop();
-      } else {
-        dismissCrop();
+        photoEditorSDK.updateViewsLayout();
       }
       if (isTextMode()) {
         photoEditorSDK.enableTextEditing();
       } else {
         photoEditorSDK.disableTextEditing();
       }
+      if (mode.equals("crop")) {
+        enableCrop();
+      } else {
+        dismissCrop();
+      }
       if (mode.equals("eraser")) {
         photoEditorSDK.setEraserDrawingMode(true);
         photoEditorSDK.updateViewsLayout();
+      }else{
+        photoEditorSDK.setEraserDrawingMode(false);
       }
 
     }

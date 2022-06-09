@@ -46,7 +46,7 @@
                     </constraints>
                 </view>
                 <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n3p-yR-4xc">
-                    <rect key="frame" x="0.0" y="88" width="390" height="667"/>
+                    <rect key="frame" x="0.0" y="0" width="390" height="667"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
             </subviews>

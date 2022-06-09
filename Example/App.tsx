@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useRef, useState} from 'react';
 import {
   StyleSheet,
@@ -6,6 +5,7 @@ import {
   View,
   Text,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import PhotoEditorView, {
@@ -14,6 +14,8 @@ import PhotoEditorView, {
   PhotoEditorModeType,
   onLayersUpdateEvent,
 } from '@scm/react-native-photo-editor';
+
+const IS_ANDROID = Platform.OS === 'android';
 
 const PHOTO_PATH =
   // 'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2677&q=80';
@@ -43,6 +45,7 @@ const SIZED_MODES: PhotoEditorModeType[] = [
   'square',
   'text',
 ];
+
 const Button = ({
   title,
   onPress,
@@ -126,13 +129,18 @@ export default function App() {
   const [canRedo, setCanRedo] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
 
-  const handleLayersUpdate = ({
-    nativeEvent: {layersCount, activeLayer},
-  }: onLayersUpdateEvent) => {
-    console.log({layersCount, activeLayer});
+  const handleLayersUpdate = ({nativeEvent}: onLayersUpdateEvent) => {
+    const {layersCount, activeLayer} = nativeEvent;
 
-    setCanUndo(layersCount > 0 && activeLayer > 0);
-    setCanRedo(layersCount > 0 && activeLayer < layersCount - 1);
+    const canUndo = IS_ANDROID
+      ? layersCount > 0 && activeLayer > 0 // index from 1 for android
+      : layersCount > 0 && activeLayer > -1; // index from 0 for ios
+    const canRedo = IS_ANDROID
+      ? layersCount > 0 && activeLayer < layersCount
+      : layersCount > 0 && activeLayer < layersCount - 1;
+
+    setCanUndo(canUndo);
+    setCanRedo(canRedo);
   };
 
   const submit = () => {

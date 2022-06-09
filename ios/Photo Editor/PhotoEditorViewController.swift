@@ -148,17 +148,17 @@ public final class PhotoEditorViewController: UIViewController {
 
 
     func clearAll() {
-        self.layers.forEach {
-            layer in layer.removeFromSuperview();
-        }
-        layers.removeAll()
-        lastActiveLayerIndex = -1;
-        cropImagesLayersIndexes.removeAll()
+        let newImageView = UIImageView(image: self.image)
+        newImageView.frame = self.imageView.frame
+        newImageView.tag = CROP_IMAGE_VIEW_TAG
+        newImageView.center = self.view.center
+        addLayer(layer: newImageView)
+        addCropImageIndex(index: lastActiveLayerIndex)
         updateLayersVisibility()
     }
     
     func addLayer(layer: UIView) {
-        if(lastActiveLayerIndex > -1){
+        if(layers.count - 1 > lastActiveLayerIndex){
             while(layers.count - 1 > lastActiveLayerIndex){
                 layers.popLast()?.removeFromSuperview();
             }
@@ -183,9 +183,11 @@ public final class PhotoEditorViewController: UIViewController {
         if(textExists){
             for (index, layer) in layers.enumerated() {
                 if(layer is UITextView && !layer.isHidden){
-                    let imageView = UIImageView(frame: firstActiveLayer.frame);
+                    let convertedCenter = canvasView.convert(layer.center, to: self.firstActiveLayer);
+                    let imageView = UIImageView(frame: self.firstActiveLayer.frame);
                     layer.removeFromSuperview();
                     imageView.addSubview(layer);
+                    layer.center = convertedCenter;
                     layers[index] = imageView;
                     canvasView.addSubview(imageView)
                 }

@@ -59,13 +59,13 @@ extension PhotoEditorViewController {
         if (drawMode == "text" && touchCount == 1 && activeTextView == nil) {
             isTyping = true
             let touchPoint = touches.first!.location(in: self.canvasImageView)
-            
-            let textView = UITextView(frame: CGRect(x: touchPoint.x, y: touchPoint.y,
-                                                    width: self.firstActiveLayer.frame.width, height: toolSize+10))
+            let width = self.firstActiveLayer.frame.width;
+            let textView = UITextView(frame: CGRect(x: touchPoint.x - width/2, y: touchPoint.y-toolSize,
+                                                    width: width, height: toolSize+10))
 
             textView.font = UIFont(name: "Helvetica", size: toolSize)
             textView.textAlignment = .center
-            textView.text = "Text"
+            textView.text = ""
             textView.textColor = toolColor
             textView.layer.shadowColor = UIColor.black.cgColor
             textView.layer.shadowOffset = CGSize(width: 1.0, height: 0.0)
