@@ -32,7 +32,11 @@ public class BrushDrawingView extends View {
     private Bitmap canvasBitmap;
     private boolean brushDrawMode;
     private boolean eraserMode;
+    private boolean isRectangle;
     private int brushAlpha = 255;
+
+    private float firstPointX = 0;
+    private float firstPointY = 0;
 
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
@@ -86,8 +90,9 @@ public class BrushDrawingView extends View {
         drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
     }
 
-    void setBrushDrawingMode(boolean brushDrawMode) {
+    void setBrushDrawingMode(boolean brushDrawMode, String mode) {
         this.brushDrawMode = brushDrawMode;
+        this.isRectangle = mode.equals("square");
         if (brushDrawMode) {
             this.setVisibility(View.VISIBLE);
             refreshBrushDrawing();
@@ -160,20 +165,46 @@ public class BrushDrawingView extends View {
         if (brushDrawMode) {
             float touchX = event.getX();
             float touchY = event.getY();
+
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    firstPointX = touchX;
+                    firstPointY = touchY;
                     drawPath.moveTo(touchX, touchY);
                     if (onPhotoEditorSDKListener != null)
                         onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    drawPath.lineTo(touchX, touchY);
+                    if (this.isRectangle) {
+                      // clear current lines
+                      drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                      try {
+                        drawPath.reset();
+                      } catch (Exception e) {}
+
+                      // add new lines
+                      drawPath.moveTo(firstPointX, firstPointY);
+                      drawPath.lineTo(touchX, firstPointY);
+
+                      drawPath.moveTo(touchX, firstPointY);
+                      drawPath.lineTo(touchX, touchY);
+
+                      drawPath.moveTo(touchX, touchY);
+                      drawPath.lineTo(firstPointX, touchY);
+
+                      drawPath.moveTo(firstPointX, touchY);
+                      drawPath.lineTo(firstPointX, firstPointY);
+                    } else {
+                      drawPath.lineTo(touchX, touchY);
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
                     drawCanvas.drawPath(drawPath, drawPaint);
                     drawPath.reset();
                     if (onPhotoEditorSDKListener != null)
                         onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
+                    firstPointX = 0;
+                    firstPointY = 0;
                     break;
                 default:
                     return false;

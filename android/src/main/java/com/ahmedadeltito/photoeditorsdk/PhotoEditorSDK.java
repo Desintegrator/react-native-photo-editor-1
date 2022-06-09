@@ -213,9 +213,9 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
     }
   }
 
-  public void setBrushDrawingMode(boolean brushDrawingMode) {
+  public void setBrushDrawingMode(boolean brushDrawingMode, String mode) {
     if (brushDrawingView != null) {
-      brushDrawingView.setBrushDrawingMode(brushDrawingMode);
+      brushDrawingView.setBrushDrawingMode(brushDrawingMode, mode);
       if (brushDrawingMode) {
         brushDrawingView.bringToFront();
       }
