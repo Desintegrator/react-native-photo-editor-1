@@ -11,13 +11,9 @@ This library is a React Native bridge around native photo editor libraries. It a
 
 
 * _**Cropping**_
-* _**Adding Images -Stickers-**_
 * _**Adding Text with Colors**_
 * _**Drawing with Colors**_
-* _**Scaling and Rotating Objects**_
-* _**Deleting Objects**_
 * _**Saving to Photos and Sharing**_
-* _**Cool Animations**_
 
 ## 📖 Getting started
 

@@ -2,7 +2,6 @@ package ui.photoeditor;
 
 import static ui.photoeditor.EditedImageSource.ON_IMAGE_LOAD_ERROR_EVENT;
 import static ui.photoeditor.EditedImageSource.ON_PHOTO_PROCESSED_EVENT;
-import static ui.photoeditor.EditedImageSource.ON_LAYERS_UPDATE_EVENT;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -27,6 +26,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import static java.util.Map.entry;
+
 import java.util.Map;
 
 
@@ -42,6 +42,7 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
   public final int COMMAND_RELOAD = 7;
   public final int COMMAND_PROCESS_PHOTO = 8;
 
+  public static final String ON_LAYERS_UPDATE_EVENT = "onLayersUpdate";
 
   ReactApplicationContext reactContext;
   RNPhotoEditorFragment photoEditorFragment;
@@ -135,39 +136,40 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
     eventEmitter.receiveEvent(rootId, ON_PHOTO_PROCESSED_EVENT, event);
   }
 
-  public void onLayersUpdate() {
+  public void onLayersUpdate(int activeLayer, int layersCount) {
     RCTEventEmitter eventEmitter = reactContext.getJSModule(RCTEventEmitter.class);
     WritableMap event = new WritableNativeMap();
-    // event.putString("error", error);
+    event.putInt("activeLayer", activeLayer);
+    event.putInt("layersCount", layersCount);
     eventEmitter.receiveEvent(rootId, ON_LAYERS_UPDATE_EVENT, event);
   }
 
   @Override
   public @Nullable
   Map getExportedCustomDirectEventTypeConstants() {
-    return  MapBuilder.builder()
-      .put(
-          ON_IMAGE_LOAD_ERROR_EVENT,
-          MapBuilder.of(
-            "registrationName",
-            ON_IMAGE_LOAD_ERROR_EVENT
-          )
-      )
-      .put(
-        ON_PHOTO_PROCESSED_EVENT,
-        MapBuilder.of(
-          "registrationName",
-          ON_PHOTO_PROCESSED_EVENT
+    return MapBuilder.builder()
+        .put(
+            ON_IMAGE_LOAD_ERROR_EVENT,
+            MapBuilder.of(
+                "registrationName",
+                ON_IMAGE_LOAD_ERROR_EVENT
+            )
         )
-      )
-      .put(
-        ON_LAYERS_UPDATE_EVENT,
-        MapBuilder.of(
-          "registrationName",
-          ON_LAYERS_UPDATE_EVENT
+        .put(
+            ON_PHOTO_PROCESSED_EVENT,
+            MapBuilder.of(
+                "registrationName",
+                ON_PHOTO_PROCESSED_EVENT
+            )
         )
-      )
-      .build();
+        .put(
+            ON_LAYERS_UPDATE_EVENT,
+            MapBuilder.of(
+                "registrationName",
+                ON_LAYERS_UPDATE_EVENT
+            )
+        )
+        .build();
   }
 
   @ReactProp(name = "source")
@@ -248,6 +250,12 @@ public class RNPhotoEditorViewManager extends SimpleViewManager<FrameLayout> {
       @Override
       public void onError(String error) {
         onImageLoadError(error);
+      }
+    });
+    photoEditorFragment.setOnLayersUpdateListener(new RNPhotoEditorFragment.OnLayersUpdateListener() {
+      @Override
+      public void onUpdate(int activeLayer, int layersCount) {
+        onLayersUpdate(activeLayer, layersCount);
       }
     });
     FragmentActivity activity = (FragmentActivity) reactContext.getCurrentActivity();
