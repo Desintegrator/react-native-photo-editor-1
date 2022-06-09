@@ -178,7 +178,9 @@ public class BrushDrawingView extends View {
                     if (this.isRectangle) {
                       // clear current lines
                       drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-                      drawPath.reset();
+                      try {
+                        drawPath.reset();
+                      } catch (Exception e) {}
 
                       // add new lines
                       drawPath.moveTo(firstPointX, firstPointY);
