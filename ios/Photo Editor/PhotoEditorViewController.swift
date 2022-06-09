@@ -173,6 +173,7 @@ public final class PhotoEditorViewController: UIViewController {
         }
         view.bringSubviewToFront(canvasImageView)
         self.lastActiveLayerIndex += 1
+        updateLayersVisibility()
     }
     
     func saveTextLayers(){
@@ -237,7 +238,6 @@ public final class PhotoEditorViewController: UIViewController {
             }
             updateLayersVisibility()
         }
-       
     }
     
     func redo(){

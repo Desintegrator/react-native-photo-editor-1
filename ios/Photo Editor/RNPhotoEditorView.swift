@@ -115,7 +115,7 @@ class RNPhotoEditorView: UIView {
     }
 
     func _onPhotoProcessed(path: String) {
-      if (self.onLayersUpdate != nil) {
+      if (self.onPhotoProcessed != nil) {
         self.onPhotoProcessed!([
           "path": path,
         ]);
