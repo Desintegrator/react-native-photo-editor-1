@@ -188,6 +188,9 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
       brushDrawingView.setLayoutParams(params);
       eraserDrawingView.setLayoutParams(params);
     }
+    if (onPhotoEditorSDKListener != null) {
+      onPhotoEditorSDKListener.onLayersUpdate(lastActiveLayerIndex, addedViews.size());
+    }
   }
 
   public void disableTextEditing() {

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,7 +65,17 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
   public void setOnPhotoProcessedListener(OnPhotoProcessedListener onPhotoProcessedListener) {
     this.onPhotoProcessedListener = onPhotoProcessedListener;
   }
-  // 
+
+  // layers update
+  public interface OnLayersUpdateListener {
+    void onUpdate(int activeLayer, int layersCount);
+  }
+
+  private OnLayersUpdateListener onLayersUpdateListener;
+
+  public void setOnLayersUpdateListener(OnLayersUpdateListener onLayersUpdateListener) {
+    this.onLayersUpdateListener = onLayersUpdateListener;
+  }
 
   public void setToolColor(int toolColor) {
     this.toolColor = toolColor;
@@ -263,18 +274,6 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
           }
 
         }
-
-        // public void onPhotoProcessed() {
-        //   if (onPhotoProcessedListener != null) {
-        //     onPhotoProcessedListener
-        //   }
-        // }
-
-        // public void onLayersUpdate() {
-        //   if (onLayersUpdateistener != null) {
-        //     onLayersUpdateListener
-        //   }
-        // }
       });
     }
   }
@@ -366,5 +365,12 @@ public class RNPhotoEditorFragment extends Fragment implements OnPhotoEditorSDKL
         eraserDrawingView.clearAll();
       }
     }
+  }
+
+  @Override
+  public void onLayersUpdate(int activeLayer, int layersCount) {
+      if (onLayersUpdateListener != null) {
+        onLayersUpdateListener.onUpdate(activeLayer,layersCount);
+      }
   }
 }

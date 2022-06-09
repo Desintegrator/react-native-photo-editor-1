@@ -12,6 +12,7 @@ import PhotoEditorView, {
   IPhotoEditorViewRef,
   PhotoEditorViewProps,
   PhotoEditorModeType,
+  onLayersUpdateEvent,
 } from '@scm/react-native-photo-editor';
 
 const PHOTO_PATH =
@@ -122,6 +123,18 @@ export default function App() {
   const undo = () => ref.current?.undo();
   const redo = () => ref.current?.redo();
 
+  const [canRedo, setCanRedo] = useState(false);
+  const [canUndo, setCanUndo] = useState(false);
+
+  const handleLayersUpdate = ({
+    nativeEvent: {layersCount, activeLayer},
+  }: onLayersUpdateEvent) => {
+    console.log({layersCount, activeLayer});
+
+    setCanUndo(layersCount > 0 && activeLayer > 0);
+    setCanRedo(layersCount > 0 && activeLayer < layersCount - 1);
+  };
+
   const submit = () => {
     if (mode === 'crop') {
       ref.current?.crop();
@@ -142,13 +155,14 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Button title="Clear all" onPress={clearAll} />
-          <Button title="Undo" onPress={undo} />
-          <Button title="Redo" onPress={redo} />
+          <Button title="Undo" onPress={undo} isActive={canUndo} />
+          <Button title="Redo" onPress={redo} isActive={canRedo} />
           <Button title="Reset" onPress={reset} />
         </View>
         <View style={styles.editorContainer}>
           {photoEditorVisible && (
             <PhotoEditorView
+              onLayersUpdate={handleLayersUpdate}
               ref={ref}
               style={styles.editorView}
               toolSize={toolSize}
