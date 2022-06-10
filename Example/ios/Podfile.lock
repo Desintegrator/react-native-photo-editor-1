@@ -304,7 +304,7 @@ PODS:
     - React-perflogger (= 0.66.4)
   - RNGestureHandler (2.4.2):
     - React-Core
-  - RNPhotoEditor (1.2.5):
+  - RNPhotoEditor (1.2.6):
     - React
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
@@ -498,7 +498,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
-  RNPhotoEditor: ed6632117a2b32b57c6d1b4e4b97d65f9b891d47
+  RNPhotoEditor: 95d744724a6d175708099e9e90c7511c94f8ca41
   RNReanimated: 58b57be69a237fb02ec8099d25171057638cf41a
   SDWebImage: 0905f1b7760fc8ac4198cae0036600d67478751e
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
