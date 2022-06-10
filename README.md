@@ -1,27 +1,18 @@
 <h1 align="center">
-
-<p align="center">
-  <img src="https://lh3.googleusercontent.com/dsJXfHnUx0qvZIB_80F-q0iN18eIqmx6g10bmsVN8R6nEnLQDKvJ9lXCbnPCgDEZMw=s180"/>
-</p>
-
 ReactNative: Native Photo Editor (Android/iOS)
-
 </h1>
-This library is a React Native bridge around native photo editor libraries. It allows you to edit any photo by providing below set of features:
 
+This library is a React Native UI Component for image editing. It allows you to edit any photo by providing below set of features:
 
 * _**Cropping**_
 * _**Adding Text with Colors**_
 * _**Drawing with Colors**_
+* _**Undo/Redo**_
 * _**Saving to Photos and Sharing**_
 
 ## 📖 Getting started
 
-`$ yarn add react-native-photo-editor`
-
-## Publishing
-
-`$ yarn publish`
+`$ yarn add @scm/react-native-photo-editor`
 
 - **Android**
 
@@ -50,45 +41,16 @@ allprojects {
 ## 💻 Usage
 
 See Example folder
-```
-import PhotoEditor from 'react-native-photo-editor'
+```js
+import PhotoEditorView from '@scm/react-native-photo-editor'
 
 ```
-
-> * Purpose of this library is to edit photos which are within app sandbox, we recommend to move captured image to app sandbox then using RNFS share image path with library for the edit.
-
-> * Example: If we capture image through cameraRoll then we should first move image to app sandbox using RNFS then share app storage path with the editor.
-
-## 🔧 Troubleshooting
-### If using React Native Firebase v6+ or facing any of the following issues: 
-  - Add the following to your `podfile -> ios/podfile` and run `pod install`
-```
-pre_install do |installer|
-  installer.pod_targets.each do |pod|
-    if pod.name.start_with?('RNFB')
-      def pod.build_type;
-        Pod::BuildType.static_library
-      end
-    end
-  end
-end
-```
-
-  - If the above doesn't work, try the following and and re-run `pod install`:
-
-As [@react-native-firebase documentation](https://rnfirebase.io/#allow-ios-static-frameworks) you should add following to top of the Podfile for Allow iOS Static Frameworks
-```
-$RNFirebaseAsStaticFramework = true
-```
-
-### [__swift_FORCE_LOAD_$_swiftUniformTypeIdentifiers / __swift_FORCE_LOAD_$_swiftCoreMIDI](https://github.com/prscX/react-native-photo-editor/issues/171)
 
 ## ✨ Credits
-
+- React Native Photo Editor [prscX/react-native-photo-editor](https://github.com/prscX/react-native-photo-editor)
 - Android Photo Editor: [eventtus/photo-editor-android](https://github.com/eventtus/photo-editor-android)
 - iOS Photo Editor: [eventtus/photo-editor](https://github.com/eventtus/photo-editor)
+- Android Image Cropper: [CanHub/Android-Image-Cropper](https://github.com/CanHub/Android-Image-Cropper)
 
 ## 📜 License
 This library is provided under the Apache 2 License.
-
-RNPhotoEditor @ [prscX](https://github.com/prscX)
